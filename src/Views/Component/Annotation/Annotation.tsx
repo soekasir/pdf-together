@@ -6,6 +6,7 @@ import { Validation as Type } from "../../../Models/Interfaces/Type";
 import * as Models from "../../../Models/Main/MainModel";
 import { ReplyForm } from "../Comment/Reply";
 
+
 interface PropAnnotation{
   className:string,
   color:string,
@@ -14,12 +15,22 @@ interface PropAnnotation{
   layer?:LayerContract.LayerAnnotation
 }
 
+
+
 export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
+
+
 
   /** PRE-RENDER */
   const pdfTogether=useContext(PdfTogetherContext);
   const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);
+
+
+
+
+
+
 
   const [option,setOption]=useState({
     isShowReply:true,
@@ -27,11 +38,19 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     isShowFormReply:false
   });
 
+
+
+
+
   const setDisplay=(display_to:Type.LayerDisplay)=>{
     let newOption={...option};
     newOption.display=display_to;
     setOption(newOption);
   }
+
+
+
+
 
   const togleShowReply=()=>{
     let newOption={...option};
@@ -39,11 +58,19 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     setOption(newOption);
   }
 
+
+
+
+
   const togleShowFormReply=()=>{
     let newOption={...option};
     newOption.isShowFormReply=!option.isShowFormReply;
     setOption(newOption);
   }
+
+
+
+
 
   const handleAnnot=(e:React.FormEvent<HTMLInputElement>)=>{
     let newForm={...form};
@@ -53,6 +80,12 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     setForm(newForm);
 
   };
+
+
+
+
+
+
 
   const handleIsSolved=()=>{
     let newForm={...form};
@@ -65,11 +98,17 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     }
   }
 
+
+
+
+
   const handleSubmit=(e:any)=>{
     e.preventDefault();
     let annot=new Models.Annotation(form);
     pdfTogether.addAnnotation(annot);
   }
+
+
 
 
   /** COMPONENT BEGIN */
@@ -85,6 +124,9 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     );
   }
 
+
+
+
   const icon=(display_to:Type.LayerDisplay)=>{
     return(
       <a onClick={()=>setDisplay(display_to)} className="btn">
@@ -92,6 +134,13 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
       </a>
     );
   };
+
+
+
+
+
+
+
 
   const annotationPinned=()=>{
     return (
@@ -101,6 +150,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     )
   }
 
+
+
   const annotationAdd=()=>{
     return (
       <>
@@ -108,6 +159,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
       </>
     )
   }
+
+
 
   const annotationTool=()=>{
     return (
@@ -121,6 +174,9 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     );
   }
 
+
+
+
   const reply=(layer:LayerContract.LayerValue)=>{
     return <div style={{backgroundColor:'#999999'}}>
       from:{layer.author.name} <br/>
@@ -128,6 +184,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
       date:{layer.date} <br/>
     </div>
   }
+
+
 
   const showReply=()=>{
     return(
@@ -165,6 +223,10 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     )
   }
 
+
+
+
+
   const getDisplay=()=>{
 
     if(option.display===Type.LayerDisplay.form) return annotationForm();
@@ -187,6 +249,9 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 }
 
 
+
+
+
 export const AddAnnotation=()=>{
 
   const pdfTogether=useContext(PdfTogetherContext);
@@ -202,6 +267,10 @@ export const AddAnnotation=()=>{
   );
 
 }
+
+
+
+
 
 export const LoadAnnotation=()=>{
   const pdfTogether=useContext(PdfTogetherContext);
@@ -223,6 +292,10 @@ export const LoadAnnotation=()=>{
     </>
   );
 }
+
+
+
+
 
 export const Annotation=()=>{
 

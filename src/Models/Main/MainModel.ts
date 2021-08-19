@@ -10,6 +10,8 @@ export class LayerValue implements LayerContract.LayerValue{
   onPage;
   content;
 
+
+
   constructor({ type,author,point,onPage,content }
       :{ type:Validation.Mode,author:Author,point:Validation.Point,onPage:number,content:Content }){
 
@@ -21,8 +23,6 @@ export class LayerValue implements LayerContract.LayerValue{
   }
 
 }
-
-
 
 
 

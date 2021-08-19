@@ -6,6 +6,12 @@ import {
 import { SelectPdf } from '../../Views/Component/SelectPdf/SelectPdf';
 import PdfTogether from '../../Views/Page/PdfTogether/PdfTogether';
 
+
+
+
+
+
+
 export const PdfTogetherRouter=()=>{
   return(
     <Router>
