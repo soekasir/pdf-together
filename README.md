@@ -32,10 +32,10 @@ To fill value of layer, declare [new LayerValue] and class that inherit from it.
 [//]: # (Markdown here)
    [Soekasir]: <https://github.com/soekasir>
    [EMI]: <https://>
-   [Validation]: src\Models\Interfaces\Type.ts
-   [class Draw]: src\Models\Draw\Draw.ts
-   [class Layers]: src\Models\Layers\Layers.ts
-   [class PdfTogether]: src\Models\Main\MainPdfTogether.ts
-   [class Together]: src\Models\Main\MainPdfTogether.ts
-   [new LayerValue]: src\Models\Main\MainModel.ts
-   [MainModel]: src\Models\Main\MainModel.ts
+   [Validation]: src/Models/Interfaces/Type.ts
+   [class Draw]: src/Models/Draw/Draw.ts
+   [class Layers]: src/Models/Layers/Layers.ts
+   [class PdfTogether]: src/Models/Main/MainPdfTogether.ts
+   [class Together]: src/Models/Main/MainPdfTogether.ts
+   [new LayerValue]: src/Models/Main/MainModel.ts
+   [MainModel]: src/Models/Main/MainModel.ts
