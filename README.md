@@ -35,7 +35,7 @@ To fill value of layer, declare [new LayerValue] and class that inherit from it.
    [Validation]: src/Models/Interfaces/Type.ts
    [class Draw]: src/Models/Draw/Draw.ts
    [class Layers]: src/Models/Layers/Layers.ts
-   [class PdfTogether]: src/ Models /Main/MainPdfTogether.ts
+   [class PdfTogether]: src/Models/Main/MainPdfTogether.ts
    [class Together]: src/Models/Main/MainPdfTogether.ts
    [new LayerValue]: src/Models/Main/MainModel.ts
    [MainModel]: src/Models/Main/MainModel.ts
