@@ -36,7 +36,7 @@ export namespace LayerContract{
 
   export interface Img extends Content{
     file?:File,
-    url:URL|string,
+    url:string,
     size:number
   }
 

@@ -99,7 +99,7 @@ export class Draw  extends Content implements LayerContract.Draw{
 
 export class Img  extends Content implements LayerContract.Img{
   file?:File;
-  url:URL|string;
+  url:string;
   size:number;
 
   constructor({file_or_url,size}:{file_or_url:File,size:number}){

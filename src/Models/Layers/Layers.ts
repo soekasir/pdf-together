@@ -96,8 +96,6 @@ export class Layers implements Contract.LayersInterfaces{
 
     if(this.#layers.has(id)){
       this.#layers.set(id,value);
-    }else{
-      throw new Error('Layers tidak memiliki id: '+id)
     }
     return this;
 
