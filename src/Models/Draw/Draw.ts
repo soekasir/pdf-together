@@ -1,11 +1,16 @@
 import { RefObject } from "react";
 import { Validation as Type } from "../Interfaces/Type";
 
+
 interface Callback{
 
   setPoint:({x,y}:Type.Point)=>void,
 
 };
+
+
+
+
 
 export class Draw{
 
@@ -152,6 +157,11 @@ export class Draw{
 
 }
 
+
+
+
+
+
 export const canvasDrawer=(canvasRef:RefObject<HTMLCanvasElement>)=>{
 
   if(!canvasRef) { return; }
@@ -162,7 +172,7 @@ export const canvasDrawer=(canvasRef:RefObject<HTMLCanvasElement>)=>{
 
   const myDraw=new Draw(
     element_canvas,
-    renderingContext
+    renderingContext!
   );
 
   element_canvas.addEventListener("mousemove", function (e:any) {

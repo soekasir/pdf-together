@@ -4,11 +4,18 @@ import { hasKey } from "../../../Models/Costum/Check";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import * as Models from "../../../Models/Main/MainModel";
 
+
+
+
 export const ReplyForm=({to,setTogleClose}:{to:number,setTogleClose:any})=>{
   const pdfTogether=useContext(PdfTogetherContext);
   const [form,setForm]=useState({message:''});
 
   if(!to) return null;
+
+
+
+
 
   const handleSubmit=(e:any)=>{
     e.preventDefault();
@@ -17,6 +24,8 @@ export const ReplyForm=({to,setTogleClose}:{to:number,setTogleClose:any})=>{
     pdfTogether.addChat(chat);
 
   }
+
+
 
   const handleInput=(e:React.FormEvent<HTMLTextAreaElement>)=>{
     let newForm={...form};

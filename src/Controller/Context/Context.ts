@@ -1,21 +1,53 @@
-import { createContext} from "react";
+import React, { createContext} from "react";
+import { Layers } from "../../Models/Layers/Layers";
 import { Author } from "../../Models/Main/MainModel";
 import { PdfTogether } from "../../Models/Main/MainPdfTogether";
 
 /**
  * Context for Pdf
  */
- export const PdfContext=createContext(undefined);
+
+interface PdfContextValue{
+  pdf:File|undefined,
+  setPdf:React.Dispatch<React.SetStateAction<File | undefined>>
+  url:string|undefined,
+  setUrl:React.Dispatch<React.SetStateAction<string | undefined>>,
+  layer:Layers,
+  setUrlLayer:React.Dispatch<React.SetStateAction<string | undefined>>
+};
+
+
+
+
+
+
+
+export const PdfContext=createContext({}as PdfContextValue);
+
+
+
+
+
 
 /**
  * Context for Pdf Together
  */
 export const PdfTogetherContext=createContext({} as PdfTogether);
 
+
+
+
+
+
 /**
  * Context for global Api
  */
 export const ApiContext=createContext(undefined);
+
+
+
+
+
 
 /**
  * Context for Author
