@@ -4,6 +4,9 @@ import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
 import { ReplyForm } from "./Reply";
 
+
+
+
 export const LoadComment=()=>{
   const pdfTogether=useContext(PdfTogetherContext);
 
@@ -12,12 +15,17 @@ export const LoadComment=()=>{
     filter:Type.FilterAnnotation.All,
   });
 
+
+
   const handleFilter=(e:any)=>{
     let newOption={...option};
     if(e.currentTarget)
     newOption.filter=e.currentTarget.value;
     setOption(newOption);
   }
+
+
+
 
   const filter={
     all:()=>pdfTogether.prop.layer.filterType(Type.Mode.Annotation),
@@ -49,7 +57,15 @@ export const LoadComment=()=>{
     }),
   }
 
+
+
+
+
+
   const chat=()=>pdfTogether.prop.layer.filterType(Type.Mode.Chat);
+
+
+
 
   const reply=(id:LayerContract.LayerId)=>{
     return <>
@@ -64,6 +80,12 @@ export const LoadComment=()=>{
     }
     </>
   }
+
+
+
+
+
+
 
   const formFilter=()=>{
     return (
@@ -81,6 +103,10 @@ export const LoadComment=()=>{
     )
   }
 
+
+
+
+  
   return (
     <>
       <div className="panel-comment">

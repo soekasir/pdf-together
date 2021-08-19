@@ -10,78 +10,56 @@ import { LayerContract } from "../Interfaces/LayerContract";
 interface PropertyPdfTogether{
 
 
+
+
   canvasRef:React.RefObject<HTMLCanvasElement>;
+
 
 
 
   annotation:Annotation[][]|undefined;
 
 
+
+
   pdfRef:any;
+
+
 
 
   point:Type.PointCanvas;
 
 
+
+
   pdfFactory:AnnotationFactory|undefined;
+
+
 
 
   currentPage:number;
 
 
+
+
   layer:Layers;
+
+
 
 
   layerValue:LayerContract.ArrayLayer[]|undefined;
 
 
-  option:{
-    scale:number
-  };
 
 
-  mode:Type.Mode|null
+  mode:Type.Mode|null;
 
 
-  draw:Draw|undefined
 
 
-  panel:{
+  draw:Draw|undefined;
 
-    isActive:boolean,
 
-    activeMode:string, //comment, file, trash, share, upload
-
-    commentTab:{
-
-      isLoadAll:boolean,
-
-    },
-
-    fileTab:{
-
-      //option here
-
-    },
-    trashTab:{
-
-      //option here
-
-    },
-
-    shareTab:{
-
-      //option here
-
-    },
-
-    uploadTab:{
-
-      //option here
-
-    }
-
-  };
 
 
   author:Models.Author
@@ -94,21 +72,13 @@ interface PropertyPdfTogether{
 
 
 
-
-
-
 interface MethodPdfTogether{
+
+
 
 
   setAnnotation: React.Dispatch<React.SetStateAction<Annotation[][] | undefined>>
 
-
-
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>
-
-
-
-  setOption: React.Dispatch<React.SetStateAction<{scale: number;}>>
 
 
 
@@ -116,17 +86,19 @@ interface MethodPdfTogether{
 
 
 
-  setPanel: React.Dispatch<React.SetStateAction<{
-        isActive: boolean;
-        activeMode: string;
-        commentTab: {
-            isLoadAll: boolean;
-        };
-        fileTab: {};
-        trashTab: {};
-        shareTab: {};
-        uploadTab: {};
-  }>>,
+
+  // setPanel: React.Dispatch<React.SetStateAction<{
+  //       isActive: boolean;
+  //       activeMode: string;
+  //       commentTab: {
+  //           isLoadAll: boolean;
+  //       };
+  //       fileTab: {};
+  //       trashTab: {};
+  //       shareTab: {};
+  //       uploadTab: {};
+  // }>>,
+
 
 
 
@@ -178,7 +150,7 @@ class Together{
    * convert pdf rectangle to canvas point
    */
   pdfPointToCanvasPoint=(point:Type.PointPdf):Type.PointCanvas=>{
-    let top=()=>this.prop.draw&&this.prop.canvasRef.current?(this.prop.canvasRef.current.height/this.prop.option.scale)-point.y+this.prop.canvasRef.current.offsetTop:0;
+    let top=()=>this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
     let left=()=>this.prop.draw&&this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
 
     return {
@@ -329,29 +301,6 @@ class Together{
 
 class PdfTogetherUi extends Together{
 
-
-
-
-  nextPage = () => this.prop.pdfRef && this.prop.currentPage < this.prop.pdfRef.numPages && this.meth.setCurrentPage(this.prop.currentPage + 1);
-  
-
-
-
-  prevPage = () => this.prop.currentPage > 1 && this.meth.setCurrentPage(this.prop.currentPage - 1);
-
-
-
-
-  setScale=(scale:number)=>{
-    let newOption={...this.prop.option};
-    newOption.scale=scale;
-    this.meth.setOption(newOption);
-  }
-
-
-
-
-
   selectMode=(mode:Type.Mode)=>{
 
     this.prop.mode===mode?this.meth.setMode(null):this.meth.setMode(mode);
@@ -360,15 +309,6 @@ class PdfTogetherUi extends Together{
       this.prop.draw.mode===mode?this.prop.draw.setMode(null):this.prop.draw.setMode(mode);
     }
 
-  }
-
-
-
-  /**
-   * set panel to active and nonactive
-   */
-  togglePanel=()=>{
-    this.meth.setPanel({...this.prop.panel,isActive:!this.prop.panel.isActive});
   }
 
 

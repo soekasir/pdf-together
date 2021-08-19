@@ -3,7 +3,6 @@
  */
 
 export * from '../../Views/Component/Annotation/Annotation';
-export * from '../../Views/Component/Annotation/AnnotationImg';
 export * from '../../Views/Component/Comment/Comment';
 export * from '../../Views/Component/Header/Header';
 export * from '../../Views/Component/Panel/PanelTab';

@@ -1,8 +1,17 @@
-export function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
+
+
+
+
+export function hasKey<ObjTest>(obj: ObjTest, key: PropertyKey): key is keyof ObjTest {
   return key in obj
 }
 
 
-export function hasValue<O>(O:O,value:string){
+
+
+
+
+
+export function hasValue<ObjTest>(O:ObjTest,value:string){
   return value in Object.values(O);
 }

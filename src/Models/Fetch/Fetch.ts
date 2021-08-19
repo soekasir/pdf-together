@@ -1,10 +1,16 @@
 /** Handle Fetch */
 import { Layers } from "../Layers/Layers";
 
+
 interface GetFetch{
   url:string,
   token?:string,
 }
+
+
+
+
+
 
 interface PostFetch{
   url:string,
@@ -12,6 +18,9 @@ interface PostFetch{
   content_type:string,
   token?:string
 }
+
+
+
 
 export const Fetch={
 
@@ -103,6 +112,9 @@ export const Fetch={
     return req;
   }
 }
+
+
+
 
 
 export const FetchLayer=(urlLayer?:string)=>{

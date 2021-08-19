@@ -1,10 +1,13 @@
 import { AuthorContext} from "./Context";
-import { ReactChildren} from "react";
 import { Author } from "../../Models/Main/MainModel";
 
+
 interface PropAuthorContextProvider{
-  children:ReactChildren,
+  children:React.ReactChild,
 }
+
+
+
 
 /**
  * Set value for PdfContextProvider

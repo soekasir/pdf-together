@@ -1,5 +1,12 @@
 import {Validation as Type} from './Type';
 
+
+
+
+
+
+
+
 export namespace LayerContract{
 
   export type LayerId=number;

@@ -1,7 +1,10 @@
 import { PdfContext} from "./Context";
-import { useState,useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { FetchLayer } from "../../Models/Fetch/Fetch";
 import { Layers } from "../../Models/Layers/Layers";
+
+
+
 
 
 /**
@@ -9,13 +12,13 @@ import { Layers } from "../../Models/Layers/Layers";
  * @const urlLayer layer Api to get data from server
  * @const url url to file pdf
  */
-export const PdfContextProvider=({children})=>{
+export const PdfContextProvider=({children}:{children:React.ReactChild})=>{
 
-  const [pdf,setPdf]=useState();
-  const [url,setUrl]=useState();
+  const [pdf,setPdf]=useState<File>();
+  const [url,setUrl]=useState<string>();
 
-  const [urlLayer,setUrlLayer]=useState('http://localhost:3004/data');
-  const [layer,setLayer]=useState(new Layers());
+  const [urlLayer,setUrlLayer]=useState<string>();
+  const [layer,setLayer]=useState<Layers>(new Layers());
 
   useEffect(()=>{
 
@@ -30,7 +33,7 @@ export const PdfContextProvider=({children})=>{
   const value={
     pdf:pdf,
     setPdf:setPdf,
-    url:pdf instanceof File? URL.createObjectURL(pdf):url,
+    url:pdf?URL.createObjectURL(pdf):url,
     setUrl:setUrl,
     layer:layer,
     setUrlLayer:setUrlLayer
