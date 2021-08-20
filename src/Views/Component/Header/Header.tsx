@@ -12,8 +12,7 @@ export const Header=({nextPage,prevPage,setPanel,panel}:any)=>{
 
   return (
     <>
-      <div id="navbar-top">
-        <div className="filename">
+        {/* <div className="filename">
           <i>{pdf?.name}</i>
         </div>
         <div className="control">
@@ -32,8 +31,7 @@ export const Header=({nextPage,prevPage,setPanel,panel}:any)=>{
             <a className="btn"><i className="bi bi-cloud-arrow-up"></i></a>
             <a className="btn"><i className="bi bi-x-circle"></i></a>
           </span>
-        </div>
-      </div>
+        </div> */}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { ReactChildren, ReactElement } from "react";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { navbarTop } from "../../../Resources/style/style";
+// import { navbarTop } from "../../../Resources/style/style";
 
 interface layerProp{
   point:Type.PointCanvas,

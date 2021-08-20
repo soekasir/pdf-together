@@ -10,11 +10,10 @@ import { canvasDrawer} from "../../../Models/Draw/Draw";
 /**
  * Stylesheet
  */
-import './../../../Resources/style/style.css';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-
+ import './../../../Resources/style/style.css';
+import { useStyles } from './../../../Resources/style/style';
+// import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Container, Paper, Typography, Grid, GridSpacing, CssBaseline } from "@material-ui/core";
 
 
 
@@ -62,12 +61,10 @@ export interface OptionPanel{
 
 const PdfTogether=()=>{
 
-
-
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const context=useContext(PdfContext);
   const author=useContext(AuthorContext);
+  const style=useStyles();
   const [pdfRef,setPdfRef] = useState<any>();
   const [currentPage,setCurrentPage] = useState(0);
   const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>();
@@ -169,25 +166,33 @@ const PdfTogether=()=>{
     return <>Tidak ada file yang dipilih</>
   }
 
-
-
-
-
-
-
   return (
     <PdfTogetherContext.Provider value={value}>
-          <Header nextPage={nextPage} prevPage={prevPage} setPanel={setPanel} panel={panel}/>
-
-          <div id="content">
-              {/* <AnnotationImg/> */}
-              <canvas ref={canvasRef}></canvas>
+      <CssBaseline/>
+      <nav className={style.navbartop}>
+        <Header nextPage={nextPage} prevPage={prevPage} setPanel={setPanel} panel={panel}/>
+      </nav>
+      <Container maxWidth='xl' className={style.container}>
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
+            <Paper variant="outlined" className={style.fileTab}>
+              ini File Tab {/* <PanelTab panel={panel}/> */}
+            </Paper>
+            <Paper variant="outlined" className={style.commentTab}>
+              ini Comment Tab
+            </Paper>
+          </Grid>
+          <Grid item xs={9}>
+            <Paper className={style.headerContent}>
+            Ini header content  
+            </Paper> {/** ini header content */}
+            <Paper className={style.content}>
+              <canvas ref={canvasRef} className={style.canvas}></canvas>
               <Annotation/>
-          </div>
-
-          <Tool/>
-
-          <PanelTab panel={panel}/>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
     </PdfTogetherContext.Provider>
   );
 
