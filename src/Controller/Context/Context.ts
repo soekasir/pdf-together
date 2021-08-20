@@ -22,7 +22,7 @@ interface PdfContextValue{
 
 
 
-export const PdfContext=createContext({}as PdfContextValue);
+export const PdfContext=createContext({} as PdfContextValue);
 
 
 

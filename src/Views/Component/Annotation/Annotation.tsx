@@ -21,7 +21,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 
 
-  /** PRE-RENDER */
+
   const pdfTogether=useContext(PdfTogetherContext);
   const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);

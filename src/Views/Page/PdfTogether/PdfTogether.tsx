@@ -4,8 +4,16 @@ import { Annotation,Header,PanelTab,Tool } from '../../../Controller/Env/Compone
 import { pdfjsLib,AnnotationFactory } from "../../../Controller/Env/Facades";
 import { usePdfTogether } from "../../../Controller/Hooks/PdfTogether/usePdfTogether";
 import { canvasDrawer} from "../../../Models/Draw/Draw";
-import './../../../Resources/css/PdfTogether.css';
+// import './../../../Resources/css/PdfTogether.css';
 
+
+/**
+ * Stylesheet
+ */
+import './../../../Resources/style/style.css';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
 
 

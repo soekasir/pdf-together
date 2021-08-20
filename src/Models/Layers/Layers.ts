@@ -71,10 +71,10 @@ export class Layers implements Contract.LayersInterfaces{
     return this.#layers.get(id);
   }
 
+
   getAll():Contract.ArrayLayer[]{
     return this.toArray();
   }
-
 
 
   delete(id:Contract.LayerId){
@@ -100,9 +100,6 @@ export class Layers implements Contract.LayersInterfaces{
     return this;
 
   }
-
-
-
 
 
   clearAll(){

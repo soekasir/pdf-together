@@ -87,26 +87,9 @@ interface MethodPdfTogether{
 
 
 
-  // setPanel: React.Dispatch<React.SetStateAction<{
-  //       isActive: boolean;
-  //       activeMode: string;
-  //       commentTab: {
-  //           isLoadAll: boolean;
-  //       };
-  //       fileTab: {};
-  //       trashTab: {};
-  //       shareTab: {};
-  //       uploadTab: {};
-  // }>>,
-
-
-
-
   setLayerValue:React.Dispatch<React.SetStateAction<LayerContract.ArrayLayer[] | undefined>>
 
 }
-
-
 
 
 
@@ -119,7 +102,9 @@ class Together{
 
 
 
-  constructor(public prop:PropertyPdfTogether,public meth:MethodPdfTogether){}
+  constructor(public prop:PropertyPdfTogether,public meth:MethodPdfTogether){
+
+  }
 
 
 
@@ -147,7 +132,7 @@ class Together{
 
 
   /**
-   * convert pdf rectangle to canvas point
+   * convert pdf point to canvas point
    */
   pdfPointToCanvasPoint=(point:Type.PointPdf):Type.PointCanvas=>{
     let top=()=>this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
@@ -272,7 +257,7 @@ class Together{
   /**
    * to update content of a layers
    * @param id id layer
-   * @param content layer content, not layer value | child of LayerContract.Content
+   * @param content
    */
   updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
 
@@ -288,8 +273,8 @@ class Together{
 
 
 
-}
 
+}
 
 
 
@@ -313,9 +298,6 @@ class PdfTogetherUi extends Together{
 
 
 }
-
-
-
 
 
 
