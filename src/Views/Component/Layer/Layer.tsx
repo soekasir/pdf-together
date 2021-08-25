@@ -12,7 +12,7 @@ export const Layer:React.FC<layerProp>=({children,point})=>{
     <div style={{
     zIndex: 2,position: 'absolute',
     top:point.y,left:point.x,
-    backgroundColor:'whitesmoke'
+    
     }}>
       {children}
     </div>

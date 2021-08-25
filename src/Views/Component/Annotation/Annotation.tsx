@@ -5,6 +5,12 @@ import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
 import * as Models from "../../../Models/Main/MainModel";
 import { ReplyForm } from "../Comment/Reply";
+import { Layers } from "@material-ui/icons";
+import { BottomNavigation, BottomNavigationAction, Chip, Grid, InputBase, InputLabel, Paper, TextField, Typography } from "@material-ui/core";
+import { useStylesAnnotation } from "../../../Resources/style/annotation";
+import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified, PdfIcon } from "../../../Resources/svg/icon";
+import { ReplyTextField} from "../../../Resources/style/annotation";
+import { theme } from "../../../Resources/style/style";
 
 
 interface PropAnnotation{
@@ -295,18 +301,92 @@ export const LoadAnnotation=()=>{
 
 
 
+const MainAnnonations=()=>{
+  const styleAnnot=useStylesAnnotation();
+
+  return (
+  <><Layer point={{x:500,y:350}}><>
+      <Grid item style={{backgroundColor:theme.palette.info.main,
+        width:'25px',height:'25px',
+        borderRadius:'50%',color:"#fff",paddingTop:"4px",paddingLeft:"7px"}}>2
+      </Grid>
+      <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Grid sm={11}>
+            <span>
+              <Typography variant="body2" color="textSecondary"> Adi</Typography>
+              <Typography variant="body2" style={{color:theme.palette.text.disabled}}>19 January 2021 - 17:30</Typography>
+            </span>
+            <div style={{marginTop:theme.spacing(2),borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
+              <Typography variant="body1" color="textPrimary">Please update this part</Typography>
+            </div>
+            <div style={{marginTop:'5px'}}>
+              <ReplyTextField multiline id="standard-basic" label="Reply"/>
+            </div>
+            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
+              <span className={styleAnnot.navIcon}>
+                <IconVerified style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconSendEmail style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconUrl style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconPeople style={{color:'#6A6A6A'}}/>
+              </span>
+            </Grid>
+          </Grid>
+          <Grid sm={1}>
+            <div style={{marginLeft:15}}>
+              <IconThreeDot color={'#242424'}/>
+            </div>
+          </Grid>
+        </Grid>
+      </Paper>
+  </></Layer></>
+  );
+}
+
+
+const AddAnnotations=()=>{
+
+
+  return (
+    <>
+
+    </>
+  );
+}
+
+const LoadAnnotations=()=>{
+
+
+
+
+  return (
+    <>
+
+    </>
+  )
+}
+
+
+
 
 
 export const Annotation=()=>{
 
-  const pdfTogether=useContext(PdfTogetherContext);
+  //const pdfTogether=useContext(PdfTogetherContext);
 
-  if(pdfTogether.prop.mode!=='Annotation') return null;
+  //if(pdfTogether.prop.mode!=='Annotation') return null;
 
   return (
     <>
-    <LoadAnnotation/>
-    <AddAnnotation/>
+    <MainAnnonations/>
+    {/* <LoadAnnotations/>
+    <AddAnnotation/> */}
     </>
   )
   
