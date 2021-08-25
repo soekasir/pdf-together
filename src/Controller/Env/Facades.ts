@@ -15,7 +15,7 @@ import * as pdfjs from 'pdfjs-dist/webpack';
 
 
 
-import {PDFWorker} from 'pdfjs-dist/types/pdf';
+import {PDFWorker} from 'pdfjs-dist';
 
 
 
