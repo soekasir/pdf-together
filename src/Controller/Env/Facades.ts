@@ -12,22 +12,16 @@
 */
 import * as pdfjs from 'pdfjs-dist/webpack';
 
+// import {pdfjsWorker} from "pdfjs-dist";
+import {PDFWorker} from "pdfjs-dist";
 
 
-
-import {PDFWorker} from 'pdfjs-dist';
-
-
-
-
-pdfjs.GlobalWorkerOptions.workerSrc = PDFWorker;
+pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/lib/pdf.worker";
 
 
 
 
 export const pdfjsLib=pdfjs;
-
-
 
 
 
