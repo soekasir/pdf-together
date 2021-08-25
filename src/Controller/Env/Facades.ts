@@ -15,8 +15,7 @@ import * as pdfjs from 'pdfjs-dist/webpack';
 // import {pdfjsWorker} from "pdfjs-dist";
 import {PDFWorker} from "pdfjs-dist";
 
-
-pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/lib/pdf.worker";
+pdfjs.GlobalWorkerOptions.workerSrc = PDFWorker;
 
 
 
