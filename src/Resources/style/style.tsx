@@ -91,7 +91,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding:`10px 10px 0px 10px`,
       // minWidth:'400px',
       bottom:'10px',
-      left:'27vw',
+      left:'22vw',
       zIndex:3,
 
       backgroundColor:'#242424',
@@ -155,10 +155,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginLeft:"14px",
     },
 
-    listFile:{
-      paddingLeft:theme.spacing(1),
-      marginTop:theme.spacing(2)
-    },
+    // listFile:{
+    //   paddingLeft:theme.spacing(1),
+    //   marginTop:theme.spacing(2)
+    // },
 
     commentTab:{
       width:'100%',
