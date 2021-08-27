@@ -43,7 +43,7 @@ export namespace Validation{
   * Enums
   *_____________________________________________________*/
   export enum Mode{
-    Null='null',
+    Null='Null',
     Img='Img',
     Chat='Chat',
     Annotation='Annotation',

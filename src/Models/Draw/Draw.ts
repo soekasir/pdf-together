@@ -1,49 +1,86 @@
 import { RefObject } from "react";
 import { Validation as Type } from "../Interfaces/Type";
 
+abstract class Point{
 
-interface Callback{
-
-  setPoint:({x,y}:Type.Point)=>void,
-
-};
-
-
-
-
-
-export class Draw{
-
-  flag:boolean= false; dot_flag:boolean = false;
+  flag:boolean= false;
   prevX :number=0; currX :number=0;
   prevY :number=0; currY :number=0;
 
   w:number=0; //width
   h:number=0; //height
 
-  color:string='black';
-  pointer_size:number= 2;
+  callback:any;
 
-  mode:string|null=null; // draw,annotation,img
-
-  callback:Callback={
-    setPoint:function({x,y}:Type.Point){}
-  };
-
-  ctx:any;
-  canvas:any;
+  element:HTMLElement;
 
   constructor (
-    element_canvas:HTMLElement,
-    canvas_context:RenderingContext
+    element:HTMLElement,
     ){
-    this.canvas=element_canvas;
-    this.ctx = canvas_context;
-    this.w = this.canvas.width;
-    this.h = this.canvas.height;
+    this.element=element;
+    this.w = this.element.clientWidth;
+    this.h = this.element.clientHeight;
+    // console.log(`width,height: ${this.w},${this.h}`);
   }
 
-  setMode(mode:Type.Mode|null){
+  findxy(res:string, e:MouseEvent):void {
+
+    //mouse di klik
+    if (res === "down") {
+      this.prevX = this.currX;
+      this.prevY = this.currY;
+      this.currX = e.offsetX;
+      this.currY = e.offsetY;
+      this.flag = true;
+    }
+ 
+
+    //mouse didrag
+    if (res === "move") {
+      if(this.flag){
+        this.prevX = this.currX;
+        this.prevY = this.currY;
+        this.currX = e.offsetX;
+        this.currY = e.offsetY;
+      }
+    }
+
+    //mouse selesai diklik
+    if (res == "up" || res == "out") {
+      this.flag = false;
+    }
+
+    this.run(res,e);
+
+  }
+
+  abstract run(res:string, e:MouseEvent):void;
+
+}
+
+abstract class CanvasPoint extends Point{
+
+  ctx:CanvasRenderingContext2D;
+  element:HTMLCanvasElement;
+  
+  constructor (element_canvas:HTMLCanvasElement,canvas_context:CanvasRenderingContext2D){
+
+    super(element_canvas);
+    this.element=element_canvas;
+    this.ctx = canvas_context;
+    this.w = this.element.clientWidth;
+    this.h = this.element.clientHeight;
+
+  }
+
+}
+
+abstract class Draw extends CanvasPoint{
+  color:string='black';
+  pointer_size:number= 2;
+  mode:string=Type.Mode.Null;
+
+  setMode(mode:Type.Mode){
     this.mode=mode;
   }
 
@@ -51,75 +88,11 @@ export class Draw{
     this.color=color;
   }
 
-  setPointCallback(callback:React.Dispatch<React.SetStateAction<Type.Point>>){
-    console.log('setPointCallback');
-    this.callback.setPoint=callback;
+  setPointerSize(size:number){
+    this.pointer_size=size;
   }
 
-  runMode(e:any){
-    if(this.mode==='Annotation' || this.mode==='Img'){
-      this.runSetPoint();
-    }
-  }
-
-  getPoint(){
-    return {
-      x:this.currX,
-      y:this.currY
-    }
-  }
-
-  runSetPoint():void{
-    this.callback.setPoint({
-      x:this.currX,
-      y:this.currY
-    });
-  }
-
-  findxy(res:string, e:any):void {
-
-    //mouse di klik
-    if (res === 'down') {
-        this.prevX = this.currX;
-        this.prevY = this.currY;
-        this.currX = e.clientX - this.canvas.offsetLeft+window.scrollX;
-        this.currY = e.clientY - this.canvas.offsetTop+window.scrollY;
-        this.flag = true;
-
-        if(this.mode==='Draw'){
-          this.dot_flag = true;
-          if (this.dot_flag) {
-              this.ctx.beginPath();
-              this.ctx.fillStyle = this.color;
-              this.ctx.fillRect(this.currX, this.currY, 2, 2);
-              this.ctx.closePath();
-              this.dot_flag = false;
-          }
-        }else{
-          this.runMode(e);
-        }        
-    }
-
-
-    //mouse didrag
-    if (res === 'move') {
-      if (this.flag && this.mode==='Draw') {
-        this.prevX = this.currX;
-        this.prevY = this.currY;
-        this.currX = e.clientX - this.canvas.offsetLeft;
-        this.currY = e.clientY - this.canvas.offsetTop;
-        this.draw();
-      }
-    }
-
-    //mouse selesai diklik
-    if (res === 'up' || res === "out") {
-      this.flag = false;
-    }
-
-  }
-
-  draw() {
+  draw=()=>{
     this.ctx.beginPath();
     this.ctx.moveTo(this.prevX, this.prevY);
     this.ctx.lineTo(this.currX, this.currY);
@@ -152,17 +125,106 @@ export class Draw{
   }
 
   save() {
-    return this.canvas['toDataURL']();
+    return this.element.toDataURL();
   }
 
 }
 
+interface Callback{
+
+  setPoint:({x,y}:Type.Point)=>void,
+
+};
+
+export class ReactPoint extends Point{
+
+  callback:Callback={
+    setPoint:function({x,y}:Type.Point){}
+  };
+
+  setPointCallback(callback:React.Dispatch<React.SetStateAction<Type.Point>>){
+    this.callback.setPoint=callback;
+  }
+
+  setPoint():void{
+    this.callback.setPoint({
+      x:this.currX,
+      y:this.currY
+    });
+  }
 
 
+  run(res:string, e:MouseEvent):void {
 
+    if (res === "down") {
+      this.setPoint();
+    }
 
+  }
 
-export const canvasDrawer=(canvasRef:RefObject<HTMLCanvasElement>)=>{
+}
+
+export class ReactDraw extends Draw{
+
+  run(res:string, e:MouseEvent):void {
+
+    //mouse didrag
+    if (res === "move") {
+      if(this.flag && this.mode===Type.Mode.Draw){
+        this.draw();
+      }
+    }
+
+  }
+
+}
+
+const setupEventListener=(html_element:HTMLElement,class_point:Point)=>{
+
+  html_element.addEventListener("mousedown", function (e:MouseEvent) {
+    class_point.findxy('down', e);
+  }, false);
+
+  html_element.addEventListener("mousemove", function (e:MouseEvent) {
+    class_point.findxy('move', e);
+  }, false);
+
+  html_element.addEventListener("mouseup", function (e:MouseEvent) {
+    class_point.findxy('up', e);
+  }, false);
+  
+  html_element.addEventListener("mouseout", function (e:MouseEvent) {
+    class_point.findxy('out', e);
+  }, false);
+
+}
+
+export const setupPoint=(
+    canvasRef:RefObject<HTMLCanvasElement>,
+    setPoint: React.Dispatch<React.SetStateAction<Type.Point>>
+  )=>{
+
+  let element_canvas=canvasRef.current;
+  if(!element_canvas) { return; }
+
+  const react_canvas_point=new ReactPoint(element_canvas);
+
+  setupEventListener(element_canvas,react_canvas_point);
+
+  react_canvas_point.setPointCallback(setPoint);
+
+  return react_canvas_point;
+}
+
+export const setupCanvas=(
+    canvasRef:RefObject<HTMLCanvasElement>,
+    setPoint: React.Dispatch<React.SetStateAction<Type.Point>>
+  )=>{
+
+  return setupPoint(canvasRef,setPoint);
+}
+
+export const setupDraw=(canvasRef:RefObject<HTMLCanvasElement>)=>{
 
   if(!canvasRef) { return; }
   let element_canvas=canvasRef.current;
@@ -170,26 +232,11 @@ export const canvasDrawer=(canvasRef:RefObject<HTMLCanvasElement>)=>{
   let renderingContext=element_canvas.getContext('2d');
   if(!renderingContext) { return; }
 
-  const myDraw=new Draw(
-    element_canvas,
-    renderingContext!
-  );
+  const react_draw=new ReactDraw(element_canvas,renderingContext);
 
-  element_canvas.addEventListener("mousemove", function (e:any) {
-    myDraw.findxy('move', e);
-  }, false);
+  setupEventListener(element_canvas,react_draw);
 
-  element_canvas.addEventListener("mousedown", function (e:any) {
-    myDraw.findxy('down', e);
-  }, false);
+  react_draw.setMode(Type.Mode.Draw);
 
-  element_canvas.addEventListener("mouseup", function (e:any) {
-    myDraw.findxy('up', e);
-  }, false);
-  
-  element_canvas.addEventListener("mouseout", function (e:any) {
-    myDraw.findxy('out', e);
-  }, false);
-
-  return myDraw;
+  return react_draw;
 }

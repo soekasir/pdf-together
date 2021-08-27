@@ -11,3 +11,23 @@
 body{
   font-family: 'Nunito' !important; 
 }
+
+/* width */
+.costum-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.costum-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.costum-scroll::-webkit-scrollbar-thumb {
+  background: #ffffff00;
+}
+
+/* Handle on hover */
+.costum-scroll::-webkit-scrollbar-thumb:hover {
+  background: #999999; 
+}

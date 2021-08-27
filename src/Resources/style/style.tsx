@@ -80,7 +80,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       top:'0px',
       zIndex:3,
 
-
       backgroundColor:'#2C2B2B',
       color:'#fff',
     },
@@ -155,15 +154,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginLeft:"14px",
     },
 
-    // listFile:{
-    //   paddingLeft:theme.spacing(1),
-    //   marginTop:theme.spacing(2)
-    // },
-
     commentTab:{
       width:'100%',
       minWidth:"256px",
-      height:"505px",
       marginTop:"38px",
     },
 
@@ -205,7 +198,6 @@ export const useStyles = makeStyles((theme: Theme) =>
 
     segitigaKiri:{
       marginRight: '15px',
-
       height:'0px',
       width:'0px', 
 
@@ -217,10 +209,10 @@ export const useStyles = makeStyles((theme: Theme) =>
 
     content:{
       display:'flex',
+      justifyContent:'center',
       marginTop:"13px",
       minWidth:'100%',
       padding:"10px",
-      justifyContent:'center',
     },
 
     canvas:{
@@ -251,12 +243,12 @@ export const useStyles = makeStyles((theme: Theme) =>
 
 export const ApproveButton = withStyles({
   root: {
+    height:39,
     color: '#fff',
     backgroundColor: theme.palette.success.main,
     '&:hover': {
       backgroundColor: theme.palette.success.dark,
     },
-    height:39,
   },
 })(Button);
 
@@ -264,23 +256,23 @@ export const ApproveButton = withStyles({
 
 export const RejectButton = withStyles((theme: Theme) => ({
   root: {
+    height:39,
     color: '#fff',
     backgroundColor: '#242424',
     '&:hover': {
       backgroundColor: '#000000',
     },
-    height:39,
   },
 }))(Button);
 
 export const ButtonCurrentPage = withStyles((theme: Theme) => ({
   root: {
+    height:39,
     color: '#fff',
     backgroundColor: '#242424',
     '&:hover': {
       backgroundColor: '#000000',
     },
-    height:39,
   },
 }))(Button);
 

@@ -1,7 +1,7 @@
 import { AnnotationFactory } from "annotpdf";
 import { Annotation } from "annotpdf/lib/parser";
 import { Validation as Type } from "../Interfaces/Type";
-import { Draw } from "../Draw/Draw";
+import { ReactPoint } from "../Draw/Draw";
 import { Layers} from "../Layers/Layers";
 import * as Models from './MainModel';
 import { LayerContract } from "../Interfaces/LayerContract";
@@ -57,7 +57,7 @@ interface PropertyPdfTogether{
 
 
 
-  draw:Draw|undefined;
+  canvasPoint:ReactPoint|undefined;
 
 
 
@@ -82,7 +82,7 @@ interface MethodPdfTogether{
 
 
 
-  setMode: React.Dispatch<React.SetStateAction<Type.Mode | null>>
+  setMode: React.Dispatch<React.SetStateAction<Type.Mode>>
 
 
 
@@ -135,8 +135,8 @@ class Together{
    * convert pdf point to canvas point
    */
   pdfPointToCanvasPoint=(point:Type.PointPdf):Type.PointCanvas=>{
-    let top=()=>this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
-    let left=()=>this.prop.draw&&this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
+    let top=()=>this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
+    let left=()=>this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
 
     return {
       y:top(),
@@ -286,12 +286,12 @@ class Together{
 
 class PdfTogetherUi extends Together{
 
-  selectMode=(mode:Type.Mode)=>{
+  selectMode(mode:Type.Mode){
 
-    this.prop.mode===mode?this.meth.setMode(null):this.meth.setMode(mode);
-
-    if((mode===Type.Mode.Annotation || mode===Type.Mode.Draw) && this.prop.draw){
-      this.prop.draw.mode===mode?this.prop.draw.setMode(null):this.prop.draw.setMode(mode);
+    if(this.prop.mode!==mode){ 
+      this.meth.setMode(mode);
+    }else{
+      this.meth.setMode(Type.Mode.Null);
     }
 
   }
@@ -317,8 +317,8 @@ export class PdfTogether extends PdfTogetherUi{
   addAnnotationInPdfDoc=(form:{content:{annot:string},author:LayerContract.Author})=>{
 
     let pdfCoord=[
-      this.prop.draw&&this.prop.canvasRef.current?this.prop.point.x:0,
-      this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-this.prop.point.y:0
+      this.prop.canvasRef.current?this.prop.point.x:0,
+      this.prop.canvasRef.current?this.prop.canvasRef.current.height-this.prop.point.y:0
     ];
 
     if(this.prop.pdfFactory){
