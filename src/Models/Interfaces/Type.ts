@@ -54,10 +54,12 @@ export namespace Validation{
 
   export enum LayerDisplay{
     pin='pin',
-    form='form',
+    insert='insert',
+    edit='edit',
     show='show',
     add='add',
-    hidden='hidden'
+    hidden='hidden',
+    update='update'
   }
 
 

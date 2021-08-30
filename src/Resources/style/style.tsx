@@ -98,61 +98,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
 
     container:{
-      marginTop:'72px'
+      marginTop:'72px',
     },
 
     leftTab:{
-      maxWidth: "256px",
-
-      [theme.breakpoints.down(720)]: {
-        maxWidth: "100%",
-        margin:"auto"
+      width:"100%",
+      [theme.breakpoints.up(600)]: {
+        maxWidth: "256px",
+        marginRight:"31px",
       },
-
-    },
-
-    contentTab:{
-
-      maxWidth: "78%",
-      flexBasis: "100%",
-      marginLeft:"31px",
-
-      [theme.breakpoints.down(1440)]: {
-        maxWidth: "75%",
-        flexBasis: "100%",
-        marginLeft:"31px",
-      },
-      [theme.breakpoints.down(1200)]: {
-        maxWidth: "70%",
-        flexBasis: "100%",
-        marginLeft:"31px",
-      },
-      [theme.breakpoints.down(1100)]: {
-        maxWidth: "65%",
-        flexBasis: "100%",
-        marginLeft:"31px",
-      },
-      [theme.breakpoints.down(970)]: {
-        maxWidth: "60%",
-        flexBasis: "100%",
-        marginLeft:"31px",
-      },
-      [theme.breakpoints.down(720)]: {
-        maxWidth: "100%",
-        margin:"auto"
-      },
-    },
-
-    fileTab:{
-      width:'100%',
-      minWidth:"256px",
-      height:"237px",
-      marginTop:"36px",
-    },
-
-    commentContent:{
-      padding:theme.spacing(2),
-      display:'flex',
     },
 
     headerContent:{
@@ -195,18 +149,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderBottom:'solid 10px transparent',
     },
 
-
-    content:{
-      display:'flex',
-      justifyContent:'center',
-      marginTop:"13px",
-      minWidth:'100%',
-      padding:"10px",
-    },
-
     canvas:{
-      maxWidth:1075,
-      minWidth:'90%',
+      maxWidth:"100%",
     },
 
     titleTab:{

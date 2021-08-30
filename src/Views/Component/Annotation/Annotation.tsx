@@ -26,7 +26,7 @@ const OptionAnnotation=({handleOption}:{handleOption:(value:any)=>void})=>{
     setAnchorEl(event.currentTarget);
   };
 
-  const handleSelect=(value:any)=>{
+  const onClick=(value:any)=>{
     handleOption(value);
     handleClose();
   }
@@ -40,9 +40,13 @@ const OptionAnnotation=({handleOption}:{handleOption:(value:any)=>void})=>{
       <div style={{marginLeft:15}}>
         <span onClick={handleClick}><IconThreeDot color={'#242424'}/></span>
       </div>
-      <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <MenuItem onClick={()=>handleSelect(null)}>Edit</MenuItem>
-          <MenuItem onClick={()=>handleSelect(null)}>Delete</MenuItem>
+      <Menu
+        anchorOrigin={{vertical:'bottom',horizontal: 'left'}}
+        transformOrigin={{vertical:'top',horizontal: 'right'}}
+        anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}
+        style={{boxShadow:"none"}}>
+        <MenuItem onClick={()=>onClick("delete")}>Delete</MenuItem>
+        <MenuItem onClick={()=>onClick("edit")}>Edit</MenuItem>
       </Menu>
     </>
   );
@@ -60,6 +64,24 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
   const [option,setOption]=useState({
     display:prop.displayDefault,
   });
+
+  const handleOption=(selected_option:string)=>{
+
+    if(selected_option==="edit"){
+      setDisplay(Type.LayerDisplay.update);
+    }
+
+    if(selected_option==="delete"){
+      handleDelete();
+    }
+
+  }
+
+  const handleDelete=()=>{
+    if(prop.layer && prop.layer.id){
+      pdfTogether.deleteLayerContent(prop.layer.id);
+    }
+  }
 
 
   const setDisplay=(display_to:Type.LayerDisplay)=>{
@@ -101,10 +123,19 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 
 
-  const handleSubmit=(e:any)=>{
+  const handleAdd=(e:any)=>{
     e.preventDefault();
     pdfTogether.addAnnotation(form);
     setDisplay(Type.LayerDisplay.add);
+  }
+
+  const handleUpdate=(e:any)=>{
+    e.preventDefault();
+    if(prop.layer && prop.layer.id){
+      pdfTogether.updateLayerContent(prop.layer.id,form);
+      setDisplay(Type.LayerDisplay.show);
+    }
+
   }
 
 
@@ -151,7 +182,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             </Grid>
           </Grid>
           <Grid sm={1}>
-            <OptionAnnotation handleOption={(value)=>{}}/>
+            <OptionAnnotation handleOption={handleOption}/>
           </Grid>
         </Grid>
       </Paper>
@@ -161,10 +192,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return <></>
   }
 
-  const annotationForm=()=>{
+  const annotationForm=({handleSubmit}:{handleSubmit:(e:any)=>void})=>{
     return (
-      <>
-      {icon(Type.LayerDisplay.add)}
       <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
         <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
           <Grid sm={11}>
@@ -176,7 +205,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             </div>
             <div style={{marginTop:theme.spacing(2)}}>
               <FormCostum handleChange={handleAnnot} handleSubmit={handleSubmit} label="Write your comment"
-              style={{width:"90%"}}/>
+              style={{width:"90%"}} defaultValue={form.annot}/>
             </div>
 
             <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
@@ -195,10 +224,27 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             </Grid>
           </Grid>
           <Grid sm={1}>
-            <OptionAnnotation handleOption={(value)=>{}}/>
+            <OptionAnnotation handleOption={handleOption}/>
           </Grid>
         </Grid>
       </Paper>
+    )
+  }
+
+  const insertForm=()=>{
+    return (
+      <>
+      {icon(Type.LayerDisplay.add)}
+      {annotationForm({handleSubmit:handleAdd})}
+      </>
+    )
+  }
+
+  const updateForm=()=>{
+    return (
+      <>
+      {icon(Type.LayerDisplay.pin)}
+      {annotationForm({handleSubmit:handleUpdate})}
       </>
     )
   }
@@ -227,7 +273,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 
   const annotationAdd=()=>{
-    return icon(Type.LayerDisplay.form);
+    return icon(Type.LayerDisplay.insert);
   }
 
 
@@ -275,11 +321,12 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const getDisplay=()=>{
 
-    if(option.display===Type.LayerDisplay.form) return annotationForm();
+    if(option.display===Type.LayerDisplay.insert) return insertForm();
     if(option.display===Type.LayerDisplay.pin) return annotationPinned();
     if(option.display===Type.LayerDisplay.show) return annotationShow();
     if(option.display===Type.LayerDisplay.add) return annotationAdd();
     if(option.display===Type.LayerDisplay.hidden) return annotationHidden();
+    if(option.display===Type.LayerDisplay.update) return updateForm();
 
     return <></>;
 

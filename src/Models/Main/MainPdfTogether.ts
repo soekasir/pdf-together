@@ -247,6 +247,7 @@ class Together{
    */
   updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
 
+    //fetch to json first, if succes then edit layer
     let layer=this.prop.layer.get(id_layer);
     if(layer){
       layer.content=content;
@@ -256,6 +257,22 @@ class Together{
     }
 
   }
+
+    /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+    deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
+
+      //fetch to json first, if succes then edit layer
+      let layer=this.prop.layer.get(id_layer);
+      if(layer){
+        console.log(this.prop.layer.delete(id_layer));
+        this.meth.setLayerValue(this.prop.layer.toArray());
+      }
+  
+    }
 
 }
 

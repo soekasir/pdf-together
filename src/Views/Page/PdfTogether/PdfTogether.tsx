@@ -60,7 +60,7 @@ const PdfTogether=()=>{
   
     if(pdfRef) pdfRef.getPage(currentPage).then(function(page:any) {
 
-      let viewport = page.getViewport({scale: 1});
+      let viewport = page.getViewport({scale: 2});
       let canvas = canvasRef.current;
 
       if(canvas){
@@ -106,15 +106,20 @@ const PdfTogether=()=>{
       </nav>
 
       {/* Wrapper */}
-      <Container maxWidth='xl' className={style.container} style={{marginRight:"10px"}}>
+      <Container maxWidth='xl' className={style.container}>
 
-        <Grid container spacing={5}>
+        <Grid container spacing={4} style={{width:"100%"}}>
 
           {/** Tab */}
-          <Grid item className={style.leftTab}>
+          <Grid item className={style.leftTab} xs={12}>
 
               {/**Files Tab*/}
-              <Paper variant="elevation" className={style.fileTab}>
+              <Paper variant="elevation"
+              style={{width:'100%',
+              minWidth:"255px",
+              height:"237px",
+              marginTop:"36px",
+              boxShadow:"none",}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
                   <h3>Files on Card</h3>
                 </div>
@@ -139,10 +144,8 @@ const PdfTogether=()=>{
 
           </Grid> {/**End of Tab */}
 
-
-
           {/**Header dan Content */}
-          <Grid item className={style.contentTab}>
+          <Grid item xl={10} lg={9} md={8} sm={6} xs={12}>
 
             {/* Hader Content */}
             <div className={style.headerContent}>
@@ -162,13 +165,13 @@ const PdfTogether=()=>{
               <div></div>
             </div>
             {/**Content Canvas */}
-            <Paper variant="elevation" className={style.content}>
+            <Paper variant="elevation" style={{boxShadow:"none",display:'flex',justifyContent:'center',
+              marginTop:"13px",width:'100%',padding:"10px",}}>
               <canvas ref={canvasRef} className={style.canvas}></canvas>
               <Annotation/>
               <AnnotDraw/>
             </Paper>
           </Grid> {/**End Of Content */}
-
         </Grid>
       </Container> {/**End of Wrapper */}
       <Tool className={style.tool}/>

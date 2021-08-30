@@ -50,8 +50,8 @@ export const ReplyForm=({to}:{to:number})=>{
 }
 
 export const FormCostum=(
-    {handleSubmit,handleChange,label,style}:
-    {handleSubmit:any,handleChange:any,label?:string,style?:any}
+    {handleSubmit,handleChange,label,style,defaultValue}:
+    {handleSubmit:any,handleChange:any,label?:string,style?:any,defaultValue:string}
   )=>{
   
   const [form,setForm]=useState({value:''});
@@ -83,6 +83,6 @@ export const FormCostum=(
     onKeyDown={onKeyDown}
     onChange={onChange}
     style={style}
-    value={form.value}
+    value={form.value?form.value:defaultValue}
     />
 }

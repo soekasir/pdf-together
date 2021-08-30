@@ -174,7 +174,7 @@ export const LoadComment=()=>{
   return (
     <>
       <Paper variant="elevation" style={{width:'100%',minWidth:"256px",
-      marginTop:"40px",paddingTop:"20px"}}>
+      marginTop:"40px",paddingTop:"20px",boxShadow:"none"}}>
 
         {/**  Header Comment Tab, Filter, dan Search*/}
         <Grid direction="column" style={{marginLeft:"14px",marginRight:"10px"}}>
