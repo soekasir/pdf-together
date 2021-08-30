@@ -30,18 +30,18 @@ export const AnnotDrawMain=({point}:{point:Type.Point}) => {
 
   }
 
-  const handleTest=()=>{
+  const handleSave=()=>{
 
   }
 
-  const handleDownload=()=>{
-    if(draw){
-      const file=draw.getFile();
-      if(file){
-        download(file,file.name);
-      }
-    }
-  }
+  // const handleDownload=()=>{
+  //   if(draw){
+  //     const file=draw.getFile();
+  //     if(file){
+  //       download(file,file.name);
+  //     }
+  //   }
+  // }
 
   const download = function(file:any,filename:any){
     const link = document.createElement('a');
@@ -58,7 +58,17 @@ export const AnnotDrawMain=({point}:{point:Type.Point}) => {
   );
 };
 
-export const AnnotDraw=()=>{
+export const LoadAnnotDraw=()=>{
+
+  const pdftogether=useContext(PdfTogetherContext);
+
+  //Load Draw from server
+
+  return null;
+
+}
+
+export const AddAnnotDraw=()=>{
 
   const pdftogether=useContext(PdfTogetherContext);
 
@@ -70,4 +80,13 @@ export const AnnotDraw=()=>{
 
   return null;
 
+}
+
+export const AnnotDraw=()=>{
+
+  return (
+  <>
+    <AddAnnotDraw/>
+  </>
+  )
 }

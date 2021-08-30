@@ -1,7 +1,7 @@
 import { AnnotationFactory } from "annotpdf";
 import { Annotation } from "annotpdf/lib/parser";
 import { Validation as Type } from "../Interfaces/Type";
-import { ReactPoint } from "../Draw/Draw";
+import { ReactDraw, ReactPoint } from "../Draw/Draw";
 import { Layers} from "../Layers/Layers";
 import * as Models from './MainModel';
 import { LayerContract } from "../Interfaces/LayerContract";
@@ -225,8 +225,8 @@ class Together{
   /**
    * to add img in current layers.
    */
-  addImg=(form:LayerContract.Chat)=>{
-    let content=new Models.Chat(form);
+  addImg=(form:any)=>{
+    let content=new Models.Img(form);
     this.#addToLayer({content:content});
   }
 
@@ -234,9 +234,10 @@ class Together{
    * to add a draw in current layers.
    * @param content use new Models.Draw()
    */
-  addDraw=(form:LayerContract.Chat)=>{
-    let content=new Models.Chat(form);
-    this.#addToLayer({content:content});
+  addDraw=(reactDraw:ReactDraw)=>{
+
+    // let content=new Models.Draw(form);
+    // this.#addToLayer({content:content});
   }
 
   /**

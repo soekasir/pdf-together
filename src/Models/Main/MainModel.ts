@@ -66,13 +66,18 @@ export class Annotation extends Content implements LayerContract.Annotation{
 
   setIdAnnot(layer:Layers){
     if(!this.id_annot){
-      this.id_annot=(layer.filterType(Validation.Mode.Annotation).reduce((layer1,layer2)=>{
-        if(layer1.value.content.id_annot>layer2.value.content.id_annot){
-          return layer1;
-        }else{
-          return layer2;
-        }
-      }).value.content.id_annot)+1;
+      
+      let filtered=layer.filterType(Validation.Mode.Annotation);
+
+      if(filtered.length>0){
+          this.id_annot=(filtered.reduce((layer1,layer2)=>{
+          if(layer1.value.content.id_annot>layer2.value.content.id_annot){
+            return layer1;
+          }else{
+            return layer2;
+          }
+        }).value.content.id_annot)+1;
+      }
     }
   }
 
