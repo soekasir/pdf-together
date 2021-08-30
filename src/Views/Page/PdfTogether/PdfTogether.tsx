@@ -158,9 +158,9 @@ const PdfTogether=()=>{
                 </RejectButton>
               </div>
               <div className={style.controlPage}>
-                <div className={style.segitigaKiri}></div>
+                <div className={style.segitigaKiri} onClick={prevPage}></div>
                 <div><ButtonCurrentPage>1/4</ButtonCurrentPage></div>
-                <div className={style.segitigaKanan}></div>
+                <div className={style.segitigaKanan} onClick={nextPage}></div>
               </div>
               <div></div>
             </div>
