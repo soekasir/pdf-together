@@ -104,6 +104,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
   const handleSubmit=(e:any)=>{
     e.preventDefault();
     pdfTogether.addAnnotation(form);
+    setDisplay(Type.LayerDisplay.add);
   }
 
 

@@ -54,7 +54,7 @@ export const FormCostum=(
     {handleSubmit:any,handleChange:any,label?:string,style?:any}
   )=>{
   
-    const [form,setForm]=useState({value:''});
+  const [form,setForm]=useState({value:''});
 
 
   //Ketika user klik enter

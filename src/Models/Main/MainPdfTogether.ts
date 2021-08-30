@@ -257,9 +257,6 @@ class Together{
 
   }
 
-
-
-
 }
 
 
