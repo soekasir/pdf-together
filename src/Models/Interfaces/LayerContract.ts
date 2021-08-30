@@ -1,12 +1,6 @@
 import {Validation as Type} from './Type';
 
 
-
-
-
-
-
-
 export namespace LayerContract{
 
   export type LayerId=number;
@@ -26,18 +20,19 @@ export namespace LayerContract{
   }
 
   export interface Content{
-
+  
   }
 
   export interface Annotation extends Content{
     annot:string,
-    isSolved:boolean
+    isSolved:boolean,
+    id_annot?:number,
   }
 
   export interface Img extends Content{
     file?:File,
     url:string,
-    size:number
+    rectPoint:Type.RectPoint;
   }
 
   export interface Chat extends Content{
@@ -46,7 +41,8 @@ export namespace LayerContract{
   };
 
   export interface Draw extends Content{
-    canvasRef:HTMLElement
+    url:string;
+    rectPoint:Type.RectPoint;
   }
 
   export interface LayerValue{

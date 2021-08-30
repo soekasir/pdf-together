@@ -3,13 +3,13 @@ import { Layer } from "../Layer/Layer";
 import { PdfTogetherContext } from "../../../Controller/Context/Context";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type} from "../../../Models/Interfaces/Type";
-import * as Models from "../../../Models/Main/MainModel";
 import { FormCostum, ReplyForm } from "../Comment/Reply";
 import { AddSharp } from "@material-ui/icons";
-import {Button, Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
-import { ReplyTextField, useStylesAnnotation } from "../../../Resources/style/annotation";
+import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
+import {useStylesAnnotation } from "../../../Resources/style/annotation";
 import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified} from "../../../Resources/svg/icon";
 import { theme } from "../../../Resources/style/style";
+import { understandableDate } from "../../../Models/Costum/Fn";
 
 
 interface PropAnnotation{
@@ -53,7 +53,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const styleAnnot=useStylesAnnotation();
   const pdfTogether=useContext(PdfTogetherContext);
-  const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false};
+  const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false,};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);
 
 
@@ -103,25 +103,103 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const handleSubmit=(e:any)=>{
     e.preventDefault();
-    let annot=new Models.Annotation(form);
-    pdfTogether.addAnnotation(annot);
+    pdfTogether.addAnnotation(form);
   }
 
 
 
 
   /** COMPONENT BEGIN */
+  const annotationShow=()=>{
+    if(prop.layer) return (
+      <>
+      {icon(Type.LayerDisplay.pin)}
+      <Paper variant="elevation"
+      style={{marginTop:"12px",width:"285px",padding:"16px",
+      borderRadius:'16px',boxShadow:"0px 2px 20px rgba(0, 0, 0, 0.25)",}}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Grid sm={11}>
+            <div>
+              <Typography variant="body2" color="textSecondary">{prop.layer.author.name}</Typography>
+              <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
+                {understandableDate(new Date(prop.layer.date))}
+              </Typography>
+            </div>
+            <div style={{marginTop:"12px",borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
+              <Typography variant="body1" color="textPrimary" style={{wordBreak:"break-word"}}>{prop.layer.content.annot}</Typography>
+            </div>
+
+            {showReply()}
+
+            <div style={{marginTop:'5px'}}>
+              <ReplyForm to={prop.layer.id?prop.layer.id:0}/>
+            </div>
+            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
+              <span className={styleAnnot.navIcon}>
+                <IconVerified style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconSendEmail style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconUrl style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconPeople style={{color:'#6A6A6A'}}/>
+              </span>
+            </Grid>
+          </Grid>
+          <Grid sm={1}>
+            <OptionAnnotation handleOption={(value)=>{}}/>
+          </Grid>
+        </Grid>
+      </Paper>
+      </>
+    )
+
+    return <></>
+  }
+
   const annotationForm=()=>{
     return (
       <>
-        {icon(Type.LayerDisplay.add)}
-        <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
-          <Typography variant="body2" color="textSecondary">Add Annotation</Typography>
-          <FormCostum handleChange={handleAnnot} handleSubmit={handleSubmit} label="Annotation"
-          style={{width:"90%"}}/>
-        </Paper>
+      {icon(Type.LayerDisplay.add)}
+      <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Grid sm={11}>
+            <div style={{borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
+              <Typography variant="body2" color="textSecondary">{pdfTogether.prop.author.name}</Typography>
+              <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
+                {understandableDate(new Date())}
+              </Typography>
+            </div>
+            <div style={{marginTop:theme.spacing(2)}}>
+              <FormCostum handleChange={handleAnnot} handleSubmit={handleSubmit} label="Write your comment"
+              style={{width:"90%"}}/>
+            </div>
+
+            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
+              <span className={styleAnnot.navIcon}>
+                <IconVerified style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconSendEmail style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconUrl style={{color:'#6A6A6A'}}/>
+              </span>
+              <span className={styleAnnot.navIcon}>
+                <IconPeople style={{color:'#6A6A6A'}}/>
+              </span>
+            </Grid>
+          </Grid>
+          <Grid sm={1}>
+            <OptionAnnotation handleOption={(value)=>{}}/>
+          </Grid>
+        </Grid>
+      </Paper>
       </>
-    );
+    )
   }
 
 
@@ -156,13 +234,13 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
   const reply=(layer:LayerContract.LayerValue)=>{
     return (
       <>
-        <div>
+        <div style={{marginTop:"13px"}}>
           <Typography variant="body2" color="textSecondary">{layer.author.name}</Typography>
           <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
-            {new Date(layer.date).toLocaleString('id')}
+            {understandableDate(new Date(layer.date))}
           </Typography>
         </div>
-        <div style={{marginTop:theme.spacing(2),paddingBottom:'10px',}}>
+        <div style={{marginTop:"11px",marginBottom:"10px"}}>
           <Typography variant="body1" color="textPrimary" style={{wordBreak:"break-word"}}>{layer.content.message}</Typography>
         </div>
       </>
@@ -171,7 +249,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const showReply=()=>{
     return(
-      <>
+      <div>
         {
           pdfTogether.prop.layer.filter((layer)=>{
             if(layer.type===Type.Mode.Chat && layer.content.to===prop.layer?.id) return true;
@@ -180,56 +258,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             return reply(layer.value);
           })
         }
-      </>
+      </div>
     )
-  }
-
-  const annotationShow=()=>{
-    if(prop.layer) return (
-      <>
-      {icon(Type.LayerDisplay.pin)}
-      <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
-        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Grid sm={11}>
-            <div>
-              <Typography variant="body2" color="textSecondary">{prop.layer.author.name}</Typography>
-              <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
-                {new Date(prop.layer.date).toLocaleString('id')}
-              </Typography>
-            </div>
-            <div style={{marginTop:theme.spacing(2),borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
-              <Typography variant="body1" color="textPrimary" style={{wordBreak:"break-word"}}>{prop.layer.content.annot}</Typography>
-            </div>
-
-            {showReply()}
-
-            <div style={{marginTop:'5px'}}>
-              <ReplyForm to={prop.layer.id?prop.layer.id:0}/>
-            </div>
-            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
-              <span className={styleAnnot.navIcon}>
-                <IconVerified style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconSendEmail style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconUrl style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconPeople style={{color:'#6A6A6A'}}/>
-              </span>
-            </Grid>
-          </Grid>
-          <Grid sm={1}>
-            <OptionAnnotation handleOption={(value)=>{}}/>
-          </Grid>
-        </Grid>
-      </Paper>
-      </>
-    )
-
-    return <></>
   }
 
   const annotationHidden=()=>{

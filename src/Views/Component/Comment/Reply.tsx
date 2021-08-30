@@ -28,8 +28,7 @@ export const ReplyForm=({to}:{to:number})=>{
     if(to){
       e.preventDefault();
       let newForm={...form,to:to};
-      let chat=new Models.Chat(newForm);
-      addChat(chat);
+      addChat(newForm);
     }
   }
 

@@ -112,20 +112,24 @@ abstract class Draw extends CanvasPoint{
     this.ctx.fillText(text, x,y);
   }
 
-  addImg({src}:any){
+  addImg(src:any,point?:Type.Point){
     let img=new Image();
     img.src=URL.createObjectURL(src);
     img.onload=()=>{
-      this.ctx.drawImage(img,this.currX,this.currY);
+      this.ctx.drawImage(img,point?point.x:this.currX,point?point.y:this.currY);
+    };
+  }
+
+  addImgFromCanvas(src:any,size:any){
+    let img=new Image();
+    img.src=URL.createObjectURL(src);
+    img.onload=()=>{
+      this.ctx.drawImage(img,0,0,size.width,size.height);
     };
   }
 
   erase() {
     this.ctx.clearRect(0, 0, this.w, this.h);
-  }
-
-  save() {
-    return this.element.toDataURL();
   }
 
 }
@@ -165,6 +169,7 @@ export class ReactPoint extends Point{
 }
 
 export class ReactDraw extends Draw{
+  #blob?:Blob;
 
   run(res:string, e:MouseEvent):void {
 
@@ -175,6 +180,37 @@ export class ReactDraw extends Draw{
       }
     }
 
+    if (res == "up" || res == "out") {
+      this.#setBlob();
+    }
+
+  }
+
+  #setBlob=()=>{
+    this.element.toBlob((blob)=>{
+      if(blob) this.#blob=blob;
+    });
+  }
+
+  #toFile=(blob:Blob)=>{
+    return this.#blobToFile(blob);
+  }
+
+  #blobToFile = (theBlob: Blob): File => {
+    var b: any = theBlob;
+    b.lastModifiedDate = new Date();
+    b.name = "images-"+b.lastModifiedDate.getTime()+".png";
+    return <File>theBlob;
+  }
+
+  getFile(){
+    let file;
+
+    if(this.#blob){
+      file=this.#toFile(this.#blob);
+    }
+
+    return file;
   }
 
 }

@@ -1,5 +1,6 @@
 import { LayerContract } from "../Interfaces/LayerContract";
 import { Validation } from "../Interfaces/Type";
+import { Layers } from "../Layers/Layers";
 
 
 export class LayerValue implements LayerContract.LayerValue{
@@ -40,52 +41,43 @@ export class Author implements LayerContract.Author{
 
 
 
-
-
-
-
-
-
-
-export class Content implements LayerContract.Content{
+export abstract class Content implements LayerContract.Content{
 
 
   constructor(){
-    
+
   }
+
+  abstract getType():Validation.Mode;
 
 }
 
 
-
-
-
-
-
 export class Annotation extends Content implements LayerContract.Annotation{
   annot;
-  isSolved;
+  isSolved=false;
+  id_annot?:number;
 
-  constructor({annot,isSolved}:{annot:string,isSolved:boolean}){
+  constructor({annot,isSolved=false}:{annot:string,isSolved:boolean}){
     super();
     this.annot=annot;
     this.isSolved=isSolved;
   }
 
-}
+  setIdAnnot(layer:Layers){
+    if(!this.id_annot){
+      this.id_annot=(layer.filterType(Validation.Mode.Annotation).reduce((layer1,layer2)=>{
+        if(layer1.value.content.id_annot>layer2.value.content.id_annot){
+          return layer1;
+        }else{
+          return layer2;
+        }
+      }).value.content.id_annot)+1;
+    }
+  }
 
-
-
-
-
-
-
-
-
-export class Draw  extends Content implements LayerContract.Draw{
-
-  constructor(public canvasRef:HTMLElement){
-    super();
+  getType(){
+    return Validation.Mode.Annotation;
   }
 
 }
@@ -93,16 +85,29 @@ export class Draw  extends Content implements LayerContract.Draw{
 
 
 
+export class Draw  extends Content implements LayerContract.Draw{
+  url;
+  rectPoint;
 
+  constructor(url:string,rectPoint:Validation.RectPoint){
+    super();
+    this.url=url;
+    this.rectPoint=rectPoint;
+  }
 
+  getType(){
+    return Validation.Mode.Draw;
+  }
+
+}
 
 
 export class Img  extends Content implements LayerContract.Img{
   file?:File;
   url:string;
-  size:number;
+  rectPoint:Validation.RectPoint;
 
-  constructor({file_or_url,size}:{file_or_url:File,size:number}){
+  constructor({file_or_url,rectPoint}:{file_or_url:File,rectPoint:Validation.RectPoint}){
     super();
 
     if(file_or_url instanceof File){
@@ -114,14 +119,15 @@ export class Img  extends Content implements LayerContract.Img{
       this.url=file_or_url;
     }
 
-    this.size=size;
+    this.rectPoint=rectPoint;
 
   }
 
+  getType(){
+    return Validation.Mode.Img;
+  }
+
 }
-
-
-
 
 
 
@@ -135,6 +141,10 @@ export class Chat extends Content implements LayerContract.Chat{
     super();
     this.message=message;
     this.to=to;
+  }
+
+  getType(){
+    return Validation.Mode.Chat;
   }
 
 }

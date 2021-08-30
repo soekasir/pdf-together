@@ -150,20 +150,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginTop:"36px",
     },
 
-    fileContent:{
-      marginLeft:"14px",
-    },
-
-    commentTab:{
-      width:'100%',
-      minWidth:"256px",
-      marginTop:"38px",
-    },
-
     commentContent:{
       padding:theme.spacing(2),
       display:'flex',
-
     },
 
     headerContent:{
@@ -224,13 +213,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight:'bold',
       lineHeight:'22px',
       fontSize:'16px'
-    },
-
-    listText:{
-      fontWeight:600,
-      lineHeight:'19px',
-      fontSize:'14px',
-      color:theme.palette.text.primary
     },
 
     inputSearch:{

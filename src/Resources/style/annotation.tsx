@@ -9,7 +9,7 @@ export const useStylesAnnotation = makeStyles((theme: Theme) =>
 
     paperAnnotation:{
       width:"285px",
-      padding:theme.spacing(2),
+      padding:"16px",
       borderRadius:'16px',
       boxShadow:"0px 2px 20px rgba(0, 0, 0, 0.25)",
     },

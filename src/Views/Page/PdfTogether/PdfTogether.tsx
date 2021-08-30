@@ -9,7 +9,7 @@ import { usePdfTogether } from "../../../Controller/Hooks/PdfTogether/usePdfToge
  */
 import './../../../Resources/style/style.css';
 import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../../../Resources/style/style';
-import { Container, Paper, CssBaseline, List, ListItem, Grid,} from "@material-ui/core";
+import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
 
 
@@ -89,8 +89,6 @@ const PdfTogether=()=>{
 
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  // const draw=canvasDrawer(canvasRef);
-
   const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
 
 
@@ -117,25 +115,23 @@ const PdfTogether=()=>{
 
               {/**Files Tab*/}
               <Paper variant="elevation" className={style.fileTab}>
-                <div className={style.fileContent} style={{paddingTop:"19px"}}>
+                <div style={{paddingTop:"24px",marginLeft:"14px"}}>
                   <h3>Files on Card</h3>
                 </div>
-                <div style={{marginTop:"10px"}}>
-                  <List>
-                    <ListItem>
-                      <PdfIcon style={{color:'#E15D5D'}}/>
-                      <span className={style.listText}>Nama file 1.pdf</span>
-                    </ListItem>
-                    <ListItem>
-                      <PdfIcon style={{color:'#E15D5D'}}/>
-                      <span className={style.listText}>Nama file 2.pdf</span>
-                    </ListItem>
-                    <ListItem>
-                      <PdfIcon style={{color:'#E15D5D'}}/>
-                      <span className={style.listText}>Nama filenya panjang sekali sehingga hampir saja tidak muat.pdf</span>
-                    </ListItem>
-                  </List>
-                </div>
+                <List style={{marginLeft:"2px",paddingTop:"4px"}}>
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama file 1.pdf</Typography>
+                  </ListItem>
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama file 1.pdf</Typography>
+                  </ListItem>
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama filenya panjang sekali sehingga tidak muat.pdf</Typography>
+                  </ListItem>
+                </List>
               </Paper>
 
               {/** Comment Tab */}

@@ -169,25 +169,33 @@ class Together{
 
 
   /** to add layer in current layer */
-  #addToLayer=(form:{
-      content:Models.Content,
-      type:Type.Mode
-    })=>{
+  #addToLayer=(form:{content:Models.Content})=>{
 
     let value=new Models.LayerValue({
-      type:form.type,
+      type:form.content.getType(),
       author:this.prop.author,
       point:this.canvasPointToPdfPoint(this.prop.point),
       onPage:this.prop.currentPage,
       content:form.content
     });
 
-    //add to layer
-    this.prop.layer.add(value);
+    //Do Fetch.Post to server first
+    //if server return succes, then we add it to client layer
 
-    this.meth.setLayerValue(this.prop.layer.toArray());
+    /**
+     * //Example Post to Server
+     * if(Fetch.PostWithAuth("url_post",data:{value:value})){
+     */
 
-    console.log(JSON.stringify(this.prop.layer.toArray()));
+      this.prop.layer.add(value);
+
+      this.meth.setLayerValue(this.prop.layer.toArray());
+
+      // console.log(JSON.stringify(this.prop.layer.toArray()));
+
+    /**
+     * }
+     */
 
   }
 
@@ -197,62 +205,39 @@ class Together{
 
   /**
    * to add annotation in current layers.
-   * @param content use new Models.Annotation();
    */
-  addAnnotation=(content:Models.Annotation)=>{
-    let type=Type.Mode.Annotation;
-
-    this.#addToLayer({content:content,type:type});
+  addAnnotation=(form:LayerContract.Annotation)=>{
+    let content=new Models.Annotation(form);
+    content.setIdAnnot(this.prop.layer);
+    this.#addToLayer({content:content});
   }
-
-
-
-
-
 
   /**
    * to add chat in current layers.
-   * @param content use new Models.Chat()
    */
-  addChat=(content:Models.Chat)=>{
-    let type=Type.Mode.Chat;
-    this.#addToLayer({content:content,type:type});
+  addChat=(form:LayerContract.Chat)=>{
+    let content=new Models.Chat(form);
+    this.#addToLayer({content:content});
   }
-
-
-
-
 
 
 
   /**
    * to add img in current layers.
-   * @param content use new Models.Img()
    */
-  addImg=(content:Models.Img)=>{
-    let type=Type.Mode.Img;
-    this.#addToLayer({content:content,type:type});
+  addImg=(form:LayerContract.Chat)=>{
+    let content=new Models.Chat(form);
+    this.#addToLayer({content:content});
   }
-
-
-
-
-
-
 
   /**
    * to add a draw in current layers.
    * @param content use new Models.Draw()
    */
-  addDraw=(content:Models.Draw)=>{
-    let type=Type.Mode.Draw;
-    this.#addToLayer({content:content,type:type});
+  addDraw=(form:LayerContract.Chat)=>{
+    let content=new Models.Chat(form);
+    this.#addToLayer({content:content});
   }
-
-
-
-
-
 
   /**
    * to update content of a layers

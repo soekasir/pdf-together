@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import React, {useContext, useState} from "react";
 import { PdfTogetherContext } from "../../../Controller/Context/Context";
+import { toReadableDate, understandableDate } from "../../../Models/Costum/Fn";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
 import { SearchTextField, theme, useStyles } from "../../../Resources/style/style";
@@ -102,48 +103,56 @@ export const LoadComment=()=>{
 
     if(!filteredChat().length) return <></>;
 
-    return <Grid container direction="column" style={{borderLeft:"solid 1px #DEDEDE",margin:"10px 0px 0px 10px",padding:"9px"}}>
+    return (
+    <Grid container direction="column"
+      style={{borderLeft:"solid 1px #DEDEDE",margin:"10px 0px 0px 10px",padding:"9px"}}>
+
       {filteredChat().map((layer)=>{
     
-        return <Grid item>
-              <Typography variant="body2" color="textSecondary">
-              {layer.value.author.name}
+        return (
+          <Grid item>
+            <Typography variant="body2" color="textSecondary">
+            {layer.value.author.name}
+            </Typography>
+            <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
+              {understandableDate(new Date(layer.value.date))}
+            </Typography>
+            <div style={{marginTop:"10px"}}>
+              <Typography variant="body1" style={{display:"block",color:theme.palette.text.primary,
+                wordBreak:"break-word"}}>
+                {layer.value.content.message}
               </Typography>
-              <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
-                {new Date(layer.value.date).toLocaleString('id')}
-              </Typography>
-              <div style={{marginTop:"10px"}}>
-                <Typography variant="body1" style={{display:"block",color:theme.palette.text.primary,
-                  wordBreak:"break-word"}}>
-                  {layer.value.content.message}
-                </Typography>
-              </div>
+            </div>
           </Grid>
+        );
 
       })}
+
     </Grid>
+    );
 
   }
 
 
-  const content=(layerValue:LayerContract.LayerAnnotation)=>{
+  const comment=(layerValue:LayerContract.LayerAnnotation)=>{
 
     const isGenap=(n:number)=>n%2===0;
 
     return (
       <>
-          <Grid container style={{padding:"20px 15px 17px 18px",backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8"}}>
+          <Grid container style={{padding:"20px 15px 17px 18px",
+            backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8"}}>
             <Grid container  item direction="row">
               <Grid item style={{color:"#fff",backgroundColor:theme.palette.info.main,
                   width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
                 <Typography align="center" variant="subtitle2">{layerValue.id}</Typography>
               </Grid>
-              <Grid item style={{marginLeft:"10px"}}>
+              <Grid item style={{marginLeft:"8px"}}>
                 <Typography variant="body2" color="textSecondary">
                   {layerValue.author.name}
                 </Typography>
                 <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
-                  {new Date(layerValue.date).toLocaleString('id')}
+                  {understandableDate(new Date(layerValue.date))}
                 </Typography>
               </Grid>
             </Grid>
@@ -164,26 +173,30 @@ export const LoadComment=()=>{
 
   return (
     <>
-      <Paper variant="elevation" className={style.commentTab} style={{paddingTop:"20px"}}>
+      <Paper variant="elevation" style={{width:'100%',minWidth:"256px",
+      marginTop:"40px",paddingTop:"20px"}}>
 
         {/**  Header Comment Tab, Filter, dan Search*/}
-        <Grid direction="column" className={style.fileContent}  style={{marginRight:"10px"}}>
+        <Grid direction="column" style={{marginLeft:"14px",marginRight:"10px"}}>
           <Grid container direction="row" justifyContent="space-between" alignItems="flex-start"
-          style={{marginBottom:"12px",height:"16px"}}>
+          style={{height:"16px"}}>
             <div><h3>Comments</h3></div>
             <FilterComment handleFilter={handleFilter}/>
           </Grid>
         </Grid>
-        <Grid style={{marginRight:"19px",marginBottom:"14px"}} className={style.fileContent}>
+        <Grid style={{marginRight:"19px",marginTop:"16px",marginLeft:"14px"}}>
           <SearchTextField size="small" type="search" label="search" variant="outlined" className={style.inputSearch}/><br/> 
         </Grid>
-        <div style={{overflow:"auto",height:"400px"}} className="costum-scroll">
-          {/*Load Comment */}
+
+
+
+        {/*Load Comment */}
+        <div style={{overflow:"auto",height:"400px",marginTop:"16px"}} className="costum-scroll">
           {
             filter[option.filter]().map((layer:LayerContract.ArrayLayer)=>{
 
               return (
-                content(layer.value)
+                comment(layer.value)
               );
 
             })
