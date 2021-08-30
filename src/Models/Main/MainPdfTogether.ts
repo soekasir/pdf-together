@@ -157,7 +157,7 @@ class Together{
   canvasPointToPdfPoint=(point:Type.PointCanvas):Type.PointPdf=>{
     return {
       x:point.x,
-      y:this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y:0
+      y:this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y:0,
     };
   }
 

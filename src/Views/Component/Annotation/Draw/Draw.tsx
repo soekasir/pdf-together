@@ -2,16 +2,15 @@ import { Resizable } from "re-resizable";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PdfTogetherContext } from "../../../../Controller/Context/Context";
 import { ReactDraw, setupDraw } from "../../../../Models/Draw/Draw";
+import { Validation as Type } from "../../../../Models/Interfaces/Type";
 
-export const AnnotDraw=({}) => {
+export const AnnotDrawMain=({point}:{point:Type.Point}) => {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [draw,setDraw]=useState<ReactDraw>();
   const [size,setSize]=useState({
     width:200,
     height:200
   });
-
-  const {prop}=useContext(PdfTogetherContext);
 
   useEffect(()=>{
     if(!draw){
@@ -53,8 +52,22 @@ export const AnnotDraw=({}) => {
 
   return (
     <>
-    <Resizable defaultSize={size} onResizeStop={onResize} style={{border:"5px solid #22DD66",top:prop.point.y,left:prop.point.x,zIndex: 2,position: 'absolute'}}>
+    <Resizable defaultSize={size} onResizeStop={onResize} style={{border:"5px solid #22DD66",top:point.y,left:point.x,zIndex: 2,position: 'absolute'}}>
       <canvas ref={canvas} width={size.width} height={size.height}/></Resizable>
     </>
   );
 };
+
+export const AnnotDraw=()=>{
+
+  const pdftogether=useContext(PdfTogetherContext);
+
+  if(pdftogether.prop.mode===Type.Mode.Draw) return (
+    <>
+      <AnnotDrawMain point={pdftogether.getCanvasPoint()}/> 
+    </>
+  );
+
+  return null;
+
+}
