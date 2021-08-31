@@ -104,7 +104,6 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
   useEffect(()=>{
     if(canvas){
-      console.log(canvas);
       setDraw(setupDraw(canvas));
     }
   },[canvas]);
@@ -224,7 +223,7 @@ export const LoadAnnotDraw=()=>{
     <>
     {
       prop.layer.filterType(Type.Mode.Draw).filter((layer)=>{
-        return layer.value.onPage===prop.currentPage;
+        return layer.value.onPage===prop.currentPage.pageNum;
       }).map((layer:LayerContract.ArrayLayer)=>{
           return <AnnotDrawMain key={layer.id}
           layer={layer.value}
@@ -243,7 +242,7 @@ export const AddAnnotDraw=()=>{
 
   if(pdftogether.prop.mode===Type.Mode.Draw) return (
     <>
-      <AnnotDrawMain point={pdftogether.getCanvasPoint()}/> 
+      <AnnotDrawMain point={pdftogether.toCanvasPoint()}/> 
     </>
   );
 

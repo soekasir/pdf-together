@@ -347,12 +347,12 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 export const AddAnnotation=()=>{
 
-  const {getCanvasPoint}=useContext(PdfTogetherContext);
+  const {toCanvasPoint}=useContext(PdfTogetherContext);
 
   return (
     <>
         <AnnotationMain
-        point={getCanvasPoint()}
+        point={toCanvasPoint()}
         displayDefault={Type.LayerDisplay.add}
         />
     </>
@@ -371,7 +371,7 @@ export const LoadAnnotation=()=>{
     <>
     {
       prop.layer.filterType(Type.Mode.Annotation).filter((layer)=>{
-        return layer.value.onPage===prop.currentPage;
+        return layer.value.onPage===prop.currentPage.pageNum;
       }).map((layer:LayerContract.ArrayLayer)=>{
           return <AnnotationMain key={layer.id}
           point={pdfPointToCanvasPoint(layer.value.point)}
