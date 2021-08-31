@@ -12,24 +12,12 @@
 */
 import * as pdfjs from 'pdfjs-dist/webpack';
 
-
-
-
-import {PDFWorker} from 'pdfjs-dist';
-
-
-
+// import {pdfjsWorker} from "pdfjs-dist";
+import {PDFWorker} from "pdfjs-dist";
 
 pdfjs.GlobalWorkerOptions.workerSrc = PDFWorker;
 
-
-
-
 export const pdfjsLib=pdfjs;
-
-
-
-
 
 /**
  * Pdf Factor from annotpdf

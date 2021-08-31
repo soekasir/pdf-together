@@ -12,7 +12,6 @@ export const Header=({nextPage,prevPage,setPanel,panel}:any)=>{
 
   return (
     <>
-      <div id="navbar-top">
         <div className="filename">
           <i>{pdf?.name}</i>
         </div>
@@ -33,7 +32,6 @@ export const Header=({nextPage,prevPage,setPanel,panel}:any)=>{
             <a className="btn"><i className="bi bi-x-circle"></i></a>
           </span>
         </div>
-      </div>
     </>
   );
 }

@@ -29,10 +29,10 @@ export namespace Validation{
     y2:number
   }
 
-
-
-
-  export type RectPointPdf=RectPoint;
+  export type size={
+    width:number,
+    height:number,
+  }
 
 
 
@@ -43,7 +43,7 @@ export namespace Validation{
   * Enums
   *_____________________________________________________*/
   export enum Mode{
-    Null='null',
+    Null='Null',
     Img='Img',
     Chat='Chat',
     Annotation='Annotation',
@@ -54,10 +54,12 @@ export namespace Validation{
 
   export enum LayerDisplay{
     pin='pin',
-    form='form',
+    insert='insert',
+    edit='edit',
     show='show',
     add='add',
-    hidden='hidden'
+    hidden='hidden',
+    update='update'
   }
 
 
