@@ -124,3 +124,10 @@ export const understandableDate=(date:Date,maxDate=16)=>{
   return toReadableDate(date);
 
 }
+
+const downloadFile = function(file:any,filename:any){
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = file?URL.createObjectURL(file):"";
+  link.click();
+}

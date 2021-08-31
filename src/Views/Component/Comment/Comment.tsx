@@ -27,9 +27,9 @@ const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=
   return (
     <>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between"}}>
-        <span onClick={handleClick}>filter</span>
+        <Typography variant="subtitle2" onClick={handleClick}>filter</Typography>
         <span onClick={handleClick} style={{textAlign:"right",marginLeft:"8px"}}>
-          <FilterIcon width={14} height={14} viewBox="0 0 14px 14px" style={{color:'#434343'}}/>
+          <FilterIcon width={16} height={16} viewBox="0 0 16px 16px" style={{color:'#434343'}}/>
         </span>
       </div>
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
@@ -180,7 +180,7 @@ export const LoadComment=()=>{
         <Grid direction="column" style={{marginLeft:"14px",marginRight:"10px"}}>
           <Grid container direction="row" justifyContent="space-between" alignItems="flex-start"
           style={{height:"16px"}}>
-            <div><h3>Comments</h3></div>
+            <div><Typography variant="h3">Comments</Typography></div>
             <FilterComment handleFilter={handleFilter}/>
           </Grid>
         </Grid>

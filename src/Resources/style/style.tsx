@@ -105,8 +105,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       width:"100%",
       [theme.breakpoints.up(600)]: {
         maxWidth: "256px",
-        marginRight:"31px",
+        marginRight:"20px",
       },
+    },
+
+    contentTab:{
+
     },
 
     headerContent:{
@@ -189,6 +193,10 @@ export const RejectButton = withStyles((theme: Theme) => ({
       backgroundColor: '#000000',
     },
   },
+}))(Button);
+
+export const CostumButton =(root:any)=> withStyles((theme: Theme) => ({
+  root: root,
 }))(Button);
 
 export const ButtonCurrentPage = withStyles((theme: Theme) => ({

@@ -88,6 +88,10 @@ abstract class Draw extends CanvasPoint{
     this.color=color;
   }
 
+  getColor(){
+    return this.color;
+  }
+
   setPointerSize(size:number){
     this.pointer_size=size;
   }

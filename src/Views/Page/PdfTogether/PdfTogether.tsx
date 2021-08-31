@@ -108,7 +108,8 @@ const PdfTogether=()=>{
       {/* Wrapper */}
       <Container maxWidth='xl' className={style.container}>
 
-        <Grid container spacing={4} style={{width:"100%"}}>
+        <Grid container style={{minWidth:"100%"}}
+        justifyContent="space-evenly">
 
           {/** Tab */}
           <Grid item className={style.leftTab} xs={12}>
@@ -121,7 +122,7 @@ const PdfTogether=()=>{
               marginTop:"36px",
               boxShadow:"none",}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
-                  <h3>Files on Card</h3>
+                  <Typography variant="h3">Comments</Typography>
                 </div>
                 <List style={{marginLeft:"2px",paddingTop:"4px"}}>
                   <ListItem style={{padding:"12px"}}>
@@ -145,7 +146,7 @@ const PdfTogether=()=>{
           </Grid> {/**End of Tab */}
 
           {/**Header dan Content */}
-          <Grid item xl={10} lg={9} md={8} sm={6} xs={12}>
+          <Grid item xl={9} lg={9} md={8} sm={6} xs={12}>
 
             {/* Hader Content */}
             <div className={style.headerContent}>
