@@ -140,11 +140,9 @@ export const LoadComment=()=>{
 
     return (
       <>
-          <Grid container style={{padding:"20px 15px 17px 18px",
-            backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8"}}>
+          <Grid container style={{padding:"20px 15px 17px 18px", backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8"}}>
             <Grid container  item direction="row">
-              <Grid item style={{color:"#fff",backgroundColor:theme.palette.info.main,
-                  width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
+              <Grid item style={{color:"#fff",backgroundColor:theme.palette.info.main,width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
                 <Typography align="center" variant="subtitle2">{layerValue.id}</Typography>
               </Grid>
               <Grid item style={{marginLeft:"8px"}}>
@@ -178,8 +176,7 @@ export const LoadComment=()=>{
 
         {/**  Header Comment Tab, Filter, dan Search*/}
         <Grid direction="column" style={{marginLeft:"14px",marginRight:"10px"}}>
-          <Grid container direction="row" justifyContent="space-between" alignItems="flex-start"
-          style={{height:"16px"}}>
+          <Grid container direction="row" justifyContent="space-between" alignItems="flex-start" style={{height:"16px"}}>
             <div><Typography variant="h3">Comments</Typography></div>
             <FilterComment handleFilter={handleFilter}/>
           </Grid>
@@ -187,8 +184,6 @@ export const LoadComment=()=>{
         <Grid style={{marginRight:"19px",marginTop:"16px",marginLeft:"14px"}}>
           <SearchTextField size="small" type="search" label="search" variant="outlined" className={style.inputSearch}/><br/> 
         </Grid>
-
-
 
         {/*Load Comment */}
         <div style={{overflow:"auto",height:"400px",marginTop:"16px"}} className="costum-scroll">
@@ -206,5 +201,5 @@ export const LoadComment=()=>{
     </>
   );
 
-
+  
 }

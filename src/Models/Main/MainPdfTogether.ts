@@ -187,21 +187,43 @@ class Together{
      * if(Fetch.PostWithAuth("url_post",data:{value:value})){
      */
 
-      this.prop.layer.add(value);
+    this.prop.layer.add(value);
 
-      this.meth.setLayerValue(this.prop.layer.toArray());
+    this.meth.setLayerValue(this.prop.layer.toArray());
 
-      console.log(JSON.stringify(this.prop.layer.toArray()));
-
-    /**
-     * }
-     */
+    console.log(JSON.stringify(this.prop.layer.toArray()));
 
   }
 
+  /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+  updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
 
+    //fetch to json first, if succes then edit layer
+    let layer=this.prop.layer.get(id_layer);
+    if(layer){
+      layer.content=content;
 
+      this.prop.layer.update(id_layer,layer);
+      this.meth.setLayerValue(this.prop.layer.toArray());
+    }
 
+  }
+  
+  /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+  deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
+
+    //fetch to json first, if succes then delete layer
+    this.prop.layer.delete(id_layer);
+    this.meth.setLayerValue(this.prop.layer.toArray());
+  }
 
   /**
    * to add annotation in current layers.
@@ -230,6 +252,7 @@ class Together{
     this.#addToLayer({content:content});
   }
 
+
   /**
    * to add a draw in current layers.
    * @param content use new Models.Draw()
@@ -241,40 +264,6 @@ class Together{
       this.#addToLayer({content:content});
     }
   }
-
-  /**
-   * to update content of a layers
-   * @param id id layer
-   * @param content
-   */
-  updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
-
-    //fetch to json first, if succes then edit layer
-    let layer=this.prop.layer.get(id_layer);
-    if(layer){
-      layer.content=content;
-
-      this.prop.layer.update(id_layer,layer);
-      this.meth.setLayerValue(this.prop.layer.toArray());
-    }
-
-  }
-
-    /**
-   * to update content of a layers
-   * @param id id layer
-   * @param content
-   */
-    deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
-
-      //fetch to json first, if succes then edit layer
-      let layer=this.prop.layer.get(id_layer);
-      if(layer){
-        console.log(this.prop.layer.delete(id_layer));
-        this.meth.setLayerValue(this.prop.layer.toArray());
-      }
-  
-    }
 
 }
 
