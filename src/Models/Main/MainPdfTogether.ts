@@ -1,7 +1,7 @@
 import { AnnotationFactory } from "annotpdf";
 import { Annotation } from "annotpdf/lib/parser";
 import { Validation as Type } from "../Interfaces/Type";
-import { Draw } from "../Draw/Draw";
+import { ReactDraw, ReactPoint } from "../Draw/Draw";
 import { Layers} from "../Layers/Layers";
 import * as Models from './MainModel';
 import { LayerContract } from "../Interfaces/LayerContract";
@@ -57,7 +57,7 @@ interface PropertyPdfTogether{
 
 
 
-  draw:Draw|undefined;
+  canvasPoint:ReactPoint|undefined;
 
 
 
@@ -82,22 +82,7 @@ interface MethodPdfTogether{
 
 
 
-  setMode: React.Dispatch<React.SetStateAction<Type.Mode | null>>
-
-
-
-
-  // setPanel: React.Dispatch<React.SetStateAction<{
-  //       isActive: boolean;
-  //       activeMode: string;
-  //       commentTab: {
-  //           isLoadAll: boolean;
-  //       };
-  //       fileTab: {};
-  //       trashTab: {};
-  //       shareTab: {};
-  //       uploadTab: {};
-  // }>>,
+  setMode: React.Dispatch<React.SetStateAction<Type.Mode>>
 
 
 
@@ -112,14 +97,14 @@ interface MethodPdfTogether{
 
 
 
-
-
 class Together{
 
 
 
 
-  constructor(public prop:PropertyPdfTogether,public meth:MethodPdfTogether){}
+  constructor(public prop:PropertyPdfTogether,public meth:MethodPdfTogether){
+
+  }
 
 
 
@@ -147,11 +132,11 @@ class Together{
 
 
   /**
-   * convert pdf rectangle to canvas point
+   * convert pdf point to canvas point
    */
   pdfPointToCanvasPoint=(point:Type.PointPdf):Type.PointCanvas=>{
-    let top=()=>this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
-    let left=()=>this.prop.draw&&this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
+    let top=()=>this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
+    let left=()=>this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
 
     return {
       y:top(),
@@ -172,7 +157,7 @@ class Together{
   canvasPointToPdfPoint=(point:Type.PointCanvas):Type.PointPdf=>{
     return {
       x:point.x,
-      y:this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y:0
+      y:this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y:0,
     };
   }
 
@@ -184,25 +169,33 @@ class Together{
 
 
   /** to add layer in current layer */
-  #addToLayer=(form:{
-      content:Models.Content,
-      type:Type.Mode
-    })=>{
+  #addToLayer=(form:{content:Models.Content})=>{
 
     let value=new Models.LayerValue({
-      type:form.type,
+      type:form.content.getType(),
       author:this.prop.author,
       point:this.canvasPointToPdfPoint(this.prop.point),
       onPage:this.prop.currentPage,
       content:form.content
     });
 
-    //add to layer
-    this.prop.layer.add(value);
+    //Do Fetch.Post to server first
+    //if server return succes, then we add it to client layer
 
-    this.meth.setLayerValue(this.prop.layer.toArray());
+    /**
+     * //Example Post to Server
+     * if(Fetch.PostWithAuth("url_post",data:{value:value})){
+     */
 
-    console.log(JSON.stringify(this.prop.layer.toArray()));
+      this.prop.layer.add(value);
+
+      this.meth.setLayerValue(this.prop.layer.toArray());
+
+      console.log(JSON.stringify(this.prop.layer.toArray()));
+
+    /**
+     * }
+     */
 
   }
 
@@ -212,84 +205,78 @@ class Together{
 
   /**
    * to add annotation in current layers.
-   * @param content use new Models.Annotation();
    */
-  addAnnotation=(content:Models.Annotation)=>{
-    let type=Type.Mode.Annotation;
-
-    this.#addToLayer({content:content,type:type});
+  addAnnotation=(form:LayerContract.Annotation)=>{
+    let content=new Models.Annotation(form);
+    content.setIdAnnot(this.prop.layer);
+    this.#addToLayer({content:content});
   }
-
-
-
-
-
 
   /**
    * to add chat in current layers.
-   * @param content use new Models.Chat()
    */
-  addChat=(content:Models.Chat)=>{
-    let type=Type.Mode.Chat;
-    this.#addToLayer({content:content,type:type});
+  addChat=(form:LayerContract.Chat)=>{
+    let content=new Models.Chat(form);
+    this.#addToLayer({content:content});
   }
-
-
-
-
 
 
 
   /**
    * to add img in current layers.
-   * @param content use new Models.Img()
    */
-  addImg=(content:Models.Img)=>{
-    let type=Type.Mode.Img;
-    this.#addToLayer({content:content,type:type});
+  addImg=(form:any)=>{
+    let content=new Models.Img(form);
+    this.#addToLayer({content:content});
   }
-
-
-
-
-
-
 
   /**
    * to add a draw in current layers.
    * @param content use new Models.Draw()
    */
-  addDraw=(content:Models.Draw)=>{
-    let type=Type.Mode.Draw;
-    this.#addToLayer({content:content,type:type});
+  addDraw=(reactDraw:ReactDraw,size:Type.size)=>{
+    let file=reactDraw.getFile();
+    if(file){
+      let content=new Models.Draw(file,size);
+      this.#addToLayer({content:content});
+    }
   }
-
-
-
-
-
 
   /**
    * to update content of a layers
    * @param id id layer
-   * @param content layer content, not layer value | child of LayerContract.Content
+   * @param content
    */
   updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
 
+    //fetch to json first, if succes then edit layer
     let layer=this.prop.layer.get(id_layer);
     if(layer){
       layer.content=content;
 
-      console.log(this.prop.layer.update(id_layer,layer));
+      this.prop.layer.update(id_layer,layer);
       this.meth.setLayerValue(this.prop.layer.toArray());
     }
 
   }
 
+    /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+    deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
 
+      //fetch to json first, if succes then edit layer
+      let layer=this.prop.layer.get(id_layer);
+      if(layer){
+        console.log(this.prop.layer.delete(id_layer));
+        this.meth.setLayerValue(this.prop.layer.toArray());
+      }
+  
+    }
 
 }
-
 
 
 
@@ -301,21 +288,18 @@ class Together{
 
 class PdfTogetherUi extends Together{
 
-  selectMode=(mode:Type.Mode)=>{
+  selectMode(mode:Type.Mode){
 
-    this.prop.mode===mode?this.meth.setMode(null):this.meth.setMode(mode);
-
-    if((mode===Type.Mode.Annotation || mode===Type.Mode.Draw) && this.prop.draw){
-      this.prop.draw.mode===mode?this.prop.draw.setMode(null):this.prop.draw.setMode(mode);
+    if(this.prop.mode!==mode){ 
+      this.meth.setMode(mode);
+    }else{
+      this.meth.setMode(Type.Mode.Null);
     }
 
   }
 
 
 }
-
-
-
 
 
 
@@ -335,8 +319,8 @@ export class PdfTogether extends PdfTogetherUi{
   addAnnotationInPdfDoc=(form:{content:{annot:string},author:LayerContract.Author})=>{
 
     let pdfCoord=[
-      this.prop.draw&&this.prop.canvasRef.current?this.prop.point.x:0,
-      this.prop.draw&&this.prop.canvasRef.current?this.prop.canvasRef.current.height-this.prop.point.y:0
+      this.prop.canvasRef.current?this.prop.point.x:0,
+      this.prop.canvasRef.current?this.prop.canvasRef.current.height-this.prop.point.y:0
     ];
 
     if(this.prop.pdfFactory){

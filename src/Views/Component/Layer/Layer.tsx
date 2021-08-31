@@ -1,6 +1,5 @@
-import { ReactChildren, ReactElement } from "react";
+import { ReactChildren, ReactElement, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { navbarTop } from "../../../Resources/style/style";
 
 interface layerProp{
   point:Type.PointCanvas,
@@ -11,9 +10,7 @@ export const Layer:React.FC<layerProp>=({children,point})=>{
   return (
     <div style={{
     zIndex: 2,position: 'absolute',
-    top:point.y,left:point.x,
-    backgroundColor:'whitesmoke'
-    }}>
+    top:point.y,left:point.x}}>
       {children}
     </div>
   );

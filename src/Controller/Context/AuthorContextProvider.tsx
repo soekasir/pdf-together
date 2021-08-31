@@ -15,7 +15,7 @@ interface PropAuthorContextProvider{
 export const AuthorContextProvider=({children}:PropAuthorContextProvider)=>{
 
   let author=new Author({
-    name:'saya',
+    name:'Saya',
     id_user:'1',
   });
 
