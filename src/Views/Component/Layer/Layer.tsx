@@ -10,9 +10,7 @@ export const Layer:React.FC<layerProp>=({children,point})=>{
   return (
     <div style={{
     zIndex: 2,position: 'absolute',
-    top:point.y,left:point.x,
-    
-    }}>
+    top:point.y,left:point.x}}>
       {children}
     </div>
   );

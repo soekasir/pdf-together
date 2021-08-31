@@ -32,7 +32,7 @@ export namespace LayerContract{
   export interface Img extends Content{
     file?:File,
     url:string,
-    rectPoint:Type.RectPoint;
+    size:Type.size;
   }
 
   export interface Chat extends Content{
@@ -41,8 +41,9 @@ export namespace LayerContract{
   };
 
   export interface Draw extends Content{
-    url:string;
-    rectPoint:Type.RectPoint;
+    file?:File,
+    url:string,
+    size:Type.size;
   }
 
   export interface LayerValue{

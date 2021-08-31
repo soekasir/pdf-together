@@ -91,13 +91,22 @@ export class Annotation extends Content implements LayerContract.Annotation{
 
 
 export class Draw  extends Content implements LayerContract.Draw{
-  url;
-  rectPoint;
+  file?:File;
+  url:string;
+  size;
 
-  constructor(url:string,rectPoint:Validation.RectPoint){
+  constructor(file_or_url:string|File,size:Validation.size){
     super();
-    this.url=url;
-    this.rectPoint=rectPoint;
+    if(file_or_url instanceof File){
+
+      this.url=URL.createObjectURL(file_or_url);
+      this.file=file_or_url;
+
+    }else{
+      this.url=file_or_url;
+    }
+    
+    this.size=size;
   }
 
   getType(){
@@ -110,21 +119,21 @@ export class Draw  extends Content implements LayerContract.Draw{
 export class Img  extends Content implements LayerContract.Img{
   file?:File;
   url:string;
-  rectPoint:Validation.RectPoint;
+  size;
 
-  constructor({file_or_url,rectPoint}:{file_or_url:File,rectPoint:Validation.RectPoint}){
+  constructor({file_or_url,size}:{file_or_url:File,size:Validation.size}){
     super();
 
     if(file_or_url instanceof File){
 
-      this.url=URL.createObjectURL(File);
+      this.url=URL.createObjectURL(file_or_url);
       this.file=file_or_url;
 
     }else{
       this.url=file_or_url;
     }
 
-    this.rectPoint=rectPoint;
+    this.size=size;
 
   }
 

@@ -31,11 +31,11 @@ export class Reader{
     return URL.createObjectURL(this.toImages);
   }
 
-  static loadToReactDraw(blob:Blob,canvasRef:RefObject<HTMLCanvasElement>){
-    let reader=new Reader(blob);
-    let img=reader.toImages();
-    let draw=setupDraw(canvasRef);
-    draw?.addImg(img);
-  }
+  // static loadToReactDraw(blob:Blob,canvasRef:RefObject<HTMLCanvasElement>){
+  //   let reader=new Reader(blob);
+  //   let img=reader.toImages();
+  //   let draw=setupDraw(canvasRef);
+  //   draw?.addImg(img);
+  // }
 
 }

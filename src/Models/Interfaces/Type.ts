@@ -29,10 +29,10 @@ export namespace Validation{
     y2:number
   }
 
-
-
-
-  export type RectPointPdf=RectPoint;
+  export type size={
+    width:number,
+    height:number,
+  }
 
 
 

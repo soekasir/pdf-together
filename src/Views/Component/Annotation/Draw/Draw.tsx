@@ -1,5 +1,5 @@
 import { Resizable } from "re-resizable";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PdfTogetherContext } from "../../../../Controller/Context/Context";
 import { ReactDraw, setupDraw } from "../../../../Models/Draw/Draw";
 import { Validation as Type } from "../../../../Models/Interfaces/Type";
@@ -7,6 +7,10 @@ import PaletteIcon from '@material-ui/icons/Palette';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {  Button,  Grid,  Menu, MenuItem,  Slider,  Typography } from "@material-ui/core";
 import PublishIcon from '@material-ui/icons/Publish';
+import { LayerContract } from "../../../../Models/Interfaces/LayerContract";
+import { theme } from "../../../../Resources/style/style";
+import { AddSharp } from "@material-ui/icons";
+import { Layer } from "../../Layer/Layer";
 
 const SelectColor=({handle,color}:{handle:(value:any)=>void,color:string})=>{
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -27,7 +31,7 @@ const SelectColor=({handle,color}:{handle:(value:any)=>void,color:string})=>{
   return (
     <div>
       <span onClick={handleClick} color={color}><PaletteIcon></PaletteIcon></span>
-      <Menu 
+      <Menu
       anchorOrigin={{vertical:'bottom',horizontal: 'left'}}
       transformOrigin={{vertical:'bottom',horizontal: 'left'}}
       anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
@@ -76,19 +80,42 @@ const SliderPointerSize=({handle}:{handle:(value:any)=>void})=>{
   );
 }
 
-export const AnnotDrawMain=({point}:{point:Type.Point}) => {
+
+export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract.LayerDraw}) => {
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [draw,setDraw]=useState<ReactDraw>();
-  const [size,setSize]=useState({
+  const [draw,setDraw]=useState<ReactDraw|undefined>();
+  
+  const [option,setOption]=useState({
+    display:layer?Type.LayerDisplay.show:Type.LayerDisplay.insert,
+  });
+
+  const pdfTogether=useContext(PdfTogetherContext);
+
+  const [size,setSize]=useState(layer?layer.content.size:{
     width:200,
     height:200
   });
 
+  const setDisplay=(display_to:Type.LayerDisplay)=>{
+    let newOption={...option};
+    newOption.display=display_to;
+    setOption(newOption);
+  }
+
   useEffect(()=>{
-    if(!draw){
-      setDraw(setupDraw(canvas))
+    if(canvas){
+      console.log(canvas);
+      setDraw(setupDraw(canvas));
     }
   },[canvas]);
+
+  useEffect(()=>{
+
+    if(draw && layer){
+      draw.addImgFromCanvas(layer.content.url,layer.content.size);
+    }
+
+  },[draw]);
 
   const onResize=(e:any, direction:any, ref:any, d:any) => {
 
@@ -106,43 +133,107 @@ export const AnnotDrawMain=({point}:{point:Type.Point}) => {
     draw?.setColor(color);
   }
 
-  const handleSave=()=>{
-
+  const handleAdd=()=>{
+    if(draw){
+      pdfTogether.addDraw(draw,size);
+      let newSize={...size};
+      draw.erase({x:0,y:0},newSize);
+    }
   }
 
-  return (
-    <>
-    <Resizable defaultSize={size} onResizeStop={onResize}
-      style={{border:"3px solid #22DD66",top:point.y+5,left:point.x+5,zIndex: 2,position: 'absolute'}}>
+  const icon=(display_to:Type.LayerDisplay)=>{
+    return(
+      <>
+      <Grid container alignContent="center" justifyContent="center" item
+        onClick={()=>setDisplay(display_to)} style={{backgroundColor:theme.palette.success.main,
+        width:'25px',height:'25px',borderRadius:'50%',color:"#fff",paddingTop:"4px"}}>
+        <span>{layer&&layer.id?layer.id:<AddSharp/>}</span>
+      </Grid>
+      </>
+    );
+  };
 
-      <canvas ref={canvas} width={size.width-6} height={size.height-6}/>
+  const toolNewDraw=()=>{
+    return (
       <div style={{backgroundColor:'#242424',color:'#fff',marginTop:"10px",width:"150px",
-    borderRadius:"20px",padding:"7px",height:"40px"}}>
-        
+        borderRadius:"20px",padding:"7px",height:"40px"}}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item>
             <SelectColor handle={selectColor} color={draw?draw.getColor():"#434343"}/>
           </Grid>
           <Grid item>
-            <SliderPointerSize handle={(size)=>{ draw?.setPointerSize(size); console.log(size)} }/>
+            <SliderPointerSize handle={(size)=>{ draw?.setPointerSize(size);} }/>
           </Grid>
           <Grid item>
-            <span onClick={()=>{}}><PublishIcon/></span>
+            <span onClick={handleAdd}><PublishIcon/></span>
           </Grid>
         </Grid>
       </div>
-    </Resizable>
-    </>
+    );
+  }
+
+  const displayNew=(visibility:boolean=true)=>{
+    return (
+      <>
+      {icon(visibility?Type.LayerDisplay.add:Type.LayerDisplay.insert)}
+      <div style={visibility?{}:{display:"none"}}>
+        <Resizable defaultSize={size} onResizeStop={onResize}
+          style={{border:"3px solid #22DD66",zIndex:3}}>
+          <canvas ref={canvas} width={size.width} height={size.height}/>
+        </Resizable>
+        {toolNewDraw()}
+      </div>
+      </>
+    );
+  }
+
+  const displayShow=(visibility:boolean=true)=>{
+    return (
+      <>
+        {icon(visibility?Type.LayerDisplay.pin:Type.LayerDisplay.show)}
+        <div style={visibility?{}:{display:"none"}}>
+          <canvas ref={canvas} width={size.width} height={size.height}/>
+        </div>
+      </>
+    );
+  }
+
+  const getDisplay=()=>{
+
+    if(option.display===Type.LayerDisplay.insert) return displayNew(true);
+    if(option.display===Type.LayerDisplay.add) return displayNew(false);
+    
+    if(option.display===Type.LayerDisplay.pin) return displayShow(false);
+    if(option.display===Type.LayerDisplay.show) return displayShow(true);
+    return <></>;
+  }
+
+  return (
+      <Layer point={{y:point.y,
+        x:point.x}}>
+        {getDisplay()}
+      </Layer>
   );
 };
 
 export const LoadAnnotDraw=()=>{
 
-  const pdftogether=useContext(PdfTogetherContext);
+  const {prop,pdfPointToCanvasPoint}=useContext(PdfTogetherContext);
 
-  //Load Draw from server
-
-  return null;
+  return (
+    <>
+    {
+      prop.layer.filterType(Type.Mode.Draw).filter((layer)=>{
+        return layer.value.onPage===prop.currentPage;
+      }).map((layer:LayerContract.ArrayLayer)=>{
+          return <AnnotDrawMain key={layer.id}
+          layer={layer.value}
+          point={pdfPointToCanvasPoint(layer.value.point)}
+          />
+      })
+    }
+    </>
+  );
 
 }
 
@@ -164,6 +255,7 @@ export const AnnotDraw=()=>{
 
   return (
   <>
+    <LoadAnnotDraw/>
     <AddAnnotDraw/>
   </>
   )

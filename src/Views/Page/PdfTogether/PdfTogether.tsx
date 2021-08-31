@@ -31,14 +31,14 @@ const PdfTogether=()=>{
 
       const loadingTask = pdfjsLib.getDocument(context.url);
 
-      loadingTask.promise.then((loadedPdf:any) => {
+      loadingTask.promise.then((loadedPdf) => {
 
         setPdfRef(loadedPdf);
         setCurrentPage(1);
 
-        loadedPdf.getData().then( (data:Uint8Array) => {
-          let pdfFactory = new AnnotationFactory(data);
-          setPdfFactory(pdfFactory);
+        loadedPdf.getData().then((data) => {
+            let pdfFactory = new AnnotationFactory(data);
+            setPdfFactory(pdfFactory);
         });
 
       },function (reason:any) {
@@ -92,8 +92,7 @@ const PdfTogether=()=>{
   const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
 
 
-
-  if(!context.pdf || !context.url){   
+  if(!context.pdf || !context.url){
     return <>Tidak ada file yang dipilih</>
   }
 
@@ -160,7 +159,7 @@ const PdfTogether=()=>{
               </div>
               <div className={style.controlPage}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>
-                <div><ButtonCurrentPage>1/4</ButtonCurrentPage></div>
+                <div><ButtonCurrentPage>{currentPage+"/"+(pdfRef?pdfRef.numPages:null)}</ButtonCurrentPage></div>
                 <div className={style.segitigaKanan} onClick={nextPage}></div>
               </div>
               <div></div>

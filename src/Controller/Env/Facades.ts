@@ -17,12 +17,7 @@ import {PDFWorker} from "pdfjs-dist";
 
 pdfjs.GlobalWorkerOptions.workerSrc = PDFWorker;
 
-
-
-
 export const pdfjsLib=pdfjs;
-
-
 
 /**
  * Pdf Factor from annotpdf

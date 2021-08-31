@@ -69,9 +69,9 @@ export const theme = createTheme({
 });
 
 
-export const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+export const useStyles =makeStyles((theme: Theme)=>{
 
+  return createStyles({
     navbartop:{
       position:'fixed',
       minWidth:'100%',
@@ -168,8 +168,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       width:'100%',
     }
 
-  }),
-);
+  });
+
+},{index:1});
 
 export const ApproveButton = withStyles({
   root: {

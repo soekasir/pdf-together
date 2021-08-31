@@ -191,7 +191,7 @@ class Together{
 
       this.meth.setLayerValue(this.prop.layer.toArray());
 
-      // console.log(JSON.stringify(this.prop.layer.toArray()));
+      console.log(JSON.stringify(this.prop.layer.toArray()));
 
     /**
      * }
@@ -234,10 +234,12 @@ class Together{
    * to add a draw in current layers.
    * @param content use new Models.Draw()
    */
-  addDraw=(reactDraw:ReactDraw)=>{
-
-    // let content=new Models.Draw(form);
-    // this.#addToLayer({content:content});
+  addDraw=(reactDraw:ReactDraw,size:Type.size)=>{
+    let file=reactDraw.getFile();
+    if(file){
+      let content=new Models.Draw(file,size);
+      this.#addToLayer({content:content});
+    }
   }
 
   /**
@@ -252,7 +254,7 @@ class Together{
     if(layer){
       layer.content=content;
 
-      console.log(this.prop.layer.update(id_layer,layer));
+      this.prop.layer.update(id_layer,layer);
       this.meth.setLayerValue(this.prop.layer.toArray());
     }
 

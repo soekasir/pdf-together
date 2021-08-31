@@ -116,24 +116,20 @@ abstract class Draw extends CanvasPoint{
     this.ctx.fillText(text, x,y);
   }
 
-  addImg(src:any,point?:Type.Point){
+  addImg(src:any,size:Type.size,point?:Type.Point){
     let img=new Image();
     img.src=URL.createObjectURL(src);
     img.onload=()=>{
-      this.ctx.drawImage(img,point?point.x:this.currX,point?point.y:this.currY);
+      this.ctx.drawImage(img,point?point.x:this.currX,point?point.y:this.currY,size.width,size.height);
     };
   }
 
-  addImgFromCanvas(src:any,size:any){
-    let img=new Image();
-    img.src=URL.createObjectURL(src);
-    img.onload=()=>{
-      this.ctx.drawImage(img,0,0,size.width,size.height);
-    };
+  addImgFromCanvas(src:any,size:Type.size){
+    this.addImg(src,size,{x:0,y:0});
   }
 
-  erase() {
-    this.ctx.clearRect(0, 0, this.w, this.h);
+  erase(point:Type.Point,size:Type.size) {
+    this.ctx.clearRect(point.x, point.y, size.width, size.height);
   }
 
 }
@@ -215,6 +211,10 @@ export class ReactDraw extends Draw{
     }
 
     return file;
+  }
+
+  getSvg(){
+    
   }
 
 }
