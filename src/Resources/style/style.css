@@ -31,3 +31,15 @@ body{
 .costum-scroll::-webkit-scrollbar-thumb:hover {
   background: #999999; 
 }
+
+.cursor{
+  cursor:default;
+}
+
+.cursor.text{
+  cursor: text;
+}
+
+.cursor.crosshair{
+  cursor: crosshair;
+}

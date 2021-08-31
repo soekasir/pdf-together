@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect, useState,} from "react";
+import { useRef, useContext, useEffect, useState, CSSProperties,} from "react";
 import { AuthorContext, PdfContext, PdfTogetherContext } from "../../../Controller/Context/Context";
 import { Annotation,LoadComment,Tool,AnnotDraw } from '../../../Controller/Env/Component';
 import { pdfjsLib,AnnotationFactory } from "../../../Controller/Env/Facades";
@@ -11,6 +11,20 @@ import './../../../Resources/style/style.css';
 import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../../../Resources/style/style';
 import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
+import { Validation as Type } from "../../../Models/Interfaces/Type";
+
+const useCursor=(mode:Type.Mode|null)=>{
+  if(mode===Type.Mode.Annotation){
+    return "cursor text";
+  }
+
+  if(mode===Type.Mode.Draw){
+    return "cursor crosshair";
+  }
+
+  return "cursor";
+
+}
 
 
 
@@ -51,10 +65,6 @@ const PdfTogether=()=>{
 
   },[context]);
 
-
-
-
-
   //Merender current page
   useEffect(()=> {
   
@@ -84,12 +94,15 @@ const PdfTogether=()=>{
 
   }, [currentPage]);
 
+  const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
+
+  const getCursor=useCursor(value.prop.mode);
 
   const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
 
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
+  
 
 
   if(!context.pdf || !context.url){
@@ -167,7 +180,9 @@ const PdfTogether=()=>{
             {/**Content Canvas */}
             <Paper variant="elevation" style={{boxShadow:"none",display:'flex',justifyContent:'center',
               marginTop:"13px",width:'100%',padding:"10px",}}>
-              <canvas ref={canvasRef} className={style.canvas}></canvas>
+              <div className={getCursor}>
+                <canvas ref={canvasRef} className={style.canvas}></canvas>
+              </div>
               <Annotation/>
               <AnnotDraw/>
             </Paper>
