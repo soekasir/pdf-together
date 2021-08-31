@@ -195,7 +195,7 @@ export const RejectButton = withStyles((theme: Theme) => ({
   },
 }))(Button);
 
-export const CostumButton =(root:any)=> withStyles((theme: Theme) => ({
+export const createButton =(root:any)=> withStyles((theme: Theme) => ({
   root: root,
 }))(Button);
 

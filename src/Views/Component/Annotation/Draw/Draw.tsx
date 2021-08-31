@@ -6,17 +6,7 @@ import { Validation as Type } from "../../../../Models/Interfaces/Type";
 import PaletteIcon from '@material-ui/icons/Palette';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {  Button,  Grid,  Menu, MenuItem,  Slider,  Typography } from "@material-ui/core";
-import { ApproveButton, CostumButton, theme } from "../../../../Resources/style/style";
-
-const SaveButton=CostumButton({
-  height:20,
-  maxWidth:20,
-  color: '#fff',
-  backgroundColor: theme.palette.info.main,
-  '&:hover': {
-    backgroundColor:theme.palette.info.dark,
-  },
-});
+import PublishIcon from '@material-ui/icons/Publish';
 
 const SelectColor=({handle,color}:{handle:(value:any)=>void,color:string})=>{
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,6 +34,7 @@ const SelectColor=({handle,color}:{handle:(value:any)=>void,color:string})=>{
           <MenuItem onClick={()=>handleSelect("red")}><PaletteIcon style={{color:"red"}}/></MenuItem>
           <MenuItem onClick={()=>handleSelect("blue")}><PaletteIcon style={{color:"blue"}}/></MenuItem>
           <MenuItem onClick={()=>handleSelect("yellow")}><PaletteIcon style={{color:"yellow"}}/></MenuItem>
+          <MenuItem onClick={()=>handleSelect("black")}><PaletteIcon style={{color:"black"}}/></MenuItem>
       </Menu>
     </div>
   );
@@ -125,9 +116,10 @@ export const AnnotDrawMain=({point}:{point:Type.Point}) => {
       style={{border:"3px solid #22DD66",top:point.y+5,left:point.x+5,zIndex: 2,position: 'absolute'}}>
 
       <canvas ref={canvas} width={size.width-6} height={size.height-6}/>
-      <div>
+      <div style={{backgroundColor:'#242424',color:'#fff',marginTop:"10px",width:"150px",
+    borderRadius:"20px",padding:"7px",height:"40px"}}>
         
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center">
           <Grid item>
             <SelectColor handle={selectColor} color={draw?draw.getColor():"#434343"}/>
           </Grid>
@@ -135,7 +127,7 @@ export const AnnotDrawMain=({point}:{point:Type.Point}) => {
             <SliderPointerSize handle={(size)=>{ draw?.setPointerSize(size); console.log(size)} }/>
           </Grid>
           <Grid item>
-            <SaveButton>save</SaveButton>
+            <span onClick={()=>{}}><PublishIcon/></span>
           </Grid>
         </Grid>
       </div>
