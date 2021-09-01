@@ -117,9 +117,9 @@ export const Fetch={
 
 
 
-export const FetchLayer=(urlLayer?:string)=>{
+export const FetchLayer=(urlLayer:string)=>{
 
-  return Fetch.Get({url:urlLayer?urlLayer:''}).then((data: any)=>{
+  return Fetch.Get({url:urlLayer}).then((data: any)=>{
     let layer;
 
     try{

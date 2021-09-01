@@ -46,7 +46,7 @@ abstract class Point{
     }
 
     //mouse selesai diklik
-    if (res == "up" || res == "out") {
+    if (res === "up" || res === "out") {
       this.flag = false;
     }
 
@@ -180,7 +180,7 @@ export class ReactDraw extends Draw{
       }
     }
 
-    if (res == "up" || res == "out") {
+    if (res === "up" || res === "out") {
       this.#setBlob();
     }
 
@@ -200,7 +200,7 @@ export class ReactDraw extends Draw{
     var b: any = theBlob;
     b.lastModifiedDate = new Date();
     b.name = "images-"+b.lastModifiedDate.getTime()+".png";
-    return <File>theBlob;
+    return theBlob as File;
   }
 
   getFile(){

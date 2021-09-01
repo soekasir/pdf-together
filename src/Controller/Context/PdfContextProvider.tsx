@@ -7,11 +7,6 @@ import { Layers } from "../../Models/Layers/Layers";
 
 
 
-/**
- * @const pdf pdf file from local
- * @const urlLayer layer Api to get data from server
- * @const url url to file pdf
- */
 export const PdfContextProvider=({children}:{children:React.ReactChild})=>{
 
   const [pdf,setPdf]=useState<File>();
@@ -21,12 +16,13 @@ export const PdfContextProvider=({children}:{children:React.ReactChild})=>{
   const [layer,setLayer]=useState<Layers>(new Layers());
 
   useEffect(()=>{
+    if(urlLayer){
+      FetchLayer(urlLayer).then((layer)=>{
 
-    FetchLayer(urlLayer).then((layer)=>{
+        setLayer(layer);
 
-      setLayer(layer);
-
-    });
+      });
+    }
 
   },[url,pdf]);
 
