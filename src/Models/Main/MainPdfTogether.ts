@@ -5,6 +5,13 @@ import { ReactDraw, ReactPoint } from "../Draw/Draw";
 import { Layers} from "../Layers/Layers";
 import * as Models from './MainModel';
 import { LayerContract } from "../Interfaces/LayerContract";
+import { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist/types/display/api";
+
+
+export interface CurrentPage{
+  pageNum:number,
+  actualSize:Type.size
+}
 
 
 interface PropertyPdfTogether{
@@ -22,7 +29,7 @@ interface PropertyPdfTogether{
 
 
 
-  pdfRef:any;
+  pdfRef:PDFDocumentProxy;
 
 
 
@@ -37,7 +44,7 @@ interface PropertyPdfTogether{
 
 
 
-  currentPage:number;
+  currentPage:CurrentPage;
 
 
 
@@ -100,13 +107,15 @@ interface MethodPdfTogether{
 class Together{
 
 
-
-
   constructor(public prop:PropertyPdfTogether,public meth:MethodPdfTogether){
 
   }
 
-
+  defaultReturnPoint():Type.Point{
+    return {
+      x:0,y:0
+    }
+  }
 
 
 
@@ -114,16 +123,16 @@ class Together{
    * convert draw point to canvas point
    * @return canvas point | current point if parameter not defined
    */
-  getCanvasPoint=(point?:Type.Point):Type.PointCanvas=>{
+  toCanvasPoint=(point?:Type.Point):Type.PointCanvas=>{
     if(this.prop.canvasRef.current){
       return {
         x:this.prop.canvasRef.current.offsetLeft+(point?point.x:this.prop.point.x),
         y:this.prop.canvasRef.current.offsetTop+(point?point.y:this.prop.point.y)
       }
+    }else{
+      return this.defaultReturnPoint();
     }
-    return {
-      x:0,y:0
-    }
+    
   }
 
 
@@ -135,17 +144,55 @@ class Together{
    * convert pdf point to canvas point
    */
   pdfPointToCanvasPoint=(point:Type.PointPdf):Type.PointCanvas=>{
-    let top=()=>this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
-    let left=()=>this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
+    const scale=this.getScale();
+    const cCS=this.getCurrentCanvasSize();
 
-    return {
-      y:top(),
-      x:left(),
+    let result=this.defaultReturnPoint();
+
+    if(scale && cCS){
+      // let top=()=>this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y+this.prop.canvasRef.current.offsetTop:0;
+      // let left=()=>this.prop.canvasRef.current?point.x+this.prop.canvasRef.current.offsetLeft:0;
+      const newPoint={
+        y:cCS.height-(point.y/scale.height),
+        x:point.x/scale.width,
+      }
+      result=this.toCanvasPoint(newPoint);
     }
+
+    return result;
   }
 
 
 
+
+  getCurrentPageActuallSize=():Type.size=>{
+
+    return {height:this.prop.currentPage.actualSize.height,width:this.prop.currentPage.actualSize.width}
+
+  }
+
+  getCurrentCanvasSize=():Type.size|undefined=>{
+    if(this.prop.canvasRef.current){
+      return {height:this.prop.canvasRef.current.clientHeight,width:this.prop.canvasRef.current.clientWidth}
+    }
+    return;
+  }
+
+  getScale=()=>{
+    const cCS=this.getCurrentCanvasSize();
+    const cPAS=this.getCurrentPageActuallSize();
+    let size_scale:Type.size|undefined;
+
+    if(cCS && cPAS){
+      console.log([cCS,cPAS]);
+      size_scale={
+        height:cPAS.height/cCS.height,
+        width:cPAS.width/cCS.width,
+      }
+    }
+
+    return size_scale;
+  }
 
 
 
@@ -155,10 +202,21 @@ class Together{
    * convert canvas point  to pdf point
    */
   canvasPointToPdfPoint=(point:Type.PointCanvas):Type.PointPdf=>{
-    return {
-      x:point.x,
-      y:this.prop.canvasRef.current?this.prop.canvasRef.current.height-point.y:0,
-    };
+    const cCS=this.getCurrentCanvasSize();
+    const scale=this.getScale();
+
+    const result={
+      y:0,
+      x:0
+    }
+
+    if(scale && cCS){
+      result.x=point.x*scale.width;
+      result.y=(cCS.height-point.y)*scale.height;
+    }
+
+    return result;
+
   }
 
 
@@ -170,12 +228,13 @@ class Together{
 
   /** to add layer in current layer */
   #addToLayer=(form:{content:Models.Content})=>{
+    console.log(this.canvasPointToPdfPoint(this.prop.point));
 
     let value=new Models.LayerValue({
       type:form.content.getType(),
       author:this.prop.author,
       point:this.canvasPointToPdfPoint(this.prop.point),
-      onPage:this.prop.currentPage,
+      onPage:this.prop.currentPage.pageNum,
       content:form.content
     });
 
@@ -187,21 +246,43 @@ class Together{
      * if(Fetch.PostWithAuth("url_post",data:{value:value})){
      */
 
-      this.prop.layer.add(value);
+    this.prop.layer.add(value);
 
-      this.meth.setLayerValue(this.prop.layer.toArray());
+    this.meth.setLayerValue(this.prop.layer.toArray());
 
-      console.log(JSON.stringify(this.prop.layer.toArray()));
-
-    /**
-     * }
-     */
+    console.log(JSON.stringify(this.prop.layer.toArray()));
 
   }
 
+  /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+  updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
 
+    //fetch to json first, if succes then edit layer
+    let layer=this.prop.layer.get(id_layer);
+    if(layer){
+      layer.content=content;
 
+      this.prop.layer.update(id_layer,layer);
+      this.meth.setLayerValue(this.prop.layer.toArray());
+    }
 
+  }
+  
+  /**
+   * to update content of a layers
+   * @param id id layer
+   * @param content
+   */
+  deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
+
+    //fetch to json first, if succes then delete layer
+    this.prop.layer.delete(id_layer);
+    this.meth.setLayerValue(this.prop.layer.toArray());
+  }
 
   /**
    * to add annotation in current layers.
@@ -230,6 +311,7 @@ class Together{
     this.#addToLayer({content:content});
   }
 
+
   /**
    * to add a draw in current layers.
    * @param content use new Models.Draw()
@@ -241,40 +323,6 @@ class Together{
       this.#addToLayer({content:content});
     }
   }
-
-  /**
-   * to update content of a layers
-   * @param id id layer
-   * @param content
-   */
-  updateLayerContent=(id_layer:LayerContract.LayerId,content:LayerContract.Content)=>{
-
-    //fetch to json first, if succes then edit layer
-    let layer=this.prop.layer.get(id_layer);
-    if(layer){
-      layer.content=content;
-
-      this.prop.layer.update(id_layer,layer);
-      this.meth.setLayerValue(this.prop.layer.toArray());
-    }
-
-  }
-
-    /**
-   * to update content of a layers
-   * @param id id layer
-   * @param content
-   */
-    deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
-
-      //fetch to json first, if succes then edit layer
-      let layer=this.prop.layer.get(id_layer);
-      if(layer){
-        console.log(this.prop.layer.delete(id_layer));
-        this.meth.setLayerValue(this.prop.layer.toArray());
-      }
-  
-    }
 
 }
 
@@ -312,7 +360,7 @@ class PdfTogetherUi extends Together{
  * Final class! sure, dont extends this class
  */
 export class PdfTogether extends PdfTogetherUi{
-  
+
 
 
 
@@ -327,7 +375,7 @@ export class PdfTogether extends PdfTogetherUi{
 
       this.prop.pdfFactory.createTextAnnotation({
 
-        page: this.prop.currentPage-1,
+        page: this.prop.currentPage.pageNum-1,
 
         rect: [pdfCoord[0], pdfCoord[1], pdfCoord[0]+10, pdfCoord[1]+10],
 

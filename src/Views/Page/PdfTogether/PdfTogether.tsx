@@ -12,6 +12,8 @@ import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../
 import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
+import { PDFPageProxy } from "pdfjs-dist/types/display/api";
+import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
 
 const useCursor=(mode:Type.Mode|null)=>{
   if(mode===Type.Mode.Annotation){
@@ -35,9 +37,24 @@ const PdfTogether=()=>{
   const author=useContext(AuthorContext);
   const style=useStyles();
   const [pdfRef,setPdfRef] = useState<any>();
-  const [currentPage,setCurrentPage] = useState(0);
+  const [currentPage,setCurrentPage] = useState<CurrentPage>({pageNum:0,actualSize:{width:0,height:0}});
   const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>();
 
+  const setCurrentPageNum=(pageNum:number)=>{
+    let newCurrentPage={...currentPage};
+    newCurrentPage.pageNum=pageNum;
+    setCurrentPage(newCurrentPage);
+  }
+
+  const setCurrentPageActuallSize=(size:Type.size)=>{
+    let newCurrentPage={...currentPage};
+    newCurrentPage.actualSize=size;
+    setCurrentPage(newCurrentPage);
+  }
+
+  useEffect(()=>{
+    console.log(canvasRef);
+  },[]);
 
   //Mengambil file Pdf
   useEffect(()=>{
@@ -48,7 +65,7 @@ const PdfTogether=()=>{
       loadingTask.promise.then((loadedPdf) => {
 
         setPdfRef(loadedPdf);
-        setCurrentPage(1);
+        setCurrentPageNum(1);
 
         loadedPdf.getData().then((data) => {
             let pdfFactory = new AnnotationFactory(data);
@@ -65,42 +82,46 @@ const PdfTogether=()=>{
 
   },[context]);
 
+  const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
+
   //Merender current page
   useEffect(()=> {
   
-    if(pdfRef) pdfRef.getPage(currentPage).then(function(page:any) {
+    if(pdfRef) pdfRef.getPage(currentPage.pageNum).then(function(page:PDFPageProxy) {
 
       let viewport = page.getViewport({scale: 2});
       let canvas = canvasRef.current;
+      
+      let actualSize=page.getViewport({scale: 1});
+      setCurrentPageActuallSize({height:actualSize.height,width:actualSize.width});
 
       if(canvas){
-
+        let renderingContext=canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
-        let renderContext = {
+        if(renderingContext){
+          let renderContext = {
 
-          canvasContext: canvas.getContext('2d'),
+            canvasContext: renderingContext,
 
-          viewport: viewport
+            viewport: viewport
 
-        };
-        
-        page.render(renderContext);
-
+          };
+          
+          page.render(renderContext);
+        }
       }
 
     });
 
-  }, [currentPage]);
-
-  const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
+  }, [currentPage.pageNum]);
 
   const getCursor=useCursor(value.prop.mode);
 
-  const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
+  const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPageNum(currentPage.pageNum + 1);
 
-  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const prevPage = () => currentPage.pageNum > 1 && setCurrentPageNum(currentPage.pageNum - 1);
 
   
 
