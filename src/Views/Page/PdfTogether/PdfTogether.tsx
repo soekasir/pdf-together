@@ -119,11 +119,9 @@ const PdfTogether=()=>{
 
   const getCursor=useCursor(value.prop.mode);
 
-  const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPageNum(currentPage.pageNum + 1);
+  const nextPage = () => pdfRef && currentPage.pageNum < pdfRef.numPages && setCurrentPageNum(currentPage.pageNum + 1);
 
   const prevPage = () => currentPage.pageNum > 1 && setCurrentPageNum(currentPage.pageNum - 1);
-
-  
 
 
   if(!context.pdf || !context.url){
@@ -193,7 +191,7 @@ const PdfTogether=()=>{
               </div>
               <div className={style.controlPage}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>
-                <div><ButtonCurrentPage>{currentPage+"/"+(pdfRef?pdfRef.numPages:null)}</ButtonCurrentPage></div>
+                <div><ButtonCurrentPage>{""+currentPage.pageNum+"/"+(pdfRef?pdfRef.numPages:null)}</ButtonCurrentPage></div>
                 <div className={style.segitigaKanan} onClick={nextPage}></div>
               </div>
               <div></div>

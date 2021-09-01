@@ -5,7 +5,6 @@
 export * from '../../Views/Component/Annotation/Annotation';
 export * from '../../Views/Component/Annotation/Draw/Draw';
 export * from '../../Views/Component/Comment/Comment';
-export * from '../../Views/Component/Header/Header';
 export * from '../../Views/Component/SelectPdf/SelectPdf';
 export * from '../../Views/Component/SelectPdf/SelectPreview';
 export * from '../../Views/Component/Tool/Tool';

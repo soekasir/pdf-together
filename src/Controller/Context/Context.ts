@@ -13,7 +13,7 @@ interface PdfContextValue{
   url:string|undefined,
   setUrl:React.Dispatch<React.SetStateAction<string | undefined>>,
   layer:Layers,
-  setUrlLayer:React.Dispatch<React.SetStateAction<string | undefined>>
+  setUrlLayer:React.Dispatch<React.SetStateAction<string| undefined>>
 };
 
 

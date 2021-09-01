@@ -59,7 +59,8 @@ const difDate=(date:Date,date2:Date=new Date())=>{
 
   //Jika date1 lebih besar dr date 2 maka dibalik
   if(milsec>date2.getTime()){
-    let newDate={...date}; let newDate2={...date2};
+    let newDate={...date};
+    let newDate2={...date2};
     date=newDate2;
     date2=newDate;
   }
@@ -99,7 +100,7 @@ export const understandableDate=(date:Date,maxDate=16)=>{
 
   const dif=difDate(date);
 
-  if(dif.year==0 && dif.month==0 && dif.date<maxDate){
+  if(dif.year===0 && dif.month===0 && dif.date<maxDate){
 
     if(dif.date){
       return dif.date+" days ago";
@@ -123,9 +124,11 @@ export const understandableDate=(date:Date,maxDate=16)=>{
 
 }
 
-const downloadFile = function(file:any,filename:any){
+export const downloadFile = function(file:Blob|File|string,filename:string){
+  const url=((file instanceof File) || (file instanceof Blob))?URL.createObjectURL(file):file;
+
   const link = document.createElement('a');
   link.download = filename;
-  link.href = file?URL.createObjectURL(file):"";
+  link.href = url;
   link.click();
 }
