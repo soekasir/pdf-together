@@ -91,8 +91,6 @@ const difDate=(date:Date,date2:Date=new Date())=>{
     second:detik,
   }
 
-  console.log(beda);
-
   return beda;
 }
 

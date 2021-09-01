@@ -2,7 +2,7 @@ import { Annotation } from "annotpdf/lib/parser";
 import { useState, useEffect} from "react";
 import { setupCanvas, ReactPoint } from "../../../Models/Draw/Draw";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { PdfTogether } from "../../../Models/Main/MainPdfTogether";
+import { CurrentPage, PdfTogether } from "../../../Models/Main/MainPdfTogether";
 import { AnnotationFactory } from "annotpdf";
 import { Layers } from "../../../Models/Layers/Layers";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
@@ -15,7 +15,7 @@ export const usePdfTogether=(
   pdfFactory: AnnotationFactory | undefined,
   layer:Layers,
   author:Author,
-  currentPage:number
+  currentPage:CurrentPage
   )=>{
 
   const [canvasPoint,setCanvasPoint]=useState<ReactPoint>();

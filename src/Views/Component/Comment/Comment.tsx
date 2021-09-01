@@ -73,7 +73,7 @@ export const LoadComment=()=>{
     }),
 
     currentpage:()=>filter.all().filter((layer)=>{
-      return layer.value.onPage===pdfTogether.prop.currentPage;
+      return layer.value.onPage===pdfTogether.prop.currentPage.pageNum;
     }),
 
     mycomment:()=>filter.all().filter((layer)=>{
