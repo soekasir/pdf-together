@@ -1,6 +1,5 @@
 import { ChangeEvent, useContext, useRef, useState } from "react";
-import { PdfTogetherContext } from "../../../Controller/Context/Context";
-import * as Models from "../../../Models/Main/MainModel";
+import { PdfContext } from "../../../Controller/Context/Context";
 import { ReplyTextField } from "../../../Resources/style/annotation";
 
 
@@ -8,7 +7,7 @@ import { ReplyTextField } from "../../../Resources/style/annotation";
 
 
 export const ReplyForm=({to}:{to:number})=>{
-  const {addChat}=useContext(PdfTogetherContext);
+  const {addChat}=useContext(PdfContext).layerManager;
   const [form,setForm]=useState({message:''});
   const inputRef=useRef<HTMLDivElement>(null);
 
@@ -47,42 +46,4 @@ export const ReplyForm=({to}:{to:number})=>{
     label="Reply" name="message"
     onKeyDown={onKeyDown}
     onChange={handleInput} value={form.message}/>
-}
-
-export const FormCostum=(
-    {handleSubmit,handleChange,label,style,defaultValue}:
-    {handleSubmit:any,handleChange:any,label?:string,style?:any,defaultValue:string}
-  )=>{
-  
-  const [form,setForm]=useState({value:''});
-
-
-  //Ketika user klik enter
-  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      event.stopPropagation();
-      handleSubmit(event);
-      let newForm={...form};
-      newForm.value="";
-      setForm(newForm);
-    }
-
-  }
-
-  const onChange=(e:ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=>{
-    handleChange(e);
-    let newForm={...form};
-    newForm.value=e.currentTarget.value;
-    setForm(newForm);
-  }
-
-  return <ReplyTextField multiline id="standard-basic"
-    label={label?label:"Text here..."}
-    onKeyDown={onKeyDown}
-    onChange={onChange}
-    style={style}
-    value={form.value?form.value:defaultValue}
-    />
 }

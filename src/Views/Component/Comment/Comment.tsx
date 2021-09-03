@@ -1,7 +1,7 @@
-import { Box, Button, Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
+import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import React, {useContext, useState} from "react";
-import { PdfTogetherContext } from "../../../Controller/Context/Context";
-import { toReadableDate, understandableDate } from "../../../Models/Costum/Fn";
+import { AuthorContext,PdfTogetherContext } from "../../../Controller/Context/Context";
+import { understandableDate } from "../../../Models/Costum/Fn";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
 import { SearchTextField, theme, useStyles } from "../../../Resources/style/style";
@@ -47,10 +47,10 @@ const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=
 
 
 export const LoadComment=()=>{
-  const pdfTogether=useContext(PdfTogetherContext);
+  const {layers,currentPage}=useContext(PdfTogetherContext);
+  const author=useContext(AuthorContext);
   const style=useStyles();
 
-  // const [selected,setSelected]=useState<null|number>(null);
   const [option,setOption]=useState({
     filter:Type.FilterAnnotation.All,
   });
@@ -62,7 +62,7 @@ export const LoadComment=()=>{
   }
 
   const filter={
-    all:()=>pdfTogether.prop.layer.filterType(Type.Mode.Annotation),
+    all:()=>layers.filter((layer)=>layer.value.type===Type.Mode.Annotation),
   
     solved:()=>filter.all().filter((layer)=>{
       return layer.value.content.isSolved;
@@ -73,15 +73,15 @@ export const LoadComment=()=>{
     }),
 
     currentpage:()=>filter.all().filter((layer)=>{
-      return layer.value.onPage===pdfTogether.prop.currentPage.pageNum;
+      return layer.value.onPage===currentPage.pageNum;
     }),
 
     mycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user===pdfTogether.prop.author.id_user;
+      return layer.value.author.id_user===author.id_user;
     }),
   
     notmycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user!==pdfTogether.prop.author.id_user;
+      return layer.value.author.id_user!==author.id_user;
     }),
 
     latest:()=>filter.all().sort((a,b)=>{
@@ -92,7 +92,7 @@ export const LoadComment=()=>{
   }
 
 
-  const chat=()=>pdfTogether.prop.layer.filterType(Type.Mode.Chat);
+  const chat=()=>layers.filter((layer)=>layer.value.type===Type.Mode.Chat);
 
 
   const reply=(id:LayerContract.LayerId)=>{

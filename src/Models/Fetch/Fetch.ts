@@ -123,7 +123,7 @@ export const FetchLayer=(urlLayer:string)=>{
     let layer;
 
     try{
-      layer=Layers.loadLayer(data);
+      layer=new Layers(data);
     }catch (e){
       console.log(e);
     }

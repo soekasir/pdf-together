@@ -118,7 +118,7 @@ abstract class Draw extends CanvasPoint{
 
   addImg(src:any,size:Type.size,point?:Type.Point){
     let img=new Image();
-    img.src=URL.createObjectURL(src);
+    img.src=src;
     img.onload=()=>{
       this.ctx.drawImage(img,point?point.x:this.currX,point?point.y:this.currY,size.width,size.height);
     };
@@ -164,6 +164,13 @@ export class ReactPoint extends Point{
       this.setPoint();
     }
 
+    //mouse didrag
+    if (res === "move") {
+      if(!this.flag){
+        this.setPoint();
+      }
+    }
+
   }
 
 }
@@ -184,6 +191,10 @@ export class ReactDraw extends Draw{
       this.#setBlob();
     }
 
+  }
+
+  getBase64=()=>{
+    return this.element.toDataURL();
   }
 
   #setBlob=()=>{

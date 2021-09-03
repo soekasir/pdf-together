@@ -30,7 +30,7 @@ export namespace LayerContract{
   }
 
   export interface Img extends Content{
-    file?:File,
+    file?:File|string,
     url:string,
     size:Type.size;
   }
@@ -41,8 +41,8 @@ export namespace LayerContract{
   };
 
   export interface Draw extends Content{
-    file?:File,
-    url:string,
+    file?:string|File,
+    url?:string,
     size:Type.size;
   }
 
@@ -102,24 +102,6 @@ export namespace LayerContract{
      * @returns {Layer} this
      */
     update(id:LayerId,value:LayerValue):this;
-
-    /**
-     * clear all layers
-     * @returns {Layer} this
-     */
-    clearAll():this;
-
-    /**
-     * clear layer on specific page
-     * @returns this
-     */
-    clearPage(pageNum:number):this;
-
-
-    /**
-     * convert layers to array
-     */
-    toArray():ArrayLayer[];
 
   }
 

@@ -1,15 +1,15 @@
 import { Resizable } from "re-resizable";
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PdfTogetherContext } from "../../../../Controller/Context/Context";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { PdfContext, PdfTogetherContext } from "../../../../Controller/Context/Context";
 import { ReactDraw, setupDraw } from "../../../../Models/Draw/Draw";
 import { Validation as Type } from "../../../../Models/Interfaces/Type";
 import PaletteIcon from '@material-ui/icons/Palette';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
-import {  Button,  Grid,  Menu, MenuItem,  Slider,  Typography } from "@material-ui/core";
+import {  Grid,  Menu, MenuItem,  Slider, } from "@material-ui/core";
 import PublishIcon from '@material-ui/icons/Publish';
 import { LayerContract } from "../../../../Models/Interfaces/LayerContract";
 import { theme } from "../../../../Resources/style/style";
-import { AddSharp } from "@material-ui/icons";
+import { AddSharp, Delete } from "@material-ui/icons";
 import { Layer } from "../../Layer/Layer";
 
 const SelectColor=({handle,color}:{handle:(value:any)=>void,color:string})=>{
@@ -89,11 +89,11 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
     display:layer?Type.LayerDisplay.show:Type.LayerDisplay.insert,
   });
 
-  const pdfTogether=useContext(PdfTogetherContext);
+  const {layerManager}=useContext(PdfContext);
 
   const [size,setSize]=useState(layer?layer.content.size:{
-    width:200,
-    height:200
+    width:400,
+    height:400
   });
 
   const setDisplay=(display_to:Type.LayerDisplay)=>{
@@ -111,7 +111,7 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
   useEffect(()=>{
 
     if(draw && layer){
-      draw.addImgFromCanvas(layer.content.url,layer.content.size);
+      draw.addImgFromCanvas(layer.content.file,layer.content.size);
     }
 
   },[draw]);
@@ -134,9 +134,15 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
   const handleAdd=()=>{
     if(draw){
-      pdfTogether.addDraw(draw,size);
+      layerManager.addDraw(draw,size);
       let newSize={...size};
       draw.erase({x:0,y:0},newSize);
+    }
+  }
+
+  const handleDelete=()=>{
+    if(layer && layer.id){
+      layerManager.deleteLayerContent(layer.id);
     }
   }
 
@@ -186,12 +192,26 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
     );
   }
 
+  const toolShowDraw=()=>{
+    return (
+      <div style={{backgroundColor:'#242424',color:'#fff',marginTop:"10px",width:"40px",
+        borderRadius:"20px",padding:"7px",height:"40px"}}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item>
+            <span onClick={handleDelete}><Delete/></span>
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+
   const displayShow=(visibility:boolean=true)=>{
     return (
       <>
         {icon(visibility?Type.LayerDisplay.pin:Type.LayerDisplay.show)}
-        <div style={visibility?{}:{display:"none"}}>
+        <div style={{display:visibility?"block":"none",border:"3px solid #22DD66",}}>
           <canvas ref={canvas} width={size.width} height={size.height}/>
+          {toolShowDraw()}
         </div>
       </>
     );
@@ -217,13 +237,14 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
 export const LoadAnnotDraw=()=>{
 
-  const {prop,pdfPointToCanvasPoint}=useContext(PdfTogetherContext);
+  const {pdfPointToCanvasPoint}=useContext(PdfContext).layerManager;
+  const {currentPage,layers}=useContext(PdfTogetherContext);
 
   return (
     <>
     {
-      prop.layer.filterType(Type.Mode.Draw).filter((layer)=>{
-        return layer.value.onPage===prop.currentPage.pageNum;
+      layers.filter((layer)=>Type.Mode.Draw===layer.value.type).filter((layer)=>{
+        return layer.value.onPage===currentPage.pageNum;
       }).map((layer:LayerContract.ArrayLayer)=>{
           return <AnnotDrawMain key={layer.id}
           layer={layer.value}
@@ -236,26 +257,27 @@ export const LoadAnnotDraw=()=>{
 
 }
 
-export const AddAnnotDraw=()=>{
+export const AddAnnotDraw=({})=>{
 
-  const pdftogether=useContext(PdfTogetherContext);
+  const {toCanvasPoint}=useContext(PdfContext).layerManager;
 
-  if(pdftogether.prop.mode===Type.Mode.Draw) return (
+  return (
     <>
-      <AnnotDrawMain point={pdftogether.toCanvasPoint()}/> 
+      <AnnotDrawMain point={toCanvasPoint()}/> 
     </>
   );
 
-  return null;
-
 }
 
-export const AnnotDraw=()=>{
+export const AnnotDraw=({mode}:{mode:Type.Mode})=>{
 
   return (
   <>
     <LoadAnnotDraw/>
-    <AddAnnotDraw/>
+    {
+      mode===Type.Mode.Draw?<AddAnnotDraw/>:null
+    }
+    
   </>
   )
 }

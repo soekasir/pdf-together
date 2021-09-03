@@ -67,7 +67,7 @@ export class Annotation extends Content implements LayerContract.Annotation{
   setIdAnnot(layer:Layers){
     if(!this.id_annot){
       
-      let filtered=layer.filterType(Validation.Mode.Annotation);
+      let filtered=layer.filter((layer)=>layer.type===Validation.Mode.Annotation);
 
       if(filtered.length>0){
           this.id_annot=(filtered.reduce((layer1,layer2)=>{
@@ -91,8 +91,8 @@ export class Annotation extends Content implements LayerContract.Annotation{
 
 
 export class Draw  extends Content implements LayerContract.Draw{
-  file?:File;
-  url:string;
+  file?:File|string;
+  url?:string;
   size;
 
   constructor(file_or_url:string|File,size:Validation.size){
@@ -103,7 +103,7 @@ export class Draw  extends Content implements LayerContract.Draw{
       this.file=file_or_url;
 
     }else{
-      this.url=file_or_url;
+      this.file=file_or_url;
     }
     
     this.size=size;
@@ -117,7 +117,7 @@ export class Draw  extends Content implements LayerContract.Draw{
 
 
 export class Img  extends Content implements LayerContract.Img{
-  file?:File;
+  file?:File|string;
   url:string;
   size;
 
@@ -130,6 +130,7 @@ export class Img  extends Content implements LayerContract.Img{
       this.file=file_or_url;
 
     }else{
+      this.file=file_or_url;
       this.url=file_or_url;
     }
 
