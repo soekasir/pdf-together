@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import React, {useContext, useState} from "react";
-import { PdfTogetherContext } from "../../../Controller/Context/Context";
+import { PdfContext } from "../../../Controller/Context/Context";
 import { toReadableDate, understandableDate } from "../../../Models/Costum/Fn";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
@@ -47,7 +47,7 @@ const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=
 
 
 export const LoadComment=()=>{
-  const pdfTogether=useContext(PdfTogetherContext);
+  const context=useContext(PdfContext).layerManager;
   const style=useStyles();
 
   // const [selected,setSelected]=useState<null|number>(null);
@@ -62,7 +62,7 @@ export const LoadComment=()=>{
   }
 
   const filter={
-    all:()=>pdfTogether.prop.layer.filterType(Type.Mode.Annotation),
+    all:()=>context.filterType(Type.Mode.Annotation),
   
     solved:()=>filter.all().filter((layer)=>{
       return layer.value.content.isSolved;
@@ -73,15 +73,15 @@ export const LoadComment=()=>{
     }),
 
     currentpage:()=>filter.all().filter((layer)=>{
-      return layer.value.onPage===pdfTogether.prop.currentPage.pageNum;
+      return layer.value.onPage===context.currentPage?.pageNum;
     }),
 
     mycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user===pdfTogether.prop.author.id_user;
+      return layer.value.author.id_user===context.author?.id_user;
     }),
   
     notmycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user!==pdfTogether.prop.author.id_user;
+      return layer.value.author.id_user!==context.author?.id_user;
     }),
 
     latest:()=>filter.all().sort((a,b)=>{
@@ -92,7 +92,7 @@ export const LoadComment=()=>{
   }
 
 
-  const chat=()=>pdfTogether.prop.layer.filterType(Type.Mode.Chat);
+  const chat=()=>context.filterType(Type.Mode.Chat);
 
 
   const reply=(id:LayerContract.LayerId)=>{

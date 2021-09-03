@@ -1,9 +1,10 @@
-import { useRef, useContext, useEffect, useState, CSSProperties,} from "react";
-import { AuthorContext, PdfContext, PdfTogetherContext } from "../../../Controller/Context/Context";
+import { useRef, useContext, useEffect, useState, useMemo, useReducer,} from "react";
+import { AuthorContext, PdfContext} from "../../../Controller/Context/Context";
 import { Annotation,LoadComment,Tool,AnnotDraw } from '../../../Controller/Env/Component';
-import { pdfjsLib,AnnotationFactory } from "../../../Controller/Env/Facades";
-import { usePdfTogether } from "../../../Controller/Hooks/PdfTogether/usePdfTogether";
-
+import { pdfjsLib} from "../../../Controller/Env/Facades";
+import { PDFPageProxy } from "pdfjs-dist/types/display/api";
+import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
+import { Validation as Type } from "../../../Models/Interfaces/Type";
 /**
  * Stylesheet
  */
@@ -11,13 +12,12 @@ import './../../../Resources/style/style.css';
 import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../../../Resources/style/style';
 import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
-import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { PDFPageProxy } from "pdfjs-dist/types/display/api";
-import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
+import { CanvasPoint } from "../../Component/Canvas/Canvas";
+import { CostumForm } from "../../Component/Costum/Form";
 
-const useCursor=(mode:Type.Mode|null)=>{
+const CursorClassName=(mode:Type.Mode|null)=>{
   if(mode===Type.Mode.Annotation){
-    return "cursor text";
+    return "cursor crosshair";
   }
 
   if(mode===Type.Mode.Draw){
@@ -33,17 +33,32 @@ const useCursor=(mode:Type.Mode|null)=>{
 const PdfTogether=()=>{
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const context=useContext(PdfContext);
   const author=useContext(AuthorContext);
+
   const style=useStyles();
+
   const [pdfRef,setPdfRef] = useState<any>();
   const [currentPage,setCurrentPage] = useState<CurrentPage>({pageNum:0,actualSize:{width:0,height:0}});
-  const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>();
+  // const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>(); //belum dibutuhkan tp jgn dihapus
+  const [mode,setMode]=useState<Type.Mode>(Type.Mode.Null);
+  const [point,setPoint]=useState<Type.Point>({x:0,y:0});
+
+  context.layerManager.setPoint(point);  //supaya tiap page dirender point dilayer manager jg berubah
+
+  const setCurrentPageInit=()=>{
+      let newCurrentPage={...currentPage};
+      newCurrentPage.pageNum=1;
+      setCurrentPage(newCurrentPage);
+  }
 
   const setCurrentPageNum=(pageNum:number)=>{
-    let newCurrentPage={...currentPage};
-    newCurrentPage.pageNum=pageNum;
-    setCurrentPage(newCurrentPage);
+    if(pageNum<=pdfRef.numPages){
+      let newCurrentPage={...currentPage};
+      newCurrentPage.pageNum=pageNum;
+      setCurrentPage(newCurrentPage);
+    }
   }
 
   const setCurrentPageActuallSize=(size:Type.size)=>{
@@ -52,9 +67,31 @@ const PdfTogether=()=>{
     setCurrentPage(newCurrentPage);
   }
 
+  const setModeHandle=(typemode:Type.Mode)=>{
+
+    if(typemode!==mode){ 
+      setMode(typemode);
+    }else{
+      setMode(Type.Mode.Null);
+    }
+
+  }
+
   useEffect(()=>{
-    console.log(canvasRef);
-  },[]);
+    context.layerManager.setModeDispatch(setMode);
+  },[])
+
+  useEffect(()=>{
+    context.layerManager.setCurrentPage(currentPage);
+  },[currentPage]);
+
+  useEffect(()=>{
+    context.layerManager.setAuthor(author);
+  },[author]);
+
+  useEffect(()=>{
+    context.layerManager.setCanvasref(canvasRef);
+  },[canvasRef]);
 
   //Mengambil file Pdf
   useEffect(()=>{
@@ -65,12 +102,13 @@ const PdfTogether=()=>{
       loadingTask.promise.then((loadedPdf) => {
 
         setPdfRef(loadedPdf);
-        setCurrentPageNum(1);
+        setCurrentPageInit();
 
-        loadedPdf.getData().then((data) => {
-            let pdfFactory = new AnnotationFactory(data);
-            setPdfFactory(pdfFactory);
-        });
+        /**Belum dibutuhkan, tapi jangan dihapus */
+        // loadedPdf.getData().then((data) => {
+        //     let pdfFactory = new AnnotationFactory(data);
+        //     setPdfFactory(pdfFactory);
+        // });
 
       },function (reason:any) {
 
@@ -80,14 +118,16 @@ const PdfTogether=()=>{
 
     }
 
-  },[context]);
+  },[context.url]);
 
-  const value=usePdfTogether(canvasRef,pdfRef,pdfFactory,context.layer,author,currentPage);
+  // Mengisi Fetch dr abstract FetchLayer
+  // context.layerManager.setFetch(disini );
 
-  //Merender current page
+
+  // Merender current page
   useEffect(()=> {
   
-    if(pdfRef) pdfRef.getPage(currentPage.pageNum).then(function(page:PDFPageProxy) {
+    if(pdfRef) pdfRef.getPage(currentPage.pageNum<=0?1:currentPage.pageNum).then(function(page:PDFPageProxy) {
 
       let viewport = page.getViewport({scale: 2});
       let canvas = canvasRef.current;
@@ -117,20 +157,20 @@ const PdfTogether=()=>{
 
   }, [currentPage.pageNum]);
 
-  const getCursor=useCursor(value.prop.mode);
-
   const nextPage = () => pdfRef && currentPage.pageNum < pdfRef.numPages && setCurrentPageNum(currentPage.pageNum + 1);
 
   const prevPage = () => currentPage.pageNum > 1 && setCurrentPageNum(currentPage.pageNum - 1);
 
 
-  if(!context.pdf || !context.url){
+  if(!context.pdf || !context.url ){
     return <>Tidak ada file yang dipilih</>
   }
 
+  const getCursor=CursorClassName(mode);
+
 
   return (
-    <PdfTogetherContext.Provider value={value}>
+    <>
       <CssBaseline/>
       <nav className={style.navbartop}>
         {/* Disini Header */}
@@ -153,7 +193,7 @@ const PdfTogether=()=>{
               marginTop:"36px",
               boxShadow:"none",}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
-                  <Typography variant="h3">Comments</Typography>
+                  <Typography variant="h3">Files on Cards</Typography>
                 </div>
                 <List style={{marginLeft:"2px",paddingTop:"4px"}}>
                   <ListItem style={{padding:"12px"}}>
@@ -191,8 +231,24 @@ const PdfTogether=()=>{
               </div>
               <div className={style.controlPage}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>
-                <div><ButtonCurrentPage>{""+currentPage.pageNum+"/"+(pdfRef?pdfRef.numPages:null)}</ButtonCurrentPage></div>
+                <div><ButtonCurrentPage>
+                  <CostumForm
+
+                    handleChange={(e)=>{
+                      const num=Number(e.currentTarget.value);
+                      setCurrentPageNum(num);
+                    }}
+
+                    value={currentPage.pageNum}
+                    InputProps={{style:{color:"#fff"}}}
+                    style={{width:"20px"}}
+                    />
+                  {"/ "+(pdfRef?pdfRef.numPages:null)}
+
+                  </ButtonCurrentPage>
+                </div>
                 <div className={style.segitigaKanan} onClick={nextPage}></div>
+ 
               </div>
               <div></div>
             </div>
@@ -200,16 +256,16 @@ const PdfTogether=()=>{
             <Paper variant="elevation" style={{boxShadow:"none",display:'flex',justifyContent:'center',
               marginTop:"13px",width:'100%',padding:"10px",}}>
               <div className={getCursor}>
-                <canvas ref={canvasRef} className={style.canvas}></canvas>
+                <CanvasPoint canvasRef={canvasRef} className={style.canvas} setPoint={setPoint}/>
               </div>
-              <Annotation/>
-              <AnnotDraw/>
+              <Annotation mode={mode} pageNum={currentPage.pageNum}/>
+              <AnnotDraw mode={mode}/>
             </Paper>
           </Grid> {/**End Of Content */}
         </Grid>
       </Container> {/**End of Wrapper */}
-      <Tool className={style.tool}/>
-    </PdfTogetherContext.Provider>
+      <Tool setModeHandle={setModeHandle}/>
+    </>
   );
 
 };

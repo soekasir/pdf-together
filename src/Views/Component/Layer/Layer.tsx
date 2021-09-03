@@ -3,14 +3,12 @@ import { Validation as Type } from "../../../Models/Interfaces/Type";
 
 interface layerProp{
   point:Type.PointCanvas,
-  children:ReactChildren|ReactElement
+  children:ReactElement
 }
 
 export const Layer:React.FC<layerProp>=({children,point})=>{
   return (
-    <div style={{
-    zIndex: 2,position: 'absolute',
-    top:point.y,left:point.x}}>
+    <div style={{zIndex: 2,position:'absolute',top:point.y,left:point.x}}>
       {children}
     </div>
   );

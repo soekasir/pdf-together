@@ -1,40 +1,36 @@
 import {LayerContract as Contract} from '../Interfaces/LayerContract';
-import { Validation } from '../Interfaces/Type';
 
 /** use to manage layer. */
-export class Layers implements Contract.LayersInterfaces{
-
-
+export class Layers{
 
   /** to store layers */
-  #layers:Map<Contract.LayerId,Contract.LayerValue>=new Map();
-
-
+  protected layers:Map<Contract.LayerId,Contract.LayerValue>=new Map();
 
   /** to manage unique layer id */
   #id:Contract.LayerId=0;
 
-
-
-
-  constructor(arrayLayer?:Contract.ArrayLayer[]){
-
-    //get highest id number and fill #layers
-    if(arrayLayer && Array.isArray(arrayLayer)){
-      this.#layers=new Map(
-        arrayLayer.map((layer:Contract.ArrayLayer)=>{
-          this.#id=this.#id<layer.id?layer.id:this.#id;
-          return [layer.id,layer.value];
-        })
-      );
+  constructor(arrayLayer?: Contract.ArrayLayer[]) {
+    //get highest id number and fill layers
+    if (arrayLayer && Array.isArray(arrayLayer)) {
+      this.#_init(arrayLayer);
     }
-
   }
 
+  /**
+   * to get highest Id and convert arrayLayer to Map
+   * @returns Object { last_id: the highest id, map: instance of Map }
+   */
+  #_init=(arrayLayer: Contract.ArrayLayer[])=>{
+    let last_id = 0;
 
+    const init: Iterable<readonly [number, Contract.LayerValue]>=arrayLayer.map((layer: Contract.ArrayLayer) => {
+      last_id = last_id < layer.id ? layer.id : last_id;
+      return [layer.id, layer.value];
+    });
 
-
-
+    this.layers = new Map(init);
+    this.#id = last_id;
+  }
 
   /** private method to create unique Id */
   _idGenerator():Contract.LayerId{
@@ -42,102 +38,19 @@ export class Layers implements Contract.LayersInterfaces{
     return this.#id;
   }
 
-
-
-
-
-  /** private method to create unique Id */
-  _createId():Contract.LayerId{
-    return this._idGenerator();
-  }
-
-
-
-
-
-
-
-  add(value:Contract.LayerValue){
-
-    value.id=this._createId();
-    this.#layers.set(value.id,value);
-    return this;
-
-  }
-
-
-
   get(id:Contract.LayerId):Contract.LayerValue|undefined{
-    return this.#layers.get(id);
+    return this.layers.get(id);
   }
-
 
   getAll():Contract.ArrayLayer[]{
     return this.toArray();
   }
 
-
-  delete(id:Contract.LayerId){
-
-    if(this.#layers.has(id)){
-      this.#layers.delete(id);
-    }
-
-    return this;
-
-  }
-
-
-
-
-
-
-  update(id:Contract.LayerId,value:Contract.LayerValue){
-
-    if(this.#layers.has(id)){
-      this.#layers.set(id,value);
-    }
-    return this;
-
-  }
-
-
-  clearAll(){
-
-    this.#layers=new Map();
-    return this;
-
-  }
-
-
-
-
-  clearPage(pageNum:number){
-
-    this.#layers.forEach((layerValue,layerId)=>{
-      if(layerValue.onPage===pageNum){
-        this.delete(layerId);
-      }
-    });
-    return this;
-
-  }
-
-
-
-
-
   toArray():Contract.ArrayLayer[]{
 
-    return Array.from(this.#layers,([id,value])=>({id,value}));
+    return Array.from(this.layers,([id,value])=>({id,value}));
 
   }
-
-
-
-
-
-
 
   /**
    * to filter layers
@@ -148,33 +61,63 @@ export class Layers implements Contract.LayersInterfaces{
 
   }
 
-
-
-
-
-
-
   /**
-   * to filter layers by type
+   * this method for performance, use this method only after fetch from server
+   * @param arrayLayer
    */
-  filterType(type:Contract.LayerType):Contract.ArrayLayer[]{
+  reFill(arrayLayer: Contract.ArrayLayer[]) {
+    if (Array.isArray(arrayLayer)) {
+      this.#_init(arrayLayer);
+    }else{
+      console.error("Argument ArrayLayer isnt Array");
+    }
+  }
 
-    return this.filter((layer)=>layer.type===type);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+export class CrudLayers extends Layers implements Contract.LayersInterfaces{
+
+  /** private method to create unique Id */
+  _createId():Contract.LayerId{
+    return this._idGenerator();
+  }
+
+  add(value:Contract.LayerValue){
+    const newValue={...value};
+
+    newValue.id=this._createId();
+    this.layers.set(newValue.id,newValue);
+    return this;
 
   }
 
+  delete(id:Contract.LayerId){
 
+    if(this.layers.has(id)){
+      this.layers.delete(id);
+    }
 
+    return this;
 
-  
+  }
 
+  update(id:Contract.LayerId,value:Contract.LayerValue){
 
-  // getAnnotationByPage(numPages:number){
-  //   return this.filter((layer)=>layer.type===Validation.Mode.Annotation && layer.onPage===numPages);
-  // }
-  static loadLayer(data:Contract.ArrayLayer[]):Layers{
-
-    return new Layers(data);
+    if(this.layers.has(id)){
+      this.layers.set(id,value);
+    }
+    return this;
 
   }
 

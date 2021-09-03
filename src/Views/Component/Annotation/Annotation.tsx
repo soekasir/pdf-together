@@ -1,15 +1,16 @@
 import React, { useState,useContext, ChangeEvent} from "react";
 import { Layer } from "../Layer/Layer";
-import { PdfTogetherContext } from "../../../Controller/Context/Context";
+import { PdfContext} from "../../../Controller/Context/Context";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type} from "../../../Models/Interfaces/Type";
-import { FormCostum, ReplyForm } from "../Comment/Reply";
+import { ReplyForm } from "../Comment/Reply";
 import { AddSharp } from "@material-ui/icons";
 import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import {useStylesAnnotation } from "../../../Resources/style/annotation";
 import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified} from "../../../Resources/svg/icon";
 import { theme } from "../../../Resources/style/style";
 import { understandableDate } from "../../../Models/Costum/Fn";
+import { CostumForm } from "../Costum/Form";
 
 
 interface PropAnnotation{
@@ -20,6 +21,7 @@ interface PropAnnotation{
 
 
 const OptionAnnotation=({handleOption}:{handleOption:(value:any)=>void})=>{
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -56,7 +58,7 @@ const OptionAnnotation=({handleOption}:{handleOption:(value:any)=>void})=>{
 export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const styleAnnot=useStylesAnnotation();
-  const pdfTogether=useContext(PdfTogetherContext);
+  const pdfContext=useContext(PdfContext);
   const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false,};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);
 
@@ -79,7 +81,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const handleDelete=()=>{
     if(prop.layer && prop.layer.id){
-      pdfTogether.deleteLayerContent(prop.layer.id);
+      pdfContext.layerManager.deleteLayerContent(prop.layer.id);
     }
   }
 
@@ -115,7 +117,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
     if(prop.layer && prop.layer.id){
       setForm(newForm);
-      pdfTogether.updateLayerContent(prop.layer.id,newForm);
+      pdfContext.layerManager.updateLayerContent(prop.layer.id,newForm);
     }
   }
 
@@ -123,19 +125,16 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 
 
-  const handleAdd=(e:any)=>{
-    e.preventDefault();
-    pdfTogether.addAnnotation(form);
+  const handleAdd=(value:any)=>{
+    pdfContext.layerManager.addAnnotation(form);
     setDisplay(Type.LayerDisplay.add);
   }
 
-  const handleUpdate=(e:any)=>{
-    e.preventDefault();
+  const handleUpdate=(value:any)=>{
     if(prop.layer && prop.layer.id){
-      pdfTogether.updateLayerContent(prop.layer.id,form);
+      pdfContext.layerManager.updateLayerContent(prop.layer.id,form);
       setDisplay(Type.LayerDisplay.show);
     }
-
   }
 
 
@@ -192,20 +191,21 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return <></>
   }
 
-  const annotationForm=({handleSubmit}:{handleSubmit:(e:any)=>void})=>{
+  const annotationForm=({handleSubmit,defaultValue}:{handleSubmit:(e:any)=>void,defaultValue:string})=>{
     return (
       <Paper variant="elevation" className={styleAnnot.paperAnnotation} style={{marginTop:"12px"}}>
         <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
           <Grid sm={11}>
             <div style={{borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
-              <Typography variant="body2" color="textSecondary">{pdfTogether.prop.author.name}</Typography>
+              <Typography variant="body2" color="textSecondary">{pdfContext.layerManager.author?.name}</Typography>
               <Typography variant="body2" style={{color:theme.palette.text.disabled}}>
                 {understandableDate(new Date())}
               </Typography>
             </div>
             <div style={{marginTop:theme.spacing(2)}}>
-              <FormCostum handleChange={handleAnnot} handleSubmit={handleSubmit} label="Write your comment"
-              style={{width:"90%"}} defaultValue={form.annot}/>
+              <CostumForm multiline handleChange={handleAnnot} handleSubmit={handleSubmit}
+              label="Write your comment"
+              style={{width:"90%"}} defaultValue={defaultValue}/>
             </div>
 
             <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
@@ -235,7 +235,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return (
       <>
       {icon(Type.LayerDisplay.add)}
-      {annotationForm({handleSubmit:handleAdd})}
+      {annotationForm({handleSubmit:handleAdd,defaultValue:""})}
       </>
     )
   }
@@ -244,7 +244,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return (
       <>
       {icon(Type.LayerDisplay.pin)}
-      {annotationForm({handleSubmit:handleUpdate})}
+      {annotationForm({handleSubmit:handleUpdate,defaultValue:form.annot})}
       </>
     )
   }
@@ -298,8 +298,8 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return(
       <div>
         {
-          pdfTogether.prop.layer.filter((layer)=>{
-            if(layer.type===Type.Mode.Chat && layer.content.to===prop.layer?.id) return true;
+          pdfContext.layerManager.getAll().filter((layer)=>{
+            if(layer.value.type===Type.Mode.Chat && layer.value.content.to===prop.layer?.id) return true;
             return false;
           }).map((layer)=>{
             return reply(layer.value);
@@ -347,53 +347,34 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 export const AddAnnotation=()=>{
 
-  const {toCanvasPoint}=useContext(PdfTogetherContext);
+  const {toCanvasPoint}=useContext(PdfContext).layerManager;
 
-  return (
-    <>
-        <AnnotationMain
-        point={toCanvasPoint()}
-        displayDefault={Type.LayerDisplay.add}
-        />
-    </>
-  );
+  return <AnnotationMain point={toCanvasPoint()} displayDefault={Type.LayerDisplay.insert}/>;
 
-}
+};
 
 
 
 
 
-export const LoadAnnotation=()=>{
-  const {prop,pdfPointToCanvasPoint}=useContext(PdfTogetherContext);
+export const LoadAnnotation=({pageNum}:{pageNum:number})=>{
 
-  return (
-    <>
+  const {filterType,pdfPointToCanvasPoint}=useContext(PdfContext).layerManager;
+
+  return <>
     {
-      prop.layer.filterType(Type.Mode.Annotation).filter((layer)=>{
-        return layer.value.onPage===prop.currentPage.pageNum;
-      }).map((layer:LayerContract.ArrayLayer)=>{
-          return <AnnotationMain key={layer.id}
-          point={pdfPointToCanvasPoint(layer.value.point)}
-          displayDefault={Type.LayerDisplay.show}
-          layer={layer.value}
-          />
+      filterType(Type.Mode.Annotation).filter((layer)=>layer.value.onPage===pageNum).map((layer:LayerContract.ArrayLayer)=>{
+        return <AnnotationMain key={layer.id} point={pdfPointToCanvasPoint(layer.value.point)} displayDefault={Type.LayerDisplay.show} layer={layer.value}/>
       })
     }
-    </>
-  );
-}
+  </>;
 
-export const Annotation=()=>{
+};
 
-  const {mode}=useContext(PdfTogetherContext).prop;
+export const Annotation=({mode,pageNum}:{mode:Type.Mode,pageNum:number})=><>
 
-  return (
-    <>
-    {/* <MainAnnonations/> */}
-    <LoadAnnotation/>
-    {mode===Type.Mode.Annotation?<AddAnnotation/>:null} 
-    </>
-  )
-  
-}
+  <LoadAnnotation pageNum={pageNum}/>
+
+  {mode===Type.Mode.Annotation?<AddAnnotation/>:null}
+
+</>;
