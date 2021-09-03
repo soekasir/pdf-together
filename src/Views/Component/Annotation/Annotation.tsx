@@ -1,6 +1,6 @@
 import React, { useState,useContext, ChangeEvent} from "react";
 import { Layer } from "../Layer/Layer";
-import { PdfContext} from "../../../Controller/Context/Context";
+import { PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 import { Validation as Type} from "../../../Models/Interfaces/Type";
 import { ReplyForm } from "../Comment/Reply";
@@ -59,6 +59,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const styleAnnot=useStylesAnnotation();
   const pdfContext=useContext(PdfContext);
+  const pdfTogether=useContext(PdfTogetherContext);
   const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false,};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);
 
@@ -298,7 +299,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
     return(
       <div>
         {
-          pdfContext.layerManager.getAll().filter((layer)=>{
+          pdfTogether.layers.filter((layer)=>{
             if(layer.value.type===Type.Mode.Chat && layer.value.content.to===prop.layer?.id) return true;
             return false;
           }).map((layer)=>{
@@ -359,11 +360,12 @@ export const AddAnnotation=()=>{
 
 export const LoadAnnotation=({pageNum}:{pageNum:number})=>{
 
-  const {filterType,pdfPointToCanvasPoint}=useContext(PdfContext).layerManager;
+  const {pdfPointToCanvasPoint}=useContext(PdfContext).layerManager;
+  const {layers}=useContext(PdfTogetherContext);
 
   return <>
     {
-      filterType(Type.Mode.Annotation).filter((layer)=>layer.value.onPage===pageNum).map((layer:LayerContract.ArrayLayer)=>{
+      layers.filter((layer)=>layer.value.onPage===pageNum && Type.Mode.Annotation===layer.value.type).map((layer:LayerContract.ArrayLayer)=>{
         return <AnnotationMain key={layer.id} point={pdfPointToCanvasPoint(layer.value.point)} displayDefault={Type.LayerDisplay.show} layer={layer.value}/>
       })
     }

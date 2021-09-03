@@ -1,6 +1,7 @@
 import React, { createContext} from "react";
+import { LayerContract } from "../../Models/Interfaces/LayerContract";
 import { Author } from "../../Models/Main/MainModel";
-import { PdfTogether } from "../../Models/Main/MainPdfTogether";
+import { CurrentPage, PdfTogether } from "../../Models/Main/MainPdfTogether";
 
 /**
  * Context for Pdf
@@ -15,12 +16,17 @@ interface PdfContextValue{
   layerManager:PdfTogether
 };
 
+interface PdfTogetherContext{
+  layers:LayerContract.ArrayLayer[],
+  currentPage:CurrentPage
+}
+
 export const PdfContext=createContext({} as PdfContextValue);
 
 /**
  * Context for Pdf Together
  */
-// export const PdfTogetherContext=createContext({} as PdfTogether);
+export const PdfTogetherContext=createContext({} as PdfTogetherContext);
 
 /**
  * Context for global Api

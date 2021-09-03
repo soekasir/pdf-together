@@ -1,6 +1,6 @@
 import { Resizable } from "re-resizable";
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PdfContext } from "../../../../Controller/Context/Context";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { PdfContext, PdfTogetherContext } from "../../../../Controller/Context/Context";
 import { ReactDraw, setupDraw } from "../../../../Models/Draw/Draw";
 import { Validation as Type } from "../../../../Models/Interfaces/Type";
 import PaletteIcon from '@material-ui/icons/Palette';
@@ -89,7 +89,7 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
     display:layer?Type.LayerDisplay.show:Type.LayerDisplay.insert,
   });
 
-  const pdfTogether=useContext(PdfContext).layerManager;
+  const {layerManager}=useContext(PdfContext);
 
   const [size,setSize]=useState(layer?layer.content.size:{
     width:400,
@@ -134,7 +134,7 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
   const handleAdd=()=>{
     if(draw){
-      pdfTogether.addDraw(draw,size);
+      layerManager.addDraw(draw,size);
       let newSize={...size};
       draw.erase({x:0,y:0},newSize);
     }
@@ -142,7 +142,7 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
   const handleDelete=()=>{
     if(layer && layer.id){
-      pdfTogether.deleteLayerContent(layer.id);
+      layerManager.deleteLayerContent(layer.id);
     }
   }
 
@@ -237,13 +237,14 @@ export const AnnotDrawMain=({point,layer}:{point:Type.Point,layer?:LayerContract
 
 export const LoadAnnotDraw=()=>{
 
-  const {filterType,pdfPointToCanvasPoint,currentPage}=useContext(PdfContext).layerManager;
+  const {pdfPointToCanvasPoint}=useContext(PdfContext).layerManager;
+  const {currentPage,layers}=useContext(PdfTogetherContext);
 
   return (
     <>
     {
-      filterType(Type.Mode.Draw).filter((layer)=>{
-        return layer.value.onPage===currentPage?.pageNum;
+      layers.filter((layer)=>Type.Mode.Draw===layer.value.type).filter((layer)=>{
+        return layer.value.onPage===currentPage.pageNum;
       }).map((layer:LayerContract.ArrayLayer)=>{
           return <AnnotDrawMain key={layer.id}
           layer={layer.value}

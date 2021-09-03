@@ -1,5 +1,5 @@
-import { useRef, useContext, useEffect, useState, useMemo, useReducer,} from "react";
-import { AuthorContext, PdfContext} from "../../../Controller/Context/Context";
+import { useRef, useContext, useEffect, useState, } from "react";
+import {  PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
 import { Annotation,LoadComment,Tool,AnnotDraw } from '../../../Controller/Env/Component';
 import { pdfjsLib} from "../../../Controller/Env/Facades";
 import { PDFPageProxy } from "pdfjs-dist/types/display/api";
@@ -14,6 +14,7 @@ import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from 
 import { PdfIcon} from "../../../Resources/svg/icon";
 import { CanvasPoint } from "../../Component/Canvas/Canvas";
 import { CostumForm } from "../../Component/Costum/Form";
+import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 
 const CursorClassName=(mode:Type.Mode|null)=>{
   if(mode===Type.Mode.Annotation){
@@ -35,7 +36,6 @@ const PdfTogether=()=>{
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const context=useContext(PdfContext);
-  const author=useContext(AuthorContext);
 
   const style=useStyles();
 
@@ -44,6 +44,7 @@ const PdfTogether=()=>{
   // const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>(); //belum dibutuhkan tp jgn dihapus
   const [mode,setMode]=useState<Type.Mode>(Type.Mode.Null);
   const [point,setPoint]=useState<Type.Point>({x:0,y:0});
+  const [layer,setLayer]=useState<LayerContract.ArrayLayer[]>(context.layerManager.getAll());
 
   context.layerManager.setPoint(point);  //supaya tiap page dirender point dilayer manager jg berubah
 
@@ -79,15 +80,12 @@ const PdfTogether=()=>{
 
   useEffect(()=>{
     context.layerManager.setModeDispatch(setMode);
-  },[])
+    context.layerManager.setLayerDispatch(setLayer);
+  },[]);
 
   useEffect(()=>{
     context.layerManager.setCurrentPage(currentPage);
   },[currentPage]);
-
-  useEffect(()=>{
-    context.layerManager.setAuthor(author);
-  },[author]);
 
   useEffect(()=>{
     context.layerManager.setCanvasref(canvasRef);
@@ -168,9 +166,15 @@ const PdfTogether=()=>{
 
   const getCursor=CursorClassName(mode);
 
+  const value={
+    layers:layer,
+    currentPage:currentPage,
+  }
+
 
   return (
     <>
+    <PdfTogetherContext.Provider value={value}>
       <CssBaseline/>
       <nav className={style.navbartop}>
         {/* Disini Header */}
@@ -265,6 +269,7 @@ const PdfTogether=()=>{
         </Grid>
       </Container> {/**End of Wrapper */}
       <Tool setModeHandle={setModeHandle}/>
+      </PdfTogetherContext.Provider>
     </>
   );
 

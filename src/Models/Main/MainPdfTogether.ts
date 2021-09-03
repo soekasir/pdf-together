@@ -36,6 +36,8 @@ class DocLayerManager extends LayerManager{
 
   setMode?:React.Dispatch<React.SetStateAction<Type.Mode>>;
 
+  layerDispatch?:React.Dispatch<React.SetStateAction<LayerContract.ArrayLayer[]>>;
+
 
   constructor(layer:Layers){
     super(layer)
@@ -68,6 +70,10 @@ class DocLayerManager extends LayerManager{
 
   setModeDispatch(setMode:React.Dispatch<React.SetStateAction<Type.Mode>>){
     this.setMode=setMode;
+  }
+
+  setLayerDispatch(setLayer:React.Dispatch<React.SetStateAction<LayerContract.ArrayLayer[]>>){
+    this.layerDispatch=setLayer;
   }
 
   /**
@@ -175,6 +181,10 @@ class DocLayerManager extends LayerManager{
     this.layer.reFill(layers);
     if(this.setMode){
       this.setMode(Type.Mode.Null);
+    }
+
+    if(this.layerDispatch){
+      this.layerDispatch(layers);
     }
   }
 
