@@ -186,7 +186,7 @@ export const LoadComment=()=>{
         </Grid>
 
         {/*Load Comment */}
-        <div style={{overflow:"auto",height:"400px",marginTop:"16px"}} className="costum-scroll">
+        <div style={{overflow:"auto",marginTop:"16px",maxHeight:"400px"}} className="costum-scroll">
           {
             filter[option.filter]().map((layer:LayerContract.ArrayLayer)=>{
 

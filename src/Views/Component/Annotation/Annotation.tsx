@@ -8,7 +8,7 @@ import { AddSharp } from "@material-ui/icons";
 import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import {useStylesAnnotation } from "../../../Resources/style/annotation";
 import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified} from "../../../Resources/svg/icon";
-import { theme } from "../../../Resources/style/style";
+import { SearchTextField, theme } from "../../../Resources/style/style";
 import { understandableDate } from "../../../Models/Costum/Fn";
 import { CostumForm } from "../Costum/Form";
 
@@ -66,6 +66,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const [option,setOption]=useState({
     display:prop.displayDefault,
+    isToolEmailActive:false
   });
 
   const handleOption=(selected_option:string)=>{
@@ -111,15 +112,18 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
 
 
-  const handleIsSolved=()=>{
+  const handleToggleIsSolved=()=>{
     let newForm={...form};
 
     newForm.isSolved=!form.isSolved;
-
+    setForm(newForm);
     if(prop.layer && prop.layer.id){
-      setForm(newForm);
       pdfContext.layerManager.updateLayerContent(prop.layer.id,newForm);
     }
+  }
+
+  const handleToolEmail=()=>{
+    setOption(({...option,isToolEmailActive:!option.isToolEmailActive}));
   }
 
 
@@ -136,6 +140,28 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
       pdfContext.layerManager.updateLayerContent(prop.layer.id,form);
       setDisplay(Type.LayerDisplay.show);
     }
+  }
+
+  const annotTool=()=>{
+    return <>
+    <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
+      <span className={styleAnnot.navIcon} onClick={handleToggleIsSolved}>
+        <IconVerified style={{color:form.isSolved?"#20C795":'#6A6A6A'}}/>
+      </span>
+      <span className={styleAnnot.navIcon} onClick={handleToolEmail}>
+        <IconSendEmail style={{color:'#6A6A6A'}}/>
+      </span>
+      <span className={styleAnnot.navIcon}>
+        <IconUrl style={{color:'#6A6A6A'}}/>
+      </span>
+      <span className={styleAnnot.navIcon}>
+        <IconPeople style={{color:'#6A6A6A'}}/>
+      </span>
+    </Grid>
+    {option.isToolEmailActive?<div>
+      <SearchTextField size="small" label="email adress" variant="outlined" style={{height:"32px",width:'100%',}}/>
+    </div>:null}
+    </>
   }
 
 
@@ -166,25 +192,13 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             <div style={{marginTop:'5px'}}>
               <ReplyForm to={prop.layer.id?prop.layer.id:0}/>
             </div>
-            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
-              <span className={styleAnnot.navIcon}>
-                <IconVerified style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconSendEmail style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconUrl style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconPeople style={{color:'#6A6A6A'}}/>
-              </span>
-            </Grid>
+            
           </Grid>
           <Grid sm={1}>
             <OptionAnnotation handleOption={handleOption}/>
           </Grid>
         </Grid>
+        {annotTool()}
       </Paper>
       </>
     )
@@ -208,26 +222,12 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
               label="Write your comment"
               style={{width:"90%"}} defaultValue={defaultValue}/>
             </div>
-
-            <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
-              <span className={styleAnnot.navIcon}>
-                <IconVerified style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconSendEmail style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconUrl style={{color:'#6A6A6A'}}/>
-              </span>
-              <span className={styleAnnot.navIcon}>
-                <IconPeople style={{color:'#6A6A6A'}}/>
-              </span>
-            </Grid>
+            
           </Grid>
           <Grid sm={1}>
             <OptionAnnotation handleOption={handleOption}/>
           </Grid>
-        </Grid>
+        </Grid>{annotTool()}
       </Paper>
     )
   }

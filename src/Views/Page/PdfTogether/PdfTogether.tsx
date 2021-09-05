@@ -15,31 +15,51 @@ import { PdfIcon} from "../../../Resources/svg/icon";
 import { CanvasPoint } from "../../Component/Canvas/Canvas";
 import { CostumForm } from "../../Component/Costum/Form";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
+import { PageViewport } from "pdfjs-dist/types/display/display_utils";
 
 const CursorClassName=(mode:Type.Mode|null)=>mode===Type.Mode.Annotation?"cursor crosshair":mode===Type.Mode.Draw?"cursor crosshair":"cursor";
 
 const PdfTogether=()=>{
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const store=useRef({lastRenderPage:0,pages:new Map(),isStillRendering:false});
+
+  const store=useRef({lastRenderPage:0,pages:new Map<number,{proxy:PDFPageProxy,viewport:PageViewport}>(),isStillRendering:false});
+
   const context=useContext(PdfContext);
+
   const style=useStyles();
+
   const [pdfRef,setPdfRef] = useState<any>();
+
   const [currentPage,setCurrentPage] = useState<CurrentPage>({pageNum:0,actualSize:{width:0,height:0}});
+
   // const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>(); //belum dibutuhkan tp jgn dihapus
+
   const [mode,setMode]=useState<Type.Mode>(Type.Mode.Null);
+
   const [point,setPoint]=useState<Type.Point>({x:0,y:0});
+
   const [layer,setLayer]=useState<LayerContract.ArrayLayer[]>(context.layerManager.getAll());
+
   context.layerManager.setPoint(point);
+
   const setCurrentPageInit=()=>setCurrentPage( curr => ({...curr,pageNum:1}) );
+
   const setCurrentPageNum=(pageNum:number)=>{
     if(pageNum<=pdfRef.numPages) setCurrentPage( curr => ({...curr,pageNum:pageNum}) );
   };
+
   const setCurrentPageActuallSize=(size:Type.size)=>setCurrentPage(curr=>({...curr,actualSize:size}));
+
   const setModeHandle=(typemode:Type.Mode)=>typemode===mode?setMode(Type.Mode.Null):setMode(typemode);
+
   useEffect(()=>{ context.layerManager.setModeDispatch(setMode); context.layerManager.setLayerDispatch(setLayer); },[]);
+
   useEffect(()=>{ context.layerManager.setCurrentPage(currentPage); },[currentPage]);
+
   useEffect(()=>{ context.layerManager.setCanvasref(canvasRef); },[canvasRef]);
+
+
   //Mengambil file Pdf
   useEffect(()=>{
     if(context.url){
@@ -69,19 +89,23 @@ const PdfTogether=()=>{
 
   // Merender current page
   useEffect(()=> {
-    if(pdfRef && currentPage.pageNum>0 && store.current.lastRenderPage!==currentPage.pageNum){
-      if(store.current.pages.has(currentPage.pageNum)){
-        let page=store.current.pages.get(currentPage.pageNum);
-        if(!store.current.isStillRendering){
-          store.current.isStillRendering=true;
-          let rend=page.proxy.render({viewport:page.viewport,canvasContext:canvasRef.current?.getContext("2d")});
-          rend.promise.then(()=>{
-            store.current.isStillRendering=false;
-          })
+    
+    if(pdfRef && currentPage.pageNum>0 && store.current.lastRenderPage!==currentPage.pageNum && !store.current.isStillRendering){
+
+      let page=store.current.pages.get(currentPage.pageNum);
+      let canvasContext=canvasRef.current?.getContext("2d");
+
+      if(page && canvasContext){
+
+        store.current.isStillRendering=true;
+        let rend=page.proxy.render({viewport:page.viewport,canvasContext:canvasContext});
+        rend.promise.then(()=>{
+          store.current.isStillRendering=false;
           store.current.lastRenderPage=currentPage.pageNum;
-        }
+        });
 
       }else{
+
         pdfRef.getPage(currentPage.pageNum).then(function(page:PDFPageProxy) {
 
           let viewport = page.getViewport({scale: 2});
@@ -110,8 +134,8 @@ const PdfTogether=()=>{
                 let rend=page.render(renderContext);
                 rend.promise.then(()=>{
                   store.current.isStillRendering=false;
+                  store.current.lastRenderPage=currentPage.pageNum;
                 });
-                store.current.lastRenderPage=currentPage.pageNum;
               }
             }
           }
@@ -119,7 +143,6 @@ const PdfTogether=()=>{
         });
       }
     }
-
   }, [currentPage.pageNum]);
 
   const nextPage = () => pdfRef && currentPage.pageNum < pdfRef.numPages && setCurrentPageNum(currentPage.pageNum + 1);
@@ -150,23 +173,29 @@ const PdfTogether=()=>{
       {/* Wrapper */}
       <Container maxWidth='xl' className={style.container}>
 
-        <Grid container style={{minWidth:"100%"}}
-        justifyContent="space-evenly">
+        <Grid container style={{minWidth:"100%"}} justifyContent="space-evenly">
 
           {/** Tab */}
           <Grid item className={style.leftTab} xs={12}>
 
               {/**Files Tab*/}
-              <Paper variant="elevation"
-              style={{width:'100%',
-              minWidth:"255px",
-              height:"237px",
-              marginTop:"36px",
-              boxShadow:"none",}}>
+              <Paper variant="elevation" style={{width:'100%',minWidth:"255px",maxHeight:"237px",marginTop:"36px",boxShadow:"none",paddingBottom:"30px"}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
                   <Typography variant="h3">Files on Cards</Typography>
                 </div>
-                <List style={{marginLeft:"2px",paddingTop:"4px"}}>
+                <List style={{marginLeft:"2px",marginTop:"4px",overflow:"auto",maxHeight:"170px"}} className="costum-scroll">
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama file 1.pdf</Typography>
+                  </ListItem>
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama file 1.pdf</Typography>
+                  </ListItem>
+                  <ListItem style={{padding:"12px"}}>
+                    <PdfIcon style={{color:'#E15D5D'}}/>
+                    <Typography variant="subtitle2" color="textPrimary">Nama filenya panjang sekali sehingga tidak muat.pdf</Typography>
+                  </ListItem>
                   <ListItem style={{padding:"12px"}}>
                     <PdfIcon style={{color:'#E15D5D'}}/>
                     <Typography variant="subtitle2" color="textPrimary">Nama file 1.pdf</Typography>
@@ -188,10 +217,10 @@ const PdfTogether=()=>{
           </Grid> {/**End of Tab */}
 
           {/**Header dan Content */}
-          <Grid item xl={9} lg={9} md={8} sm={6} xs={12}>
+          <Grid item xl={9} lg={9} md={8} sm={6} xs={12} className={style.contentTab}>
 
             {/* Hader Content */}
-            <div className={style.headerContent}>
+            <div className={style.headerContent} style={{flexGrow:0}}>
               <div>
                 <ApproveButton variant="contained" size='small' className={style.button}>
                   Approve
@@ -200,7 +229,7 @@ const PdfTogether=()=>{
                   Reject
                 </RejectButton>
               </div>
-              <div className={style.controlPage}>
+              <div className={style.controlPage} style={{flexGrow:3,display:"flex",justifyContent:"center"}}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>
                 <div><ButtonCurrentPage>
                   <CostumForm
@@ -221,7 +250,7 @@ const PdfTogether=()=>{
                 <div className={style.segitigaKanan} onClick={nextPage}></div>
  
               </div>
-              <div></div>
+              <div style={{flexGrow:1}}></div>
             </div>
             {/**Content Canvas */}
             <Paper variant="elevation" style={{boxShadow:"none",display:'flex',justifyContent:'center',
