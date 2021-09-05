@@ -97,7 +97,7 @@ export const useStyles =makeStyles((theme: Theme)=>{
     },
 
     contentTab:{
-
+      flexGrow:10
     },
 
     headerContent:{
