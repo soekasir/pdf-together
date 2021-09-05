@@ -177,7 +177,7 @@ const PdfTogether:React.FC=()=>{
           <Grid item className={style.leftTab} xs={12}>
 
               {/**Files Tab*/}
-              <Paper variant="elevation" style={{width:'100%',minWidth:"255px",maxHeight:"237px",marginTop:"36px",boxShadow:"none",paddingBottom:"30px"}}>
+              <Paper variant="elevation" style={{width:'100%',minWidth:"255px",height:"237px",marginTop:"36px",boxShadow:"none",paddingBottom:"30px"}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
                   <Typography variant="h3">Files on Cards</Typography>
                 </div>
@@ -215,7 +215,7 @@ const PdfTogether:React.FC=()=>{
           </Grid> {/**End of Tab */}
 
           {/**Header dan Content */}
-          <Grid item className={style.contentTab}>
+          <Grid item className={style.contentTab} xs={12}>
 
             {/* Hader Content */}
             <div className={style.headerContent} style={{flexGrow:0}}>

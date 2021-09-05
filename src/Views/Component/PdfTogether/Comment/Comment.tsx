@@ -140,7 +140,8 @@ export const LoadComment=()=>{
 
     return (
       <>
-          <Grid container style={{padding:"20px 15px 17px 18px", backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8"}}>
+          <Grid container style={{padding:"20px 15px 17px 18px",
+          backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8",}}>
             <Grid container  item direction="row">
               <Grid item style={{color:"#fff",backgroundColor:theme.palette.info.main,width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
                 <Typography align="center" variant="subtitle2">{layerValue.id}</Typography>
@@ -186,7 +187,7 @@ export const LoadComment=()=>{
         </Grid>
 
         {/*Load Comment */}
-        <div style={{overflow:"auto",marginTop:"16px",maxHeight:"300px"}} className="costum-scroll">
+        <div style={{marginTop:"16px",paddingBottom:"10px",overflow:"auto"}} className={style.commentTab+" costum-scroll"}>
           {
             filter[option.filter]().map((layer:LayerContract.ArrayLayer)=>{
 
