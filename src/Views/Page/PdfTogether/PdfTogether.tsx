@@ -1,10 +1,11 @@
 import { useRef, useContext, useEffect, useState, useMemo, useCallback, } from "react";
 import {  PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
-import { Annotation,LoadComment,Tool,AnnotDraw } from '../../../Controller/Env/Component';
 import { pdfjsLib} from "../../../Controller/Env/Facades";
 import { PDFPageProxy } from "pdfjs-dist/types/display/api";
 import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
+import { PageViewport } from "pdfjs-dist/types/display/display_utils";
+import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 /**
  * Stylesheet
  */
@@ -12,14 +13,11 @@ import './../../../Resources/style/style.css';
 import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../../../Resources/style/style';
 import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
-import { CanvasPoint } from "../../Component/Canvas/Canvas";
-import { CostumForm } from "../../Component/Costum/Form";
-import { LayerContract } from "../../../Models/Interfaces/LayerContract";
-import { PageViewport } from "pdfjs-dist/types/display/display_utils";
+import {Tool,CostumForm,CanvasPoint,LoadComment,AnnotDraw,Annotation} from "./../../Component/PdfTogether";
 
 const CursorClassName=(mode:Type.Mode|null)=>mode===Type.Mode.Annotation?"cursor crosshair":mode===Type.Mode.Draw?"cursor crosshair":"cursor";
 
-const PdfTogether=()=>{
+const PdfTogether:React.FC=()=>{
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -217,7 +215,7 @@ const PdfTogether=()=>{
           </Grid> {/**End of Tab */}
 
           {/**Header dan Content */}
-          <Grid item xl={9} lg={9} md={8} sm={6} xs={12} className={style.contentTab}>
+          <Grid item className={style.contentTab}>
 
             {/* Hader Content */}
             <div className={style.headerContent} style={{flexGrow:0}}>

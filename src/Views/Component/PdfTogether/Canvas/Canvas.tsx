@@ -1,6 +1,6 @@
 // import { useEffect} from "react";
 // import { setupCanvas } from "../../../Models/Draw/Draw";
-import { Validation as Type } from "../../../Models/Interfaces/Type";
+import { Validation as Type } from "../../../../Models/Interfaces/Type";
 
 export const CanvasPoint=({canvasRef,setPoint,className}:{canvasRef:React.RefObject<HTMLCanvasElement>,
   setPoint:React.Dispatch<React.SetStateAction<Type.Point>>,className:any

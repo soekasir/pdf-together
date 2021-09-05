@@ -1,14 +1,14 @@
 import { Resizable } from "re-resizable";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { PdfContext, PdfTogetherContext } from "../../../../Controller/Context/Context";
-import { ReactDraw, setupDraw } from "../../../../Models/Draw/Draw";
-import { Validation as Type } from "../../../../Models/Interfaces/Type";
+import { PdfContext, PdfTogetherContext } from "../../../../../Controller/Context/Context";
+import { ReactDraw, setupDraw } from "../../../../../Models/Draw/Draw";
+import { Validation as Type } from "../../../../../Models/Interfaces/Type";
 import PaletteIcon from '@material-ui/icons/Palette';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {  Grid,  Menu, MenuItem,  Slider, } from "@material-ui/core";
 import PublishIcon from '@material-ui/icons/Publish';
-import { LayerContract } from "../../../../Models/Interfaces/LayerContract";
-import { theme } from "../../../../Resources/style/style";
+import { LayerContract } from "../../../../../Models/Interfaces/LayerContract";
+import { theme } from "../../../../../Resources/style/style";
 import { AddSharp, Delete } from "@material-ui/icons";
 import { Layer } from "../../Layer/Layer";
 

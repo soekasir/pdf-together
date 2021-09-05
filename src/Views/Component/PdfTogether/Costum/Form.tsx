@@ -1,6 +1,6 @@
 import { StandardTextFieldProps, TextField, withStyles } from "@material-ui/core";
 import { ChangeEvent, useState } from "react";
-import { theme } from "../../../Resources/style/style";
+import { theme } from "../../../../Resources/style/style";
 
 interface FormProps extends StandardTextFieldProps{
   handleSubmit?:(value:any) => any,
