@@ -1,5 +1,5 @@
 import { ReactChildren, ReactElement, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Validation as Type } from "../../../Models/Interfaces/Type";
+import { Validation as Type } from "../../../../Models/Interfaces/Type";
 
 interface layerProp{
   point:Type.PointCanvas,

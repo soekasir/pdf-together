@@ -1,15 +1,15 @@
 import React, { useState,useContext, ChangeEvent} from "react";
 import { Layer } from "../Layer/Layer";
-import { PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
-import { LayerContract } from "../../../Models/Interfaces/LayerContract";
-import { Validation as Type} from "../../../Models/Interfaces/Type";
+import { PdfContext, PdfTogetherContext} from "../../../../Controller/Context/Context";
+import { LayerContract } from "../../../../Models/Interfaces/LayerContract";
+import { Validation as Type} from "../../../../Models/Interfaces/Type";
 import { ReplyForm } from "../Comment/Reply";
 import { AddSharp } from "@material-ui/icons";
 import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
-import {useStylesAnnotation } from "../../../Resources/style/annotation";
-import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified} from "../../../Resources/svg/icon";
-import { SearchTextField, theme } from "../../../Resources/style/style";
-import { understandableDate } from "../../../Models/Costum/Fn";
+import {useStylesAnnotation } from "../../../../Resources/style/annotation";
+import { IconPeople, IconSendEmail,  IconThreeDot, IconUrl, IconVerified} from "../../../../Resources/svg/icon";
+import { SearchTextField, theme } from "../../../../Resources/style/style";
+import { understandableDate } from "../../../../Models/Costum/Fn";
 import { CostumForm } from "../Costum/Form";
 
 
@@ -219,15 +219,14 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
             </div>
             <div style={{marginTop:theme.spacing(2)}}>
               <CostumForm multiline handleChange={handleAnnot} handleSubmit={handleSubmit}
-              label="Write your comment"
-              style={{width:"90%"}} defaultValue={defaultValue}/>
+              label="Write your comment" style={{width:"90%"}} defaultValue={defaultValue}/>
             </div>
-            
           </Grid>
           <Grid sm={1}>
             <OptionAnnotation handleOption={handleOption}/>
           </Grid>
-        </Grid>{annotTool()}
+        </Grid>
+        {annotTool()}
       </Paper>
     )
   }
@@ -297,7 +296,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const showReply=()=>{
     return(
-      <div>
+      <div style={{overflow:"auto",maxHeight:"300px"}} className="costum-scroll">
         {
           pdfTogether.layers.filter((layer)=>{
             if(layer.value.type===Type.Mode.Chat && layer.value.content.to===prop.layer?.id) return true;

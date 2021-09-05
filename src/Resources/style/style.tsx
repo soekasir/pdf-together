@@ -92,12 +92,20 @@ export const useStyles =makeStyles((theme: Theme)=>{
       width:"100%",
       [theme.breakpoints.up(600)]: {
         maxWidth: "256px",
-        marginRight:"20px",
+        width:"256px",
+        position:"fixed",
+        left:"32px",
+        zIndex:3,
+        overflow:"hidden",
+        maxHeight:"90vh"
       },
     },
 
     contentTab:{
-      flexGrow:10
+      flexGrow:10,
+      [theme.breakpoints.up(600)]: {
+        marginLeft:"300px",width:"100%"
+      },
     },
 
     headerContent:{

@@ -1,11 +1,11 @@
 import { Grid, Menu, MenuItem, Paper, Typography } from "@material-ui/core";
 import React, {useContext, useState} from "react";
-import { AuthorContext,PdfTogetherContext } from "../../../Controller/Context/Context";
-import { understandableDate } from "../../../Models/Costum/Fn";
-import { LayerContract } from "../../../Models/Interfaces/LayerContract";
-import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { SearchTextField, theme, useStyles } from "../../../Resources/style/style";
-import { FilterIcon } from "../../../Resources/svg/icon";
+import { AuthorContext,PdfTogetherContext } from "../../../../Controller/Context/Context";
+import { understandableDate } from "../../../../Models/Costum/Fn";
+import { LayerContract } from "../../../../Models/Interfaces/LayerContract";
+import { Validation as Type } from "../../../../Models/Interfaces/Type";
+import { SearchTextField, theme, useStyles } from "../../../../Resources/style/style";
+import { FilterIcon } from "../../../../Resources/svg/icon";
 
 
 const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=>void})=>{
@@ -186,7 +186,7 @@ export const LoadComment=()=>{
         </Grid>
 
         {/*Load Comment */}
-        <div style={{overflow:"auto",marginTop:"16px",maxHeight:"400px"}} className="costum-scroll">
+        <div style={{overflow:"auto",marginTop:"16px",maxHeight:"300px"}} className="costum-scroll">
           {
             filter[option.filter]().map((layer:LayerContract.ArrayLayer)=>{
 

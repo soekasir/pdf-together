@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useRef, useState } from "react";
-import { PdfContext } from "../../../Controller/Context/Context";
-import { ReplyTextField } from "../../../Resources/style/annotation";
+import { PdfContext } from "../../../../Controller/Context/Context";
+import { ReplyTextField } from "../../../../Resources/style/annotation";
 
 
 

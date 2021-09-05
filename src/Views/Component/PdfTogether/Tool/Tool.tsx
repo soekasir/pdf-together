@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@material-ui/core";
 import { NoteAddOutlined } from "@material-ui/icons";
-import { Validation as Type } from "../../../Models/Interfaces/Type";
-import { IconDownload, IconDraw } from "../../../Resources/svg/icon";
+import { Validation as Type } from "../../../../Models/Interfaces/Type";
+import { IconDownload, IconDraw } from "../../../../Resources/svg/icon";
 
 
 export const Tool=({setModeHandle}:{setModeHandle:any})=>{
