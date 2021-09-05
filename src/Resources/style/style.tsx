@@ -75,7 +75,7 @@ export const useStyles =makeStyles((theme: Theme)=>{
     navbartop:{
       position:'fixed',
       minWidth:'100%',
-      height:'72px',
+      height:"72px",
       
       top:'0px',
       zIndex:3,
@@ -95,9 +95,11 @@ export const useStyles =makeStyles((theme: Theme)=>{
         width:"256px",
         position:"fixed",
         left:"32px",
+        top:"72px",
+        bottom:"0px",
         zIndex:3,
         overflow:"hidden",
-        maxHeight:"90vh"
+        height:"90%"
       },
     },
 
@@ -106,6 +108,10 @@ export const useStyles =makeStyles((theme: Theme)=>{
       [theme.breakpoints.up(600)]: {
         marginLeft:"300px",width:"100%"
       },
+    },
+
+    commentTab:{
+      maxHeight:"calc(100vh - 470px) !important"
     },
 
     headerContent:{
