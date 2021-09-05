@@ -7,12 +7,9 @@ import { CurrentPage, PdfTogether } from "../../Models/Main/MainPdfTogether";
  * Context for Pdf
  */
 interface PdfContextValue{
-  pdf:File|undefined,
   setPdf:React.Dispatch<React.SetStateAction<File | undefined>>
   url:string|undefined,
   setUrl:React.Dispatch<React.SetStateAction<string | undefined>>,
-  // layer:Layers,
-  setUrlLayer:React.Dispatch<React.SetStateAction<string| undefined>>,
   layerManager:PdfTogether
 };
 

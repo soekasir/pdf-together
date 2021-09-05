@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect, useState, } from "react";
+import { useRef, useContext, useEffect, useState, useMemo, useCallback, } from "react";
 import {  PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
 import { Annotation,LoadComment,Tool,AnnotDraw } from '../../../Controller/Env/Component';
 import { pdfjsLib} from "../../../Controller/Env/Facades";
@@ -16,81 +16,30 @@ import { CanvasPoint } from "../../Component/Canvas/Canvas";
 import { CostumForm } from "../../Component/Costum/Form";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
 
-const CursorClassName=(mode:Type.Mode|null)=>{
-  if(mode===Type.Mode.Annotation){
-    return "cursor crosshair";
-  }
-
-  if(mode===Type.Mode.Draw){
-    return "cursor crosshair";
-  }
-
-  return "cursor";
-
-}
-
-
+const CursorClassName=(mode:Type.Mode|null)=>mode===Type.Mode.Annotation?"cursor crosshair":mode===Type.Mode.Draw?"cursor crosshair":"cursor";
 
 const PdfTogether=()=>{
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+  const store=useRef({lastRenderPage:0,pages:new Map(),isStillRendering:false});
   const context=useContext(PdfContext);
-
   const style=useStyles();
-
   const [pdfRef,setPdfRef] = useState<any>();
   const [currentPage,setCurrentPage] = useState<CurrentPage>({pageNum:0,actualSize:{width:0,height:0}});
   // const [pdfFactory,setPdfFactory]=useState<AnnotationFactory>(); //belum dibutuhkan tp jgn dihapus
   const [mode,setMode]=useState<Type.Mode>(Type.Mode.Null);
   const [point,setPoint]=useState<Type.Point>({x:0,y:0});
   const [layer,setLayer]=useState<LayerContract.ArrayLayer[]>(context.layerManager.getAll());
-
-  context.layerManager.setPoint(point);  //supaya tiap page dirender point dilayer manager jg berubah
-
-  const setCurrentPageInit=()=>{
-      let newCurrentPage={...currentPage};
-      newCurrentPage.pageNum=1;
-      setCurrentPage(newCurrentPage);
-  }
-
+  context.layerManager.setPoint(point);
+  const setCurrentPageInit=()=>setCurrentPage( curr => ({...curr,pageNum:1}) );
   const setCurrentPageNum=(pageNum:number)=>{
-    if(pageNum<=pdfRef.numPages){
-      let newCurrentPage={...currentPage};
-      newCurrentPage.pageNum=pageNum;
-      setCurrentPage(newCurrentPage);
-    }
-  }
-
-  const setCurrentPageActuallSize=(size:Type.size)=>{
-    let newCurrentPage={...currentPage};
-    newCurrentPage.actualSize=size;
-    setCurrentPage(newCurrentPage);
-  }
-
-  const setModeHandle=(typemode:Type.Mode)=>{
-
-    if(typemode!==mode){ 
-      setMode(typemode);
-    }else{
-      setMode(Type.Mode.Null);
-    }
-
-  }
-
-  useEffect(()=>{
-    context.layerManager.setModeDispatch(setMode);
-    context.layerManager.setLayerDispatch(setLayer);
-  },[]);
-
-  useEffect(()=>{
-    context.layerManager.setCurrentPage(currentPage);
-  },[currentPage]);
-
-  useEffect(()=>{
-    context.layerManager.setCanvasref(canvasRef);
-  },[canvasRef]);
-
+    if(pageNum<=pdfRef.numPages) setCurrentPage( curr => ({...curr,pageNum:pageNum}) );
+  };
+  const setCurrentPageActuallSize=(size:Type.size)=>setCurrentPage(curr=>({...curr,actualSize:size}));
+  const setModeHandle=(typemode:Type.Mode)=>typemode===mode?setMode(Type.Mode.Null):setMode(typemode);
+  useEffect(()=>{ context.layerManager.setModeDispatch(setMode); context.layerManager.setLayerDispatch(setLayer); },[]);
+  useEffect(()=>{ context.layerManager.setCurrentPage(currentPage); },[currentPage]);
+  useEffect(()=>{ context.layerManager.setCanvasref(canvasRef); },[canvasRef]);
   //Mengambil file Pdf
   useEffect(()=>{
     if(context.url){
@@ -118,40 +67,58 @@ const PdfTogether=()=>{
 
   },[context.url]);
 
-  // Mengisi Fetch dr abstract FetchLayer
-  // context.layerManager.setFetch(disini );
-
-
   // Merender current page
   useEffect(()=> {
-  
-    if(pdfRef) pdfRef.getPage(currentPage.pageNum<=0?1:currentPage.pageNum).then(function(page:PDFPageProxy) {
-
-      let viewport = page.getViewport({scale: 2});
-      let canvas = canvasRef.current;
-      
-      let actualSize=page.getViewport({scale: 1});
-      setCurrentPageActuallSize({height:actualSize.height,width:actualSize.width});
-
-      if(canvas){
-        let renderingContext=canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        if(renderingContext){
-          let renderContext = {
-
-            canvasContext: renderingContext,
-
-            viewport: viewport
-
-          };
-          
-          page.render(renderContext);
+    if(pdfRef && currentPage.pageNum>0 && store.current.lastRenderPage!==currentPage.pageNum){
+      if(store.current.pages.has(currentPage.pageNum)){
+        let page=store.current.pages.get(currentPage.pageNum);
+        if(!store.current.isStillRendering){
+          store.current.isStillRendering=true;
+          let rend=page.proxy.render({viewport:page.viewport,canvasContext:canvasRef.current?.getContext("2d")});
+          rend.promise.then(()=>{
+            store.current.isStillRendering=false;
+          })
+          store.current.lastRenderPage=currentPage.pageNum;
         }
-      }
 
-    });
+      }else{
+        pdfRef.getPage(currentPage.pageNum).then(function(page:PDFPageProxy) {
+
+          let viewport = page.getViewport({scale: 2});
+          let canvas = canvasRef.current;
+          
+          let actualSize=page.getViewport({scale: 1});
+          setCurrentPageActuallSize({height:actualSize.height,width:actualSize.width});
+
+          if(canvas){
+            let renderingContext=canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            if(renderingContext){
+              let renderContext = {
+
+                canvasContext: renderingContext,
+
+                viewport: viewport
+
+              };
+              
+              if(!store.current.isStillRendering){
+                store.current.isStillRendering=true;
+                store.current.pages.set(currentPage.pageNum,{proxy:page,viewport:viewport});
+                let rend=page.render(renderContext);
+                rend.promise.then(()=>{
+                  store.current.isStillRendering=false;
+                });
+                store.current.lastRenderPage=currentPage.pageNum;
+              }
+            }
+          }
+
+        });
+      }
+    }
 
   }, [currentPage.pageNum]);
 
@@ -160,7 +127,7 @@ const PdfTogether=()=>{
   const prevPage = () => currentPage.pageNum > 1 && setCurrentPageNum(currentPage.pageNum - 1);
 
 
-  if(!context.pdf || !context.url ){
+  if( !context.url ){
     return <>Tidak ada file yang dipilih</>
   }
 

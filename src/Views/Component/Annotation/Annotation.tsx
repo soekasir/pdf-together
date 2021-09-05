@@ -365,7 +365,7 @@ export const LoadAnnotation=({pageNum}:{pageNum:number})=>{
 
   return <>
     {
-      layers.filter((layer)=>layer.value.onPage===pageNum && Type.Mode.Annotation===layer.value.type).map((layer:LayerContract.ArrayLayer)=>{
+      layers.filter((layer)=>layer.value.onPage===pageNum && Type.Mode.Annotation===layer.value.type).map((layer)=>{
         return <AnnotationMain key={layer.id} point={pdfPointToCanvasPoint(layer.value.point)} displayDefault={Type.LayerDisplay.show} layer={layer.value}/>
       })
     }

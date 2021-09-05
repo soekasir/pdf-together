@@ -1,5 +1,6 @@
 import { AuthorContext} from "./Context";
 import { Author } from "../../Models/Main/MainModel";
+import { useState } from "react";
 
 
 interface PropAuthorContextProvider{
@@ -14,10 +15,10 @@ interface PropAuthorContextProvider{
  */
 export const AuthorContextProvider=({children}:PropAuthorContextProvider)=>{
 
-  let author=new Author({
+  const [author,setAuthor]=useState<Author>(new Author({
     name:'Saya',
     id_user:'1',
-  });
+  }));
 
   return (
     <AuthorContext.Provider value={author}>

@@ -25,7 +25,7 @@ export const SelectPdf=()=>{
   return(
     <>
       <input className="form-control" type="file" accept=".pdf" name="content" onChange={setPdfFiles} />
-      {context.pdf?<button onClick={openPdf}>open</button>:null}
+      {context.url?<button onClick={openPdf}>open</button>:null}
       {context.url?<SelectPreview url={context.url} scale={.5}/>:null}
     </>
   )
