@@ -1,42 +1,42 @@
-import { Validation } from "./Type";
+import { Access } from "./Access";
 
 /**only read document */
-export const AccessGuest:Validation.AuthorHasAccess[]=[];
+export const AccessGuest:Access[]=[];
 
 /**Have Guest acces and can read chat, annotation, draw and download doccument */
 export const AccesViewer=[
   ...AccessGuest,
-  Validation.AuthorHasAccess.Read,
+  Access.Read,
 ];
 
 /** Have Viewer acces + can reply */
 export const AccessMember=[
   ...AccesViewer,
-  Validation.AuthorHasAccess.Reply,
-  Validation.AuthorHasAccess.DownloadDoc,
-  Validation.AuthorHasAccess.DownloadDocWithAnnotation
+  Access.Reply,
+  Access.DownloadDoc,
+  Access.DownloadDocWithAnnotation
 ];
 
 export const AccesManager=[
   ...AccessMember,
-  Validation.AuthorHasAccess.Create,
-  Validation.AuthorHasAccess.Delete,
-  Validation.AuthorHasAccess.Update,
+  Access.Create,
+  Access.Delete,
+  Access.Update,
 ];
 
 /** Have Member acces + Crud Any + Validate It */
 export const AccesAdmin=[
   ...AccesManager,
-  Validation.AuthorHasAccess.DeleteAny,
-  Validation.AuthorHasAccess.UpdateAny,
-  Validation.AuthorHasAccess.ValidateTask,
-  Validation.AuthorHasAccess.ApproveDoc,
-  Validation.AuthorHasAccess.ManagePeopleInDoc
+  Access.DeleteAny,
+  Access.UpdateAny,
+  Access.ValidateTask,
+  Access.ApproveDoc,
+  Access.ManagePeopleInDoc
 ];
 
 /** Have Member acces Can Approve Document */
 export const AccesApprover=[
   ...AccessMember,
-  Validation.AuthorHasAccess.ValidateTask,
-  Validation.AuthorHasAccess.ApproveDoc,
+  Access.ValidateTask,
+  Access.ApproveDoc,
 ];
