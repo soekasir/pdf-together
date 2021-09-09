@@ -19,9 +19,7 @@ export const useStylesAnnotation = makeStyles((theme: Theme) =>
     },
 
     navIcon:{
-      padding:'8px',
-      width:'10px',
-      height:'10px',
+      marginRight:'10px',
     },
 
     inputReply:{

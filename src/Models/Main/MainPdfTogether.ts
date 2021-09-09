@@ -20,6 +20,103 @@ abstract class LayerManager{
 
 }
 
+class CanvasRefManager{
+
+  point?:Type.Point;
+  currentPage?:CurrentPage;
+
+  constructor(public canvasRef:React.RefObject<HTMLCanvasElement>){}
+
+  setCurrentPage=(currentPage:CurrentPage)=>{
+    this.currentPage=currentPage;
+  }
+
+  setPoint=(point:Type.Point)=>{
+    this.point=point;
+  }
+
+  getCurrentCanvasSize=()=>{
+    if(this.canvasRef?.current){
+      return {height:this.canvasRef.current.clientHeight,width:this.canvasRef.current.clientWidth}
+    }
+    return;
+  }
+
+  getCurrentPageActuallSize=()=>{
+    if(this.currentPage) return {height:this.currentPage.actualSize.height,width:this.currentPage.actualSize.width}
+  }
+
+  getScale=()=>{
+    const cCS=this.getCurrentCanvasSize();
+    const cPAS=this.getCurrentPageActuallSize();
+    let scale;
+
+    if(cCS && cPAS){
+      scale={
+        height:cPAS.height/cCS.height,
+        width:cPAS.width/cCS.width,
+      }
+    }
+
+    return scale;
+  }
+
+  /**
+   * convert draw point to canvas point
+   * @return canvas point | current canvas point if parameter not defined
+   */
+  toCanvasPoint=(point?:Type.Point)=>{
+    if(this.canvasRef?.current && this.point){
+      return {
+        x:this.canvasRef.current.offsetLeft+(point?point.x:this.point.x),
+        y:this.canvasRef.current.offsetTop+(point?point.y:this.point.y)
+      }
+    }
+  }
+
+  /**
+   * convert pdf point to canvas point
+   */
+  pdfPointToCanvasPoint=(point:Type.PointPdf)=>{
+    const scale=this.getScale();
+    const cCS=this.getCurrentCanvasSize();
+
+    if(scale && cCS){
+      const newPoint={
+        y:cCS.height-(point.y/scale.height),
+        x:point.x/scale.width,
+      }
+      return this.toCanvasPoint(newPoint);
+    }
+  }
+
+  /**
+   * convert canvas point  to pdf point
+   */
+  canvasPointToPdfPoint=(point:Type.PointCanvas):Type.PointPdf=>{
+    const cCS=this.getCurrentCanvasSize();
+    const scale=this.getScale();
+
+    const result={
+      y:0,
+      x:0
+    }
+
+    if(scale && cCS){
+      result.x=Math.round(point.x*scale.width);
+      result.y=Math.round((cCS.height-point.y)*scale.height);
+    }
+
+    return result;
+
+  }
+
+}
+
+class FetchLayersManager{
+  
+}
+
 class DocLayerManager extends LayerManager{
 
   protected fetch:FetchLayers;
@@ -220,7 +317,7 @@ class DocLayerManager extends LayerManager{
 
     //fetch to json first, if succes then edit layer
     const layer=this.layer.get(id_layer);
-    if(layer){
+    if(layer && this.author && this.author.id_user===layer.author.id_user){
       let newLayer={...layer};
       newLayer.content=content;
 
@@ -240,12 +337,15 @@ class DocLayerManager extends LayerManager{
    * @param content
    */
   deleteLayerContent=(id_layer:LayerContract.LayerId)=>{
+    if(this.author){
 
-    this.fetch.deleteLayer(id_layer,(value:LayerContract.ArrayLayer[])=>{
+      this.fetch.deleteLayer(id_layer,(value:LayerContract.ArrayLayer[])=>{
 
-      this.refreshLayer(value);
+        this.refreshLayer(value);
 
-    });
+      });
+
+    }
 
   }
 
@@ -295,7 +395,7 @@ export class PdfTogether extends DocLayerManager{
 
 }
 
-export const addAnnotationInPdfDoc=(layerAnnot:LayerContract.LayerAnnotation,pdfFactory:AnnotationFactory)=>{
+const addAnnotationInPdfDoc=(layerAnnot:LayerContract.LayerAnnotation,pdfFactory:AnnotationFactory)=>{
 
     pdfFactory.createTextAnnotation({
 

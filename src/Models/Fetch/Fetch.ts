@@ -1,15 +1,10 @@
 /** Handle Fetch */
-import { Layers } from "../Layers/Layers";
 
 
 interface GetFetch{
   url:string,
   token?:string,
 }
-
-
-
-
 
 
 interface PostFetch{
@@ -111,31 +106,4 @@ export const Fetch={
 
     return req;
   }
-}
-
-
-
-
-
-export const FetchLayer=(urlLayer:string)=>{
-
-  return Fetch.Get({url:urlLayer}).then((data: any)=>{
-    let layer;
-
-    try{
-      layer=new Layers(data);
-    }catch (e){
-      console.log(e);
-    }
-
-    return layer?layer:new Layers();
-
-  },(reason)=>{
-
-    console.log(reason);
-
-    return new Layers();
-    
-  });
-
 }

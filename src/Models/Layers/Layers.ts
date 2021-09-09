@@ -10,10 +10,7 @@ export class Layers{
   #id:Contract.LayerId=0;
 
   constructor(arrayLayer?: Contract.ArrayLayer[]) {
-    //get highest id number and fill layers
-    if (arrayLayer && Array.isArray(arrayLayer)) {
-      this.#_init(arrayLayer);
-    }
+    if(arrayLayer && arrayLayer[0]){this.#_init(arrayLayer)};
   }
 
   /**
@@ -21,21 +18,30 @@ export class Layers{
    * @returns Object { last_id: the highest id, map: instance of Map }
    */
   #_init=(arrayLayer: Contract.ArrayLayer[])=>{
-    let last_id = 0;
+    const init=this.#_toMapAndGetLastID(arrayLayer);
+    if(init){
+      this.#id=init.last_id;
+      this.layers=init.map;
+    }
+  }
 
-    const init: Iterable<readonly [number, Contract.LayerValue]>=arrayLayer.map((layer: Contract.ArrayLayer) => {
-      last_id = last_id < layer.id ? layer.id : last_id;
-      return [layer.id, layer.value];
-    });
+  #_toMapAndGetLastID=(arrayLayer: Contract.ArrayLayer[])=>{
+    if (Array.isArray(arrayLayer) && arrayLayer[0].id && arrayLayer[0].value) {
+      let last_id = 0;
 
-    this.layers = new Map(init);
-    this.#id = last_id;
+      const init: Iterable<readonly [number, Contract.LayerValue]>=arrayLayer.map((layer: Contract.ArrayLayer) => {
+        last_id = last_id < layer.id ? layer.id : last_id;
+        return [layer.id, layer.value];
+      });
+
+      const map = new Map(init);
+      return {last_id:last_id,map:map};
+    }
   }
 
   /** private method to create unique Id */
   _idGenerator():Contract.LayerId{
-    this.#id++;
-    return this.#id;
+    this.#id++; return this.#id;
   }
 
   get(id:Contract.LayerId):Contract.LayerValue|undefined{
@@ -62,15 +68,11 @@ export class Layers{
   }
 
   /**
-   * this method for performance, use this method only after fetch from server
+   * use this method only after fetch from server
    * @param arrayLayer
    */
   reFill(arrayLayer: Contract.ArrayLayer[]) {
-    if (Array.isArray(arrayLayer)) {
-      this.#_init(arrayLayer);
-    }else{
-      console.error("Argument ArrayLayer isnt Array");
-    }
+    if(arrayLayer && arrayLayer[0]){this.#_init(arrayLayer)};
   }
 
 }
@@ -86,7 +88,7 @@ export class Layers{
 
 
 
-export class CrudLayers extends Layers implements Contract.LayersInterfaces{
+export class CrudLayers extends Layers{
 
   /** private method to create unique Id */
   _createId():Contract.LayerId{
@@ -95,7 +97,6 @@ export class CrudLayers extends Layers implements Contract.LayersInterfaces{
 
   add(value:Contract.LayerValue){
     const newValue={...value};
-
     newValue.id=this._createId();
     this.layers.set(newValue.id,newValue);
     return this;

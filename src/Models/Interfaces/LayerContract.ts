@@ -1,3 +1,4 @@
+import { ArrayAcces } from './Access';
 import {Validation as Type} from './Type';
 
 
@@ -17,6 +18,7 @@ export namespace LayerContract{
   export interface Author{
     name:string,
     id_user:id_user,
+    access?:ArrayAcces
   }
 
   export interface Content{
@@ -25,7 +27,7 @@ export namespace LayerContract{
 
   export interface Annotation extends Content{
     annot:string,
-    isSolved:boolean,
+    isSolved:boolean|number,
     id_annot?:number,
   }
 
@@ -70,39 +72,6 @@ export namespace LayerContract{
 
   export interface LayerChat extends LayerValue{
     content:Chat,
-  }
-
-  export interface LayersInterfaces{
-
-    /**
-     * To add a layer
-     * @returns this
-     */
-    add(value:LayerValue):this;
-
-    /**
-     * to get a layer value
-     */
-    get(id:LayerId):LayerValue|undefined;
-
-    /**
-     * to get all layers
-     */
-    getAll():ArrayLayer[];
-
-
-    /**
-     * to delete a layer
-     * @returns {Layer} this
-     */
-    delete(id:LayerId):this;
-
-    /**
-     * to update a layer
-     * @returns {Layer} this
-     */
-    update(id:LayerId,value:LayerValue):this;
-
   }
 
 }

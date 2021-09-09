@@ -1,23 +1,15 @@
 import {AuthorContext, PdfContext} from "./Context";
 import React, { useState,useEffect, useContext} from "react";
-import { Layers } from "../../Models/Layers/Layers";
-import { NoFetch } from "../../Models/Interfaces/FetchLayer";
-import {PdfTogether} from "./../../Models/Main/MainPdfTogether"
-
-
-const layerDefault=new Layers();
-const layerManager=new PdfTogether(layerDefault);
-const noFetch=new NoFetch(layerDefault);
-layerManager.setFetch(noFetch);
+import {layerManager, noFetch} from "../Env/LayerManager.env";
 
 export const PdfContextProvider=({children}:{children:React.ReactChild})=>{
-  const author=useContext(AuthorContext);
+  const {author}=useContext(AuthorContext);
   const [pdf,setPdf]=useState<File>();
   const [url,setUrl]=useState<string>();
-  const [urlLayer,setUrlLayer]=useState<string>();
+  // const [urlLayer,setUrlLayer]=useState<string>();
 
   useEffect(()=>{
-    layerManager.setAuthor(author);
+    if (author) layerManager.setAuthor(author);
   },[author])
 
   useEffect(()=>{

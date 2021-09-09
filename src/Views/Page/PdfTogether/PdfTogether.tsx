@@ -1,6 +1,6 @@
-import { useRef, useContext, useEffect, useState, useMemo, useCallback, } from "react";
+import { useRef, useContext, useEffect, useState } from "react";
 import {  PdfContext, PdfTogetherContext} from "../../../Controller/Context/Context";
-import { pdfjsLib} from "../../../Controller/Env/Facades";
+import { pdfjsLib } from "../../../Controller/Env/Facades";
 import { PDFPageProxy } from "pdfjs-dist/types/display/api";
 import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
@@ -10,8 +10,8 @@ import { LayerContract } from "../../../Models/Interfaces/LayerContract";
  * Stylesheet
  */
 import './../../../Resources/style/style.css';
-import { ApproveButton, ButtonCurrentPage, RejectButton, useStyles } from './../../../Resources/style/style';
-import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography,} from "@material-ui/core";
+import { ApproveButton, ButtonCurrentPage, RejectButton, theme, useStyles } from './../../../Resources/style/style';
+import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography, Button,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
 import {Tool,CostumForm,CanvasPoint,LoadComment,AnnotDraw,Annotation} from "./../../Component/PdfTogether";
 
@@ -40,6 +40,9 @@ const PdfTogether:React.FC=()=>{
   const [layer,setLayer]=useState<LayerContract.ArrayLayer[]>(context.layerManager.getAll());
 
   context.layerManager.setPoint(point);
+
+
+
 
   const setCurrentPageInit=()=>setCurrentPage( curr => ({...curr,pageNum:1}) );
 
@@ -177,7 +180,7 @@ const PdfTogether:React.FC=()=>{
           <Grid item className={style.leftTab} xs={12}>
 
               {/**Files Tab*/}
-              <Paper variant="elevation" style={{width:'100%',minWidth:"255px",height:"237px",marginTop:"36px",boxShadow:"none",paddingBottom:"30px"}}>
+              <Paper variant="elevation" style={{width:'100%',minWidth:"255px",height:"237px",marginTop:"36px",boxShadow:"none",paddingBottom:"30px",borderRadius:"8px"}}>
                 <div style={{paddingTop:"24px",marginLeft:"14px"}}>
                   <Typography variant="h3">Files on Cards</Typography>
                 </div>
@@ -220,12 +223,24 @@ const PdfTogether:React.FC=()=>{
             {/* Hader Content */}
             <div className={style.headerContent} style={{flexGrow:0}}>
               <div>
-                <ApproveButton variant="contained" size='small' className={style.button}>
-                  Approve
-                </ApproveButton>
-                <RejectButton variant="contained" size='small' className={style.button}>
-                  Reject
-                </RejectButton>
+                <Button style={{
+                      height:42,
+                      width:85,
+                      color: '#fff',
+                      lineHeight:'17px',
+                      boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
+                      backgroundColor: theme.palette.success.main,
+                      margin:'8px'
+                }}>Approve</Button>
+                <Button variant="contained" size='small' style={{
+                  height:42,
+                  width:85,
+                  color: '#fff',
+                  lineHeight:'17px',
+                  boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
+                  backgroundColor: theme.palette.secondary.main,
+                  margin:'8px'
+                }}>Approve</Button>
               </div>
               <div className={style.controlPage} style={{flexGrow:3,display:"flex",justifyContent:"center"}}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>

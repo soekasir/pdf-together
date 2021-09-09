@@ -9,6 +9,12 @@ export const theme = createTheme({
       fontSize:'16px',
       lineHeight:'22px',
       fontWeight:700,
+      letterSpacing: '0.05em',
+    },
+    h5:{
+      fontSize:16,
+      fontWeight:600,
+      lineHeight:'19.1px'
     },
     button:{
       textTransform: 'none',
@@ -23,7 +29,7 @@ export const theme = createTheme({
     },
     subtitle2:{
       fontSize:14,
-      fontWeight:400,
+      fontWeight:600,
       lineHeight:'19.1px'
     },
     body1:{
@@ -177,6 +183,7 @@ export const ApproveButton = withStyles({
   root: {
     height:39,
     color: '#fff',
+    boxShadow:'0px',
     backgroundColor: theme.palette.success.main,
     '&:hover': {
       backgroundColor: theme.palette.success.dark,
@@ -214,6 +221,7 @@ export const ButtonCurrentPage = withStyles((theme: Theme) => ({
 
 export const SearchTextField = withStyles({
   root: {
+    fontSize:14,
     "& label.Mui-focused": {
       color: theme.palette.text.disabled
     },

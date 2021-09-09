@@ -1,7 +1,3 @@
-
-
-
-
 export namespace Validation{
 
   /*_______________________________________________________
@@ -14,13 +10,7 @@ export namespace Validation{
 
   export type PointPdf=Point;
 
-
-
-
   export type PointCanvas=Point;
-
-
-
 
   export type RectPoint={
     x1:number,
@@ -33,9 +23,6 @@ export namespace Validation{
     width:number,
     height:number,
   }
-
-
-
 
   export type RectPointCanvas=RectPoint;
 
@@ -50,8 +37,6 @@ export namespace Validation{
     Draw='Draw',
   }
 
-
-
   export enum LayerDisplay{
     pin='pin',
     insert='insert',
@@ -62,8 +47,6 @@ export namespace Validation{
     update='update'
   }
 
-
-
   export enum FilterAnnotation{
     All='all',
     Latest='latest', 
@@ -72,8 +55,6 @@ export namespace Validation{
     Solved='solved',
     Unsolved='unsolved',
     CurrentPage='currentpage',
-
   }
-
 
 }

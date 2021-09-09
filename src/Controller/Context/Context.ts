@@ -18,6 +18,14 @@ interface PdfTogetherContext{
   currentPage:CurrentPage
 }
 
+interface AuthorContextValue{
+  author:Author|undefined,
+  setAuthor:React.Dispatch<React.SetStateAction<Author | undefined>>,
+}
+
+/**
+ * Context for Document
+ */
 export const PdfContext=createContext({} as PdfContextValue);
 
 /**
@@ -28,9 +36,9 @@ export const PdfTogetherContext=createContext({} as PdfTogetherContext);
 /**
  * Context for global Api
  */
-export const ApiContext=createContext(undefined);
+// export const ApiContext=createContext(undefined);
 
 /**
  * Context for Author
  */
- export const AuthorContext=createContext({} as Author);
+ export const AuthorContext=createContext({} as AuthorContextValue);

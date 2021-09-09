@@ -48,7 +48,7 @@ const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=
 
 export const LoadComment=()=>{
   const {layers,currentPage}=useContext(PdfTogetherContext);
-  const author=useContext(AuthorContext);
+  const authorContext=useContext(AuthorContext);
   const style=useStyles();
 
   const [option,setOption]=useState({
@@ -77,11 +77,11 @@ export const LoadComment=()=>{
     }),
 
     mycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user===author.id_user;
+      return layer.value.author.id_user===authorContext.author?.id_user;
     }),
   
     notmycomment:()=>filter.all().filter((layer)=>{
-      return layer.value.author.id_user!==author.id_user;
+      return layer.value.author.id_user!==authorContext.author?.id_user;
     }),
 
     latest:()=>filter.all().sort((a,b)=>{
@@ -173,7 +173,7 @@ export const LoadComment=()=>{
   return (
     <>
       <Paper variant="elevation" style={{width:'100%',minWidth:"256px",
-      marginTop:"40px",paddingTop:"20px",boxShadow:"none"}}>
+      marginTop:"40px",paddingTop:"20px",boxShadow:"none",borderRadius:"8px"}}>
 
         {/**  Header Comment Tab, Filter, dan Search*/}
         <Grid direction="column" style={{marginLeft:"14px",marginRight:"10px"}}>

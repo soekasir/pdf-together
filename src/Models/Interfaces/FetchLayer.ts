@@ -1,36 +1,29 @@
 // import { Fetch } from "../Fetch/Fetch";
 import { Layers, CrudLayers as OfflineLayers } from "../Layers/Layers";
 import { LayerContract } from "./LayerContract";
-
-export interface Doc{
-  url:any;
-}
+import { MiddlewareLayers } from "./MiddlewareLayers";
 
 type callback=(value:LayerContract.ArrayLayer[])=>void;
 
 export abstract class FetchLayers{
-  /**
-   * Method ini digunakan untuk mengubah response dr server ke array LayerContract.ArrayLayer[]
-   * @param res Hasil fetch
-   */
-  abstract resToLayer(res:unknown):LayerContract.ArrayLayer[]|undefined;
-  /**
-   * Method ini meminta data dr server kemudian gunakan resToLayer untuk mendapatkan kelas Layers
-   * Kemudian panggil callbacknya
-   */
+  middleware?:MiddlewareLayers;
+
   abstract loadLayer(callback:callback):void;
   /**
-   * Method ini meminta server untuk menambahkan data layer kemudian gunakan resToLayer untuk mendapatkan kelas Layers
+   * Method ini meminta server untuk menambahkan data layer
+   * kemudian gunakan middleware.resToLayer untuk mendapatkan ArrayLayers[]
    * Kemudian panggil callbacknya
    */
   abstract addLayer(layerValue:LayerContract.LayerValue,callback:callback):void;
   /**
-   * Method ini meminta server untuk melakukan update kemudian gunakan resToLayer untuk mendapatkan kelas Layers
+   * Method ini meminta server untuk melakukan update
+   * kemudian gunakan middleware.resToLayer untuk mendapatkan ArrayLayers[]
    * Kemudian panggil callbacknya
    */
   abstract updateLayer(id_layer:any,layerValue:LayerContract.LayerValue,callback:callback):void;
   /**
-   * Method ini meminta server untuk menghapus layer kemudian gunakan resToLayer untuk mendapatkan kelas Layers
+   * Method ini meminta server untuk menghapus layer
+   * kemudian gunakan middleware.resToLayer untuk mendapatkan ArrayLayers[]
    * Kemudian panggil callbacknya
    */
   abstract deleteLayer(id_layer:any,callback:callback):void;
@@ -38,12 +31,12 @@ export abstract class FetchLayers{
 
 
 /**
- * Ini digunakan untuk default/offline
+ * Ini digunakan untuk offline
  */
 export class NoFetch extends FetchLayers{
   layer:OfflineLayers;
 
-  constructor(layer:Layers, public doc?:Doc){
+  constructor(layer:Layers){
     super();
     this.layer=new OfflineLayers(layer.getAll());
   }
@@ -97,7 +90,7 @@ export class NoFetch extends FetchLayers{
 
 }
 
-class NotFinished extends FetchLayers{
+class FetchToServer extends FetchLayers{
 
   resToLayer(res:unknown){
 

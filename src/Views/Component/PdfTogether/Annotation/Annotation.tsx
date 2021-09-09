@@ -60,7 +60,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
   const styleAnnot=useStylesAnnotation();
   const pdfContext=useContext(PdfContext);
   const pdfTogether=useContext(PdfTogetherContext);
-  const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false,};
+  const formDefault=prop.layer?prop.layer.content:{annot:'',isSolved:false};
   const [form,setForm]=useState<LayerContract.Annotation>(formDefault);
 
 
@@ -115,7 +115,7 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
   const handleToggleIsSolved=()=>{
     let newForm={...form};
 
-    newForm.isSolved=!form.isSolved;
+    newForm.isSolved=form.isSolved?false:new Date().getTime();
     setForm(newForm);
     if(prop.layer && prop.layer.id){
       pdfContext.layerManager.updateLayerContent(prop.layer.id,newForm);
@@ -144,22 +144,29 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
 
   const annotTool=()=>{
     return <>
-    <Grid justifyContent="flex-start" alignItems="flex-start" style={{marginTop:"25px"}} spacing={2}>
-      <span className={styleAnnot.navIcon} onClick={handleToggleIsSolved}>
-        <IconVerified style={{color:form.isSolved?"#20C795":'#6A6A6A'}}/>
-      </span>
-      <span className={styleAnnot.navIcon} onClick={handleToolEmail}>
+    <Grid container justifyContent="flex-start" direction='row' alignItems="flex-start"
+    style={{width:'280px',marginTop:'10px'}}>
+      <Grid item className={styleAnnot.navIcon}
+        style={{color:form.isSolved?"#20C795":'#6A6A6A',...theme.typography.body1,
+        display:'flex',alignItems:'flex-start'}}
+        onClick={handleToggleIsSolved}>
+          <span><IconVerified/></span>
+          <span>
+            {form.isSolved&&typeof form.isSolved==='number'?understandableDate(new Date(form.isSolved)):null}
+          </span>
+      </Grid>
+      <Grid item className={styleAnnot.navIcon} onClick={handleToolEmail}>
         <IconSendEmail style={{color:'#6A6A6A'}}/>
-      </span>
-      <span className={styleAnnot.navIcon}>
+      </Grid>
+      <Grid item className={styleAnnot.navIcon}>
         <IconUrl style={{color:'#6A6A6A'}}/>
-      </span>
-      <span className={styleAnnot.navIcon}>
+      </Grid>
+      <Grid item className={styleAnnot.navIcon}>
         <IconPeople style={{color:'#6A6A6A'}}/>
-      </span>
+      </Grid>
     </Grid>
     {option.isToolEmailActive?<div>
-      <SearchTextField size="small" label="email adress" variant="outlined" style={{height:"32px",width:'100%',}}/>
+      <SearchTextField size="small" label="email adress" variant="outlined" style={{height:"32px",width:'100%',fontSize:'14px'}}/>
     </div>:null}
     </>
   }
@@ -184,7 +191,9 @@ export const AnnotationMain:React.FC<PropAnnotation>=(prop)=>{
               </Typography>
             </div>
             <div style={{marginTop:"12px",borderBottom:'0.5px solid #DEDEDE',paddingBottom:'10px',}}>
-              <Typography variant="body1" color="textPrimary" style={{wordBreak:"break-word"}}>{prop.layer.content.annot}</Typography>
+              <Typography variant="subtitle2" color="textPrimary" style={{wordBreak:"break-word"}}>
+                {prop.layer.content.annot}
+              </Typography>
             </div>
 
             {showReply()}

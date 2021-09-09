@@ -1,3 +1,4 @@
+import { ArrayAcces, Access } from "../Interfaces/Access";
 import { LayerContract } from "../Interfaces/LayerContract";
 import { Validation } from "../Interfaces/Type";
 import { Layers } from "../Layers/Layers";
@@ -26,19 +27,28 @@ export class LayerValue implements LayerContract.LayerValue{
 }
 
 
-
-
 export class Author implements LayerContract.Author{
   name:string;
   id_user:LayerContract.id_user;
+  access?:ArrayAcces;
 
-  constructor({name,id_user}:LayerContract.Author){
+
+  constructor({name,id_user}:LayerContract.Author,access?:ArrayAcces){
     this.name=name;
     this.id_user=id_user
+    if(access) this.access=access;
+
+  }
+
+  setAcces(access:ArrayAcces){
+    this.access=access;
+  }
+
+  hasAcces(access_to:Access){
+    return this.access?.includes(access_to)
   }
 
 }
-
 
 
 export abstract class Content implements LayerContract.Content{
@@ -55,10 +65,10 @@ export abstract class Content implements LayerContract.Content{
 
 export class Annotation extends Content implements LayerContract.Annotation{
   annot;
-  isSolved=false;
+  isSolved:boolean|number=false;
   id_annot?:number;
 
-  constructor({annot,isSolved=false}:{annot:string,isSolved:boolean}){
+  constructor({annot,isSolved=false}:{annot:string,isSolved:boolean|number}){
     super();
     this.annot=annot;
     this.isSolved=isSolved;
