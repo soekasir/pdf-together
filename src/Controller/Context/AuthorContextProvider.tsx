@@ -14,7 +14,7 @@ interface PropAuthorContextProvider{
 export const AuthorContextProvider=({children}:PropAuthorContextProvider)=>{
 
   const [author,setAuthor]=useState<Author|undefined>(new Author({
-    name:"saya",
+    name:"Alex",
     id_user:'1',
     access:AccesAdmin
   }));

@@ -6,11 +6,9 @@ import { CurrentPage } from "../../../Models/Main/MainPdfTogether";
 import { Validation as Type } from "../../../Models/Interfaces/Type";
 import { PageViewport } from "pdfjs-dist/types/display/display_utils";
 import { LayerContract } from "../../../Models/Interfaces/LayerContract";
-/**
- * Stylesheet
- */
+/** Stylesheet */
 import './../../../Resources/style/style.css';
-import { ApproveButton, ButtonCurrentPage, RejectButton, theme, useStyles } from './../../../Resources/style/style';
+import { ButtonCurrentPage, theme, useStyles } from './../../../Resources/style/style';
 import { Container, Paper, CssBaseline, List, ListItem, Grid, Typography, Button,} from "@material-ui/core";
 import { PdfIcon} from "../../../Resources/svg/icon";
 import {Tool,CostumForm,CanvasPoint,LoadComment,AnnotDraw,Annotation} from "./../../Component/PdfTogether";
@@ -41,9 +39,6 @@ const PdfTogether:React.FC=()=>{
 
   context.layerManager.setPoint(point);
 
-
-
-
   const setCurrentPageInit=()=>setCurrentPage( curr => ({...curr,pageNum:1}) );
 
   const setCurrentPageNum=(pageNum:number)=>{
@@ -60,42 +55,33 @@ const PdfTogether:React.FC=()=>{
 
   useEffect(()=>{ context.layerManager.setCanvasref(canvasRef); },[canvasRef]);
 
-
-  //Mengambil file Pdf
-  useEffect(()=>{
+  useEffect(()=>{ //Mengambil file Pdf
     if(context.url){
-
       const loadingTask = pdfjsLib.getDocument(context.url);
-
       loadingTask.promise.then((loadedPdf) => {
-
         setPdfRef(loadedPdf);
         setCurrentPageInit();
-
         /**Belum dibutuhkan, tapi jangan dihapus */
         // loadedPdf.getData().then((data) => {
         //     let pdfFactory = new AnnotationFactory(data);
         //     setPdfFactory(pdfFactory);
         // });
-
       },function (reason:any) {
-
         console.error(reason);
-
       });
-
     }
-
   },[context.url]);
 
   // Merender current page
   useEffect(()=> {
-    
-    if(pdfRef && currentPage.pageNum>0 && store.current.lastRenderPage!==currentPage.pageNum && !store.current.isStillRendering){
 
+    //Check if pagenum isnt 0, and last rendered page isnt same with new currentPage, and canvas isnt rendering process
+    if(pdfRef && currentPage.pageNum>0 && store.current.lastRenderPage!==currentPage.pageNum && !store.current.isStillRendering){
+      
+      //check is canvas context defined/loaded, and check is store having new currentPage,
+      //if true then render page after take it from store
       let page=store.current.pages.get(currentPage.pageNum);
       let canvasContext=canvasRef.current?.getContext("2d");
-
       if(page && canvasContext){
 
         store.current.isStillRendering=true;
@@ -105,7 +91,7 @@ const PdfTogether:React.FC=()=>{
           store.current.lastRenderPage=currentPage.pageNum;
         });
 
-      }else{
+      }else{ //store didnt have new currentPage. Process to get pdf page from pdfjsLib
 
         pdfRef.getPage(currentPage.pageNum).then(function(page:PDFPageProxy) {
 
@@ -128,7 +114,9 @@ const PdfTogether:React.FC=()=>{
                 viewport: viewport
 
               };
-              
+
+              //check is still rendering another page
+              //if not, then save pdfPage in store, then render it.
               if(!store.current.isStillRendering){
                 store.current.isStillRendering=true;
                 store.current.pages.set(currentPage.pageNum,{proxy:page,viewport:viewport});
@@ -221,14 +209,13 @@ const PdfTogether:React.FC=()=>{
           <Grid item className={style.contentTab} xs={12}>
 
             {/* Hader Content */}
-            <div className={style.headerContent} style={{flexGrow:0}}>
-              <div>
+            <div className={style.headerContent}>
+              <div style={{flexGrow:0}} className={style.headerContentButton}>
                 <Button style={{
                       height:42,
                       width:85,
                       color: '#fff',
                       lineHeight:'17px',
-                      boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
                       backgroundColor: theme.palette.success.main,
                       margin:'8px'
                 }}>Approve</Button>
@@ -237,10 +224,9 @@ const PdfTogether:React.FC=()=>{
                   width:85,
                   color: '#fff',
                   lineHeight:'17px',
-                  boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
                   backgroundColor: theme.palette.secondary.main,
                   margin:'8px'
-                }}>Approve</Button>
+                }}>Reject</Button>
               </div>
               <div className={style.controlPage} style={{flexGrow:3,display:"flex",justifyContent:"center"}}>
                 <div className={style.segitigaKiri} onClick={prevPage}></div>
@@ -268,7 +254,7 @@ const PdfTogether:React.FC=()=>{
             {/**Content Canvas */}
             <Paper variant="elevation" style={{boxShadow:"none",display:'flex',justifyContent:'center',
               marginTop:"13px",width:'100%',padding:"10px",}}>
-              <div className={getCursor}>
+              <div className={getCursor} style={{width:"100%"}}>
                 <CanvasPoint canvasRef={canvasRef} className={style.canvas} setPoint={setPoint}/>
               </div>
               <Annotation mode={mode} pageNum={currentPage.pageNum}/>
@@ -281,7 +267,6 @@ const PdfTogether:React.FC=()=>{
       </PdfTogetherContext.Provider>
     </>
   );
-
 };
 
 export default PdfTogether;

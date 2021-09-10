@@ -112,8 +112,10 @@ export const useStyles =makeStyles((theme: Theme)=>{
     contentTab:{
       flexGrow:10,
       [theme.breakpoints.up(600)]: {
-        marginLeft:"300px",width:"100%"
+        marginLeft:"300px",width:"100%",
+        marginRight:'25px',
       },
+      backgroundColor:'#F8F8F8',
     },
 
     commentTab:{
@@ -127,6 +129,12 @@ export const useStyles =makeStyles((theme: Theme)=>{
 
       marginTop:"36px",
       backgroundColor:'#ffffff00',
+    },
+
+    headerContentButton:{
+      [theme.breakpoints.down(700)]: {
+        maxWidth:"100px",
+      },
     },
 
     button:{
@@ -161,7 +169,7 @@ export const useStyles =makeStyles((theme: Theme)=>{
     },
 
     canvas:{
-      maxWidth:"100%",
+      width:"100%",
     },
 
     titleTab:{

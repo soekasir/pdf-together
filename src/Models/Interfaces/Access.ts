@@ -79,7 +79,7 @@ export const AccesAdmin=[
   Access.ManagePeopleInDoc
 ];
 
-/** Have Member acces Can Approve Document */
+/** Have Member acces, Can Approve Document */
 export const AccesApprover=[
   ...AccessMember,
   Access.ValidateTask,

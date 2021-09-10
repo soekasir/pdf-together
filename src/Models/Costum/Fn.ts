@@ -18,8 +18,8 @@ export const toReadableDate=(date:Date,divider:string="")=>{
   let bulan:string|number = date.getMonth();
   let tanggal = date.getDate();
   // let hari:string|number = date.getDay();
-  let jam = date.getHours();
-  let menit = date.getMinutes();
+  let jam:number|string = date.getHours();
+  let menit:number|string = date.getMinutes();
   // let detik = date.getSeconds();
 
   switch(bulan) {
@@ -38,6 +38,14 @@ export const toReadableDate=(date:Date,divider:string="")=>{
   }
 
   let tampilTanggal = tanggal+" "+bulan+" "+tahun;
+
+  if(jam.toString().length === 1){
+    jam='0'+jam.toString();
+  }
+
+  if(menit.toString().length === 1){
+    menit='0'+menit.toString();
+  }
 
   let tampilWaktu = jam+":"+menit;
 
