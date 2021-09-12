@@ -1,4 +1,3 @@
-
 export function hasKey<ObjTest>(obj: ObjTest, key: PropertyKey): key is keyof ObjTest {
   return key in obj
 }
@@ -12,8 +11,8 @@ export function hasValue<ObjTest>(O:ObjTest,value:string){
  * @param divider sting divider betwen date and time
  * @returns example: 19 January 2021 - 17:30
  */
-
 export const toReadableDate=(date:Date,divider:string="")=>{
+
   let tahun = date.getFullYear();
   let bulan:string|number = date.getMonth();
   let tanggal = date.getDate();
@@ -56,14 +55,13 @@ export const toReadableDate=(date:Date,divider:string="")=>{
 /**
  * Digunakan untuk mencari perbedaan 2 Date Objek
  * @param date date yg sekiranya lebih kecil
+ * @param date2 date yg sekiranya lebih besar
  * @returns object perbedaan tanggal
  */
-
 const difDate=(date:Date,date2:Date=new Date())=>{
 
   let milsec=date.getTime();
   let milsec2=date2.getTime();
-
 
   //Jika date1 lebih besar dr date 2 maka dibalik
   if(milsec>date2.getTime()){
@@ -74,7 +72,6 @@ const difDate=(date:Date,date2:Date=new Date())=>{
   }
 
   let diffTime = Math.abs(milsec2 - milsec);
-
   const diffDate=new Date(diffTime);
 
   let tahun = diffDate.getFullYear()-1970;
@@ -84,23 +81,14 @@ const difDate=(date:Date,date2:Date=new Date())=>{
   let menit = diffDate.getUTCMinutes();
   let detik = diffDate.getUTCSeconds();
 
-  let beda:{
-    year:number,
-    month:number,
-    date:number,
-    hour:number,
-    minute:number,
-    second:number,
-  }={
+  return {
     year:tahun,
     month:bulan,
     date:tanggal,
     hour:jam,
     minute:menit,
     second:detik,
-  }
-
-  return beda;
+  };
 }
 
 
@@ -129,12 +117,10 @@ export const understandableDate=(date:Date,maxDate=16)=>{
   }
 
   return toReadableDate(date);
-
 }
 
-export const downloadFile = function(file:Blob|File|string,filename:string){
+export const downloadFile=(file:Blob|File|string,filename:string)=>{
   const url=((file instanceof File) || (file instanceof Blob))?URL.createObjectURL(file):file;
-
   const link = document.createElement('a');
   link.download = filename;
   link.href = url;

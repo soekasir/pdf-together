@@ -90,7 +90,7 @@ export class NoFetch extends FetchLayers{
 
 }
 
-class FetchToServer extends FetchLayers{
+class FetchServer extends FetchLayers{
 
   resToLayer(res:unknown){
 

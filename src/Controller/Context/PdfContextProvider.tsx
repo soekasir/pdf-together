@@ -18,8 +18,6 @@ export const PdfContextProvider=({children}:{children:React.ReactChild})=>{
     })
   },[url,pdf]);
 
-  console.log('pdf context berubah');
-
   const value={
     setPdf:setPdf,
     url:pdf?URL.createObjectURL(pdf):url,

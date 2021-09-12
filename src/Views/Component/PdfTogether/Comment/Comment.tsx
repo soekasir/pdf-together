@@ -47,7 +47,7 @@ const FilterComment=({handleFilter}:{handleFilter:(value:Type.FilterAnnotation)=
 
 
 export const LoadComment=()=>{
-  const {layers,currentPage}=useContext(PdfTogetherContext);
+  const {layers,currentPage,setCurrentPageNum}=useContext(PdfTogetherContext);
   const authorContext=useContext(AuthorContext);
   const style=useStyles();
 
@@ -143,7 +143,7 @@ export const LoadComment=()=>{
           <Grid container style={{padding:"20px 15px 17px 18px",
           backgroundColor:isGenap(layerValue.id?layerValue.id:1)?"#FFFFFF":"#F8F8F8",}}>
             <Grid container  item direction="row">
-              <Grid item style={{color:"#fff",backgroundColor:theme.palette.info.main,width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
+              <Grid onClick={()=>{setCurrentPageNum(layerValue.onPage)}} item style={{color:"#fff",backgroundColor:theme.palette.info.main,width:'32px',height:'32px',borderRadius:'50%',paddingTop:"9px"}}>
                 <Typography align="center" variant="subtitle2">{layerValue.id}</Typography>
               </Grid>
               <Grid item style={{marginLeft:"8px"}}>

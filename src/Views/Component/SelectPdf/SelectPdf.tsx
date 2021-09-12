@@ -30,9 +30,3 @@ export const SelectPdf=()=>{
     </>
   )
 };
-
-const FormAuthor=()=>{
-
-
-  
-}

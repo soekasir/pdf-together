@@ -8,9 +8,6 @@ import PdfTogether from '../../Views/Page/PdfTogether/PdfTogether';
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from '../../Resources/style/style';
 
-
-
-
 export const PdfTogetherRouter=()=>{
   return(
     <Router>

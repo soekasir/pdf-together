@@ -148,6 +148,7 @@ const PdfTogether:React.FC=()=>{
   const value={
     layers:layer,
     currentPage:currentPage,
+    setCurrentPageNum:setCurrentPageNum
   }
 
 

@@ -15,7 +15,8 @@ interface PdfContextValue{
 
 interface PdfTogetherContext{
   layers:LayerContract.ArrayLayer[],
-  currentPage:CurrentPage
+  currentPage:CurrentPage,
+  setCurrentPageNum:(pageNum: number) => void
 }
 
 interface AuthorContextValue{

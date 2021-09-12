@@ -1,12 +1,6 @@
 import {useState, useEffect, useRef, useLayoutEffect, useCallback} from "react";
 import { pdfjsLib,AnnotationFactory } from "../../../Controller/Env/Facades";
 
-
-
-
-
-
-
 const SelectPreview=({url,scale=1}:{url:string,scale:number})=>{
 
   const canvasRef=useRef<HTMLCanvasElement>(null);
@@ -32,10 +26,6 @@ const SelectPreview=({url,scale=1}:{url:string,scale:number})=>{
     }
 
   }, [url]);
-  
-
-
-
 
   useEffect(()=> {
     pdfRef && pdfRef.getPage(currentPage).then(function(page:any) {
@@ -55,17 +45,9 @@ const SelectPreview=({url,scale=1}:{url:string,scale:number})=>{
     });
   }, [currentPage]);
 
-
-
   const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
 
-
-
-
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-
-
-
 
   return (
     <>
