@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import {useState, useEffect, useRef, useLayoutEffect, useCallback} from "react";
 import { pdfjsLib,AnnotationFactory } from "../../../Controller/Env/Facades";
 
@@ -55,8 +56,8 @@ const SelectPreview=({url,scale=1}:{url:string,scale:number})=>{
       <canvas ref={canvasRef}></canvas>
       </div>
       <div>
-        <button onClick={prevPage}>Prev</button>
-        <button onClick={nextPage}>Next</button>
+        <Button variant='outlined'  size={'small'} onClick={prevPage}>Prev</Button>
+        <Button variant='outlined'  size={'small'}  onClick={nextPage}>Next</Button>
       </div>
     </>
   );

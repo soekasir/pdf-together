@@ -97,7 +97,6 @@ export const LoadComment=()=>{
 
   const reply=(id:LayerContract.LayerId)=>{
 
-    
 
     const filteredChat=()=>chat().filter((layer)=>layer.value.content.to===id);
 
