@@ -1,5 +1,4 @@
 # PDF-Together 
->"Do task together as a team" ~ [Soekasir] & [EMI]
 
 ## Features
 - Annotation
@@ -30,8 +29,6 @@ To fill value of layer, declare [new LayerValue] and class that inherit from it.
 ~~~
 
 [//]: # (Markdown here)
-   [Soekasir]: <https://github.com/soekasir>
-   [EMI]: <https://>
    [Validation]: src/Models/Interfaces/Type.ts
    [class Draw]: src/Models/Draw/Draw.ts
    [class Layers]: src/Models/Layers/Layers.ts
