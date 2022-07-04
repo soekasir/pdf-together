@@ -12,18 +12,9 @@
     - Accept and reject task
 - Connect to server
 
-### Documentation Clean Code
-
-Conceptually, logic code divided into [class Draw]  and [class Layers], conected to react-component using [class Together] as parent and [class PdfTogether] as final-child.
-
-Value ``PdfTogetherContext`` is [class PdfTogether] served by costum hooks ``usePdfTogether``. So we ready to use it in component. Mainly, property of ``PdfTogether.prop`` is ``state`` and ``PdfTogether.meth`` is ``setState``. 
-
-To fill value of layer, declare [new LayerValue] and class that inherit from it. With Type data in [Validation], all data become an object like _``Author``_, _``Annotation``_, _``Draw``_, _``Img``_, _``Chat``_ and implemented on some classes in [MainModel].
-
 #### Note:
 ~~~
 -For more documentation of this project code, src\Models\Interfaces
--This project is private in github
 
 “Clean Code always looks like it was written by someone who cares” -Robert C. Martin-
 ~~~
